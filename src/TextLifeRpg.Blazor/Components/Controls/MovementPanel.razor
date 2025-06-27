@@ -1,0 +1,147 @@
+﻿@using TextLifeRpg.Application.Abstraction
+@inject IMovementService MovementService
+@inject ILocationService LocationService
+@inject IMovementNarrationService MovementNarrationService
+@inject IRoomService RoomService
+@inject GameSaveStore GameSaveStore
+@inject IWorldService WorldService
+
+<div class="flex gap-4 p-2">
+  @if (_availableMovements is null)
+  {
+    <p>Loading movements...</p>
+  }
+  else if (!_availableMovements.Any())
+  {
+    <p class="italic">No movement options available.</p>
+  }
+  else
+  {
+    @foreach (var movement in _availableMovements)
+    {
+      <button class="trpg-btn inline-block" @onclick="() => MoveToDestination(movement)">
+        @(_movementNames.TryGetValue(movement.Id, out var name) ? name : "Unknown Destination")
+      </button>
+    }
+  }
+</div>
+
+@code {
+  private List<Movement>? _availableMovements;
+  private readonly Dictionary<Guid, string> _movementNames = new();
+
+  /// <summary>
+  /// Loads available movement options on component initialization.
+  /// </summary>
+  protected override async Task OnInitializedAsync()
+  {
+    GameSaveStore.OnAsyncChange += HandleGameSaveChangedAsync;
+    await LoadAvailableMovementsAsync();
+  }
+
+  private async Task HandleGameSaveChangedAsync()
+  {
+    await LoadAvailableMovementsAsync();
+    StateHasChanged();
+  }
+
+  /// <summary>
+  /// Loads all movements available to the current player character and resolves destination names.
+  /// </summary>
+  private async Task LoadAvailableMovementsAsync()
+  {
+    var world = GameSaveStore.CurrentSave!.World;
+    var player = GameSaveStore.CurrentSave!.PlayerCharacter;
+
+    if (player.LocationId.HasValue)
+    {
+      _availableMovements = await MovementService.GetAvailableMovementsAsync(player.LocationId.Value, player.RoomId, world.CurrentDate.DayOfWeek, world.CurrentDate.TimeOfDay, CancellationToken.None);
+    }
+    else
+    {
+      _availableMovements = [];
+    }
+
+    _movementNames.Clear();
+
+    foreach (var movement in _availableMovements)
+    {
+      var locationName = "Unknown Location";
+      string? roomName = null;
+
+      try
+      {
+        var location = await LocationService.GetByIdAsync(movement.ToLocationId, CancellationToken.None);
+        locationName = location.Name;
+      }
+      catch
+      {
+        /* fallback to default */
+      }
+
+      if (movement.ToRoomId != null)
+      {
+        try
+        {
+          var room = await RoomService.GetByIdAsync(movement.ToRoomId.Value, CancellationToken.None);
+          roomName = room.Name;
+        }
+        catch
+        {
+          /* fallback to no room name */
+        }
+      }
+
+      string fullName;
+
+      if (movement.ToLocationId == movement.FromLocationId)
+      {
+        fullName = roomName ?? locationName;
+      }
+      else
+      {
+        fullName = locationName;
+      }
+
+      _movementNames[movement.Id] = fullName;
+    }
+
+    StateHasChanged();
+  }
+
+  /// <summary>
+  /// Executes the selected movement, advances game time, clears current textlines, and adds the movement narration.
+  /// </summary>
+  private async Task MoveToDestination(Movement movement)
+  {
+    var player = GameSaveStore.CurrentSave!.PlayerCharacter;
+
+    // Clears existing textlines when location changes
+    GameSaveStore.CurrentSave.ResetText();
+
+    // Moves player to the new location/room
+    player.MoveTo(movement.ToLocationId, movement.ToRoomId);
+
+    // Advances the world time
+    WorldService.AdvanceTime(GameSaveStore.CurrentSave!.World, GameSaveStore.CurrentSave!.PlayerCharacterId, 1);
+
+    // Get the movement narration text
+    var narration = await MovementNarrationService.GetNarrationTextAsync(movement.Id, CancellationToken.None);
+
+    var line = TextLineBuilder.BuildNarrationLine(narration, player, GameSaveStore.CurrentSave.PlayerCharacterId);
+    GameSaveStore.CurrentSave.AddText(line.TextParts);
+
+    // Reloads available movements and updates the game state
+    await LoadAvailableMovementsAsync();
+    await GameSaveStore.NotifyStateChangedAsync();
+  }
+
+  /// <summary>
+  /// Unregisters event handlers when the component is disposed.
+  /// </summary>
+  public void Dispose()
+  {
+    GameSaveStore.OnAsyncChange -= HandleGameSaveChangedAsync;
+  }
+
+}

@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <base href="/"/>
+  <link href="css/tailwind.css" rel="stylesheet">
+  <ImportMap/>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <HeadOutlet/>
+</head>
+
+<body class="bg-slate-50">
+<Routes/>
+
+<script>
+  window.scrollToBottom = (element) => {
+    if (element) {
+      element.scrollTop = element.scrollHeight;
+    }
+  }
+</script>
+
+<script src="_framework/blazor.web.js"></script>
+</body>
+
+</html>

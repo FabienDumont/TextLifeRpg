@@ -1,0 +1,161 @@
+﻿@using TextLifeRpg.Application.Abstraction
+@implements IDisposable
+@inject GameSaveStore GameSaveStore
+@inject ILocationService LocationService
+@inject IRoomService RoomService
+
+<div class="flex h-full flex-col p-2">
+  <div class="flex flex-col items-center">
+    <p class="text-xl font-bold">
+      @GameSaveStore.CurrentSave!.World.CurrentDate
+    </p>
+
+    @if (_locationName != null)
+    {
+      <p class="text-lg">
+        Location: @_locationName
+      </p>
+    }
+    else
+    {
+      <p class="text-lg italic">
+        Location: Unknown
+      </p>
+    }
+
+    @if (_roomName != null)
+    {
+      <p class="text-lg">
+        Room: @_roomName
+      </p>
+    }
+
+    @if (_npcsInLocation.Count > 0)
+    {
+      <div class="mt-4 w-full overflow-y-auto pt-2 px-2">
+        @foreach (var npc in _npcsInLocation.OrderBy(n => n.Name))
+        {
+          var color = CharacterColorHelper.GetCharacterColor(npc, GameSaveStore.CurrentSave!.PlayerCharacter.Id);
+          <p class="cursor-pointer" style="color:@color" @onclick="async () => await OnNpcClickedInternal(npc)">
+            @npc.Name
+          </p>
+        }
+      </div>
+    }
+  </div>
+  <div class="flex-grow"></div>
+</div>
+
+@code {
+  private string? _locationName;
+  private string? _roomName;
+
+  private readonly List<Character> _npcsInLocation = [];
+
+  /// <summary>
+  /// Callback invoked when the user clicks on a NPC's name.
+  /// </summary>
+  [Parameter, EditorRequired]
+  public EventCallback<Character> OnNpcClicked { get; set; }
+
+  /// <summary>
+  /// Registers for game state changes and initializes location display.
+  /// </summary>
+  protected override async Task OnInitializedAsync()
+  {
+    GameSaveStore.OnAsyncChange += HandleGameSaveChangedAsync;
+    await GameSaveChanged();
+  }
+
+  /// <summary>
+  /// Handles change events from the game state store.
+  /// </summary>
+  private async Task HandleGameSaveChangedAsync()
+  {
+    await GameSaveChanged();
+  }
+
+  /// <summary>
+  /// Updates location and room names and triggers a UI refresh.
+  /// </summary>
+  private async Task GameSaveChanged()
+  {
+    var save = GameSaveStore.CurrentSave;
+
+    var player = save?.PlayerCharacter;
+
+    if (player?.LocationId is null || save is null)
+    {
+      return;
+    }
+
+    await UpdateNamesAsync();
+
+    _npcsInLocation.Clear();
+    _npcsInLocation.AddRange(
+      save.World.Characters
+        .Where(c => c.Id != player.Id && c.LocationId == player.LocationId)
+    );
+
+    StateHasChanged();
+  }
+
+  /// <summary>
+  /// Retrieves and sets the current player location and room names.
+  /// </summary>
+  private async Task UpdateNamesAsync()
+  {
+    var player = GameSaveStore.CurrentSave?.PlayerCharacter;
+
+    if (player?.LocationId != null)
+    {
+      try
+      {
+        var location = await LocationService.GetByIdAsync(player.LocationId.Value, CancellationToken.None);
+        _locationName = location.Name;
+      }
+      catch
+      {
+        _locationName = "Unknown";
+      }
+    }
+    else
+    {
+      _locationName = "Unknown";
+    }
+
+    if (player?.RoomId != null)
+    {
+      try
+      {
+        var room = await RoomService.GetByIdAsync(player.RoomId.Value, CancellationToken.None);
+        _roomName = room.Name;
+      }
+      catch
+      {
+        _roomName = "Unknown";
+      }
+    }
+    else
+    {
+      _roomName = "Unknown";
+    }
+  }
+
+  /// <summary>
+  /// Triggers the OnNpcClicked callback.
+  /// </summary>
+  private async Task OnNpcClickedInternal(Character npc)
+  {
+    await OnNpcClicked.InvokeAsync(npc);
+  }
+
+  /// <summary>
+  /// Unregisters event handlers when the component is disposed.
+  /// </summary>
+  public void Dispose()
+  {
+    GameSaveStore.OnAsyncChange -= HandleGameSaveChangedAsync;
+  }
+
+}
