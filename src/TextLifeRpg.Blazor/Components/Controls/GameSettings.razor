@@ -1,0 +1,93 @@
+﻿@using TextLifeRpg.Blazor.InternalUtilities
+<div class="trpg-layout-page">
+  <h2 class="trpg-title-main">Game Settings</h2>
+
+  <EditForm Model="@Model" OnValidSubmit="Confirm" class="w-full max-w-sm space-y-4">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div>
+      <label class="trpg-input-label">NPC Density:</label>
+      <InputSelect class="trpg-input-field" @bind-Value="Model.Density">
+        @foreach (var density in Enum.GetValues<NpcDensity>())
+        {
+          <option value="@density">@density.GetDisplayName()</option>
+        }
+      </InputSelect>
+      <ValidationMessage class="trpg-validation-message" For="@(() => Model.Density)"/>
+    </div>
+
+    <div class="mt-4 flex justify-between">
+      <button class="trpg-btn" type="button" @onclick="ResetSettings">Reset</button>
+      <button class="trpg-btn-submit" type="submit">Confirm Settings</button>
+    </div>
+  </EditForm>
+</div>
+
+@code {
+
+  /// <summary>
+  /// Callback to invoke when the user confirms the settings.
+  /// </summary>
+  [Parameter]
+  public EventCallback<Domain.GameSettings> OnSettingsConfirmed { get; set; }
+
+  /// <summary>
+  /// Settings to prefill when the component is loaded.
+  /// </summary>
+  [Parameter]
+  public Domain.GameSettings? InitialSettings { get; set; }
+
+  /// <summary>
+  /// Default settings used when resetting.
+  /// </summary>
+  [Parameter]
+  public Domain.GameSettings? DefaultSettings { get; set; }
+
+  /// <summary>
+  /// Form model used for binding user input.
+  /// </summary>
+  public GameSettingsModel Model { get; set; } = new();
+
+  /// <summary>
+  /// Populate form model from initial settings.
+  /// </summary>
+  protected override void OnParametersSet()
+  {
+    if (InitialSettings is null) return;
+    var density = InitialSettings.NpcDensity;
+    Model = new GameSettingsModel {Density = density};
+  }
+
+  /// <summary>
+  /// Called on valid form submission.
+  /// </summary>
+  private async Task Confirm()
+  {
+    var settings = Domain.GameSettings.Create(Model.Density);
+    await OnSettingsConfirmed.InvokeAsync(settings);
+  }
+
+  /// <summary>
+  /// Resets the form to the default values.
+  /// </summary>
+  private void ResetSettings()
+  {
+    if (DefaultSettings is null) return;
+
+    Model.Density = DefaultSettings.NpcDensity;
+    StateHasChanged();
+  }
+
+  /// <summary>
+  /// Backing model for game settings form.
+  /// </summary>
+  public class GameSettingsModel
+  {
+    /// <summary>
+    /// Selected NPC density.
+    /// </summary>
+    public NpcDensity Density { get; set; } = NpcDensity.Average;
+  }
+
+}

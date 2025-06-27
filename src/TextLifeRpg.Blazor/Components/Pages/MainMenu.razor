@@ -1,0 +1,54 @@
+﻿@page "/"
+@using TextLifeRpg.Application.Abstraction
+@inject GameSaveStore GameSaveStore
+@inject ISaveService SaveService
+@inject NavigationManager Navigation
+
+@rendermode InteractiveServer
+
+<PageTitle>Text Life RPG</PageTitle>
+
+<div class="trpg-layout-page">
+  <h2 class="trpg-title-main">Text Life RPG</h2>
+
+  <div class="flex w-48 flex-col space-y-4">
+    <NavLink
+      href="/charactercreation"
+      class="trpg-btn">
+      New Game
+    </NavLink>
+
+    <label class="trpg-btn cursor-pointer text-center">
+      Load Save
+      <InputFile OnChange="OnFileSelected" accept=".json" style="display:none"/>
+    </label>
+
+    <button
+      class="trpg-btn-danger">
+      Exit
+    </button>
+  </div>
+</div>
+
+@code {
+
+  /// <summary>
+  /// Handles loading a game save from a JSON file.
+  /// </summary>
+  private async Task OnFileSelected(InputFileChangeEventArgs e)
+  {
+    var file = e.File;
+
+    await using var stream = file.OpenReadStream();
+    using var reader = new StreamReader(stream);
+    var json = await reader.ReadToEndAsync();
+
+    var save = SaveService.LoadGame(json);
+    if (save != null)
+    {
+      await GameSaveStore.LoadGameAsync(save);
+      Navigation.NavigateTo("/game");
+    }
+  }
+
+}

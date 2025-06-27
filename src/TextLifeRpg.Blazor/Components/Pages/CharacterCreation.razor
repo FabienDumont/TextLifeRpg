@@ -1,0 +1,325 @@
+﻿@page "/charactercreation"
+@using System.ComponentModel.DataAnnotations
+@using TextLifeRpg.Application.Abstraction
+@using TextLifeRpg.Blazor.InternalUtilities
+@using TextLifeRpg.Blazor.ViewModels
+@using TextLifeRpg.Domain.Extensions
+@using GameSettings = TextLifeRpg.Domain.GameSettings
+@inject ITraitService TraitService
+@inject ISaveService SaveService
+@inject GameSaveStore GameSaveStore
+@inject NavigationManager Navigation
+
+@rendermode InteractiveServer
+
+@if (_showGameSettings)
+{
+  <GameSettings InitialSettings="_gameSettings" DefaultSettings="_defaultSettings"
+                OnSettingsConfirmed="HandleSettingsConfirmed"/>
+}
+else
+{
+  <div class="trpg-layout-page">
+    <h2 class="trpg-title-main">Character Creation</h2>
+
+    @if (_showToast)
+    {
+      <div
+        class="animate-fade-in-out fixed top-4 right-4 z-50 rounded bg-red-600 px-4 py-2 text-sm text-white shadow-lg">
+        Some required fields are missing or invalid. Please review all steps.
+      </div>
+    }
+
+    @if (_isLoading)
+    {
+      <p class="text-center">Loading...</p>
+    }
+    else
+    {
+      <EditForm EditContext="@_editContext" FormName="formCharacter" OnValidSubmit="CreateCharacter"
+                OnInvalidSubmit="HandleInvalidSubmitAsync"
+                class="trpg-card-form">
+        <div class="flex h-[36rem] flex-col justify-between">
+          <DataAnnotationsValidator/>
+
+          <!-- Slide 1: Basic Info -->
+          @if (_step == 1)
+          {
+            <div class="h-[32rem] space-y-6">
+              <div>
+                <label class="trpg-input-label">Name:</label>
+                <InputText class="trpg-input-field" @bind-Value="Model.Name"/>
+                <ValidationMessage class="trpg-validation-message" For="@(() => Model.Name)"/>
+              </div>
+
+              <div>
+                <label class="trpg-input-label">Birth Date:</label>
+                <InputDate @bind-Value="Model.BirthDate" class="trpg-input-field"/>
+                <ValidationMessage class="trpg-validation-message" For="@(() => Model.BirthDate)"/>
+              </div>
+
+              <div>
+                <label class="trpg-input-label">Sex:</label>
+                <InputSelect class="trpg-input-field" @bind-Value="Model.BiologicalSex">
+                  <option value="">-- Select --</option>
+                  @foreach (var sex in Enum.GetValues<BiologicalSex>())
+                  {
+                    <option value="@sex">@sex</option>
+                  }
+                </InputSelect>
+                <ValidationMessage class="trpg-validation-message" For="@(() => Model.BiologicalSex)"/>
+              </div>
+
+              <div>
+                <label class="trpg-input-label">Height (cm):</label>
+                <InputNumber class="trpg-input-field" @bind-Value="Model.Height"/>
+                <ValidationMessage class="trpg-validation-message" For="@(() => Model.Height)"/>
+              </div>
+
+              <div>
+                <label class="trpg-input-label">Weight (kg):</label>
+                <InputNumber class="trpg-input-field" @bind-Value="Model.Weight"/>
+                <ValidationMessage class="trpg-validation-message" For="@(() => Model.Weight)"/>
+              </div>
+
+              <div>
+                <label class="trpg-input-label">Muscle Mass:</label>
+                <InputSelect class="trpg-input-field" @bind-Value="Model.SelectedMuscleMass">
+                  @foreach (var option in Enum.GetValues<MuscleMassOption>())
+                  {
+                    <option value="@option">@option.GetDisplayName()</option>
+                  }
+                </InputSelect>
+                <ValidationMessage class="trpg-validation-message" For="@(() => Model.SelectedMuscleMass)"/>
+              </div>
+            </div>
+          }
+
+          <!-- Slide 2: Traits -->
+          @if (_step == 2)
+          {
+            <div class="h-[32rem] space-y-6">
+              <fieldset class="space-y-2">
+                <legend class="mb-2 text-lg font-semibold">Traits</legend>
+                @foreach (var trait in _traitsViewModels)
+                {
+                  <label class="trpg-checkbox-label">
+                    <InputCheckbox
+                      class="trpg-checkbox-input"
+                      Value="@trait.IsSelected"
+                      ValueChanged="@(_ => ToggleTrait(trait))"
+                      ValueExpression="@(() => trait.IsSelected)"
+                      disabled="@(!trait.IsEnabled)"/>
+                    @trait.Name
+                  </label>
+                }
+              </fieldset>
+            </div>
+          }
+
+          <!-- Navigation buttons -->
+          <div class="mt-6 space-y-4">
+
+            <!-- Step navigation -->
+            <div class="flex items-center justify-between gap-4">
+              @if (_step > 1)
+              {
+                <button type="button" class="trpg-btn" @onclick="PreviousStep">← Previous</button>
+              }
+              else
+              {
+                <div class="w-[7rem]"></div>
+              }
+
+              @if (_step < MaxStep)
+              {
+                <button type="button" class="trpg-btn" @onclick="NextStep">Next →</button>
+              }
+              else
+              {
+                <div class="w-[7rem]"></div>
+              }
+            </div>
+
+            <!-- Bottom action buttons -->
+            <div class="flex items-center justify-between gap-4">
+              <button type="button" class="trpg-btn" @onclick="GoToGameSettings">Game Settings</button>
+
+              @if (_step == MaxStep)
+              {
+                <button type="submit" class="trpg-btn-submit">Create</button>
+              }
+            </div>
+
+          </div>
+
+
+        </div>
+      </EditForm>
+    }
+  </div>
+}
+
+
+@code {
+  private bool _isLoading = true;
+  private bool _showToast;
+  private bool _showGameSettings;
+
+  private List<TraitViewModel> _traitsViewModels = [];
+  private EditContext? _editContext;
+
+  public CharacterCreationModel Model { get; } = new();
+
+  private GameSettings? _gameSettings;
+  private readonly GameSettings _defaultSettings = GameSettings.Create(NpcDensity.Average);
+
+  private int _step = 1;
+  private const int MaxStep = 2;
+
+  /// <summary>
+  /// Initializes form state and loads available traits.
+  /// </summary>
+  protected override async Task OnInitializedAsync()
+  {
+    _editContext = new EditContext(Model);
+    _isLoading = true;
+
+    _gameSettings = _defaultSettings;
+
+    try
+    {
+      var traits = await TraitService.GetAllTraitsAsync(CancellationToken.None);
+      _traitsViewModels = traits.Select(t => new TraitViewModel
+        {
+          Id = t.Id,
+          Name = t.Name,
+          IsSelected = false,
+          IsEnabled = true
+        }
+      ).ToList();
+    }
+    finally
+    {
+      _isLoading = false;
+    }
+  }
+
+  private void NextStep()
+  {
+    if (_step < MaxStep) _step++;
+  }
+
+  private void PreviousStep()
+  {
+    if (_step > 1) _step--;
+  }
+
+  /// <summary>
+  /// Toggles trait selection and updates compatibility.
+  /// </summary>
+  private async Task ToggleTrait(TraitViewModel traitViewModel)
+  {
+    traitViewModel.IsSelected = !traitViewModel.IsSelected;
+
+    var selected = _traitsViewModels.Where(t => t.IsSelected).Select(t => t.Id);
+    var compatible = await TraitService.GetCompatibleTraitsAsync(selected, CancellationToken.None);
+    var compatibleIds = compatible.Select(t => t.Id).ToHashSet();
+
+    foreach (var t in _traitsViewModels)
+    {
+      if (!t.IsSelected) t.IsEnabled = compatibleIds.Contains(t.Id);
+    }
+
+    StateHasChanged();
+  }
+
+  /// <summary>
+  /// Displays a toast if form is invalid.
+  /// </summary>
+  private async Task HandleInvalidSubmitAsync()
+  {
+    _showToast = true;
+    StateHasChanged();
+
+    await Task.Delay(5000);
+    _showToast = false;
+    StateHasChanged();
+  }
+
+  private void GoToGameSettings()
+  {
+    _showGameSettings = true;
+  }
+
+  private Task HandleSettingsConfirmed(GameSettings settings)
+  {
+    _gameSettings = settings;
+    _showGameSettings = false;
+
+    return Task.CompletedTask;
+  }
+
+  /// <summary>
+  /// Creates a new character and save file, and navigates to game view.
+  /// </summary>
+  private async Task CreateCharacter()
+  {
+    if (_gameSettings is null) return;
+
+    var muscleMass = Model.SelectedMuscleMass.ToKg();
+
+    var character = Character.Create(Model.Name.Trim(), Model.BirthDate, Model.BiologicalSex, Model.Height, Model.Weight, muscleMass);
+    character.AddTraits(_traitsViewModels.Where(t => t.IsSelected).Select(t => t.Id));
+
+    var save = await SaveService.CreateNewSaveAsync(new DateTime(2025, 1, 1, 8, 0, 0), character, _gameSettings, CancellationToken.None);
+
+    await GameSaveStore.LoadGameAsync(save);
+    await SaveService.SaveGameAsync(save, CancellationToken.None);
+
+    Navigation.NavigateTo("/game");
+  }
+
+  /// <summary>
+  /// Backing model for character form input.
+  /// </summary>
+  public class CharacterCreationModel
+  {
+    /// <summary>
+    /// The name of the character.
+    /// </summary>
+    [Required(AllowEmptyStrings = false)]
+    [StringLength(30)]
+    public string Name { get; set; } = "Player";
+
+    /// <summary>
+    /// The age of the character (1–120).
+    /// </summary>
+    [Required]
+    public DateOnly BirthDate { get; set; } = new(2000, 1, 1);
+
+    /// <summary>
+    /// The biological sex of the character.
+    /// </summary>
+    [Required]
+    public BiologicalSex BiologicalSex { get; set; }
+
+    /// <summary>
+    /// The height of the character.
+    /// </summary>
+    [Required]
+    [Range(100, 220, ErrorMessage = "Height must be between 100cm and 220cm.")]
+    public int Height { get; set; } = 170;
+
+    /// <summary>
+    /// The weight of the character.
+    /// </summary>
+    [Required]
+    [Range(40, 200, ErrorMessage = "Weight must be between 40kg and 200kg.")]
+    public int Weight { get; set; } = 70;
+
+    [Required]
+    public MuscleMassOption SelectedMuscleMass { get; set; } = MuscleMassOption.Average;
+  }
+
+}

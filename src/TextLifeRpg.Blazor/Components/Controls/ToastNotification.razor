@@ -1,0 +1,24 @@
+﻿<div class="fixed top-4 right-4 z-50">
+  @if (_visible)
+  {
+    <div class="bg-black text-white px-4 py-2 rounded shadow-lg transition-opacity duration-300" style="opacity:1">
+      @Message
+    </div>
+  }
+</div>
+
+@code {
+
+  [Parameter, EditorRequired]
+  public string Message { get; set; } = string.Empty;
+
+  private bool _visible = true;
+
+  protected override async Task OnInitializedAsync()
+  {
+    await Task.Delay(1000);
+    _visible = false;
+    StateHasChanged();
+  }
+
+}

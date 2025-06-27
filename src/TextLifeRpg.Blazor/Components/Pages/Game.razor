@@ -1,0 +1,129 @@
+﻿@page "/game"
+@inject GameSaveStore GameSaveStore
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+@rendermode InteractiveServer
+
+@if (GameSaveStore.CurrentSave is null)
+{
+  <div class="trpg-layout-page">
+    <p>No game loaded. Go to main menu.</p>
+    <NavLink href="/" class="trpg-btn">Main Menu</NavLink>
+  </div>
+}
+else
+{
+  <div class="grid min-h-screen grid-cols-12">
+
+    @if (_showSaveToast)
+    {
+      <ToastNotification Message="Game saved!"/>
+    }
+
+    <div class="col-span-2 bg-slate-200">
+      <LeftGameSidebar OnSaveLoaded="OnSaveLoaded" OnPlayerCharacterClicked="OpenCharacterDetails"
+                       OnSaveCompleted="ShowSaveToastAsync"/>
+    </div>
+
+    <div class="col-span-8">
+      <div class="flex h-screen flex-col">
+        <div class="flex flex-grow flex-col gap-4 overflow-auto p-6" @ref="_textZoneRef">
+          @foreach (var textLine in GameSaveStore.CurrentSave.TextLines)
+          {
+            <p>
+              @foreach (var part in textLine.TextParts)
+              {
+                <span style="color: @(part.Color ?? "inherit")">
+                  @part.Text
+                </span>
+              }
+            </p>
+          }
+        </div>
+
+        <div class="bg-slate-100">
+          <ExplorationActionsPanel/>
+        </div>
+        <div class="bg-slate-100">
+          <MovementPanel/>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-span-2 bg-slate-200">
+      <RightGameSidebar OnNpcClicked="OpenCharacterDetails"/>
+    </div>
+
+  </div>
+}
+
+@code {
+  private ElementReference _textZoneRef;
+
+  private bool _showSaveToast;
+
+  /// <summary>
+  /// Registers for game state changes and initializes location display.
+  /// </summary>
+  protected override Task OnInitializedAsync()
+  {
+    GameSaveStore.OnAsyncChange += HandleGameSaveChanged;
+
+    return Task.CompletedTask;
+  }
+
+  private Task HandleGameSaveChanged()
+  {
+    StateHasChanged();
+    return Task.CompletedTask;
+  }
+
+  /// <summary>
+  /// Callback triggered when a save is loaded from sidebar.
+  /// </summary>
+  private void OnSaveLoaded()
+  {
+    Navigation.NavigateTo("/game");
+    StateHasChanged();
+  }
+
+  /// <summary>
+  /// Navigates to the character details page.
+  /// </summary>
+  private void OpenCharacterDetails(Character character)
+  {
+    Navigation.NavigateTo($"/characterdetails/{character.Id}");
+    StateHasChanged();
+  }
+
+  /// <summary>
+  /// Scrolls the text output area to the bottom after render.
+  /// </summary>
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (_textZoneRef.Context != null)
+    {
+      await ScrollTextZoneToBottomAsync();
+    }
+  }
+
+  /// <summary>
+  /// Invokes JavaScript to scroll the text zone to the bottom.
+  /// </summary>
+  private async Task ScrollTextZoneToBottomAsync()
+  {
+    await JS.InvokeVoidAsync("scrollToBottom", _textZoneRef);
+  }
+
+  public async Task ShowSaveToastAsync()
+  {
+    _showSaveToast = true;
+    StateHasChanged();
+    await Task.Delay(1100);
+    _showSaveToast = false;
+    StateHasChanged();
+  }
+
+}

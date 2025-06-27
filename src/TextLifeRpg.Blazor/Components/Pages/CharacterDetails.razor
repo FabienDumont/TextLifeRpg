@@ -1,0 +1,137 @@
+﻿@page "/characterdetails/{CharacterId:guid}"
+@using TextLifeRpg.Application.Abstraction
+@using TextLifeRpg.Blazor.InternalUtilities
+@using TextLifeRpg.Domain.Extensions
+@inject GameSaveStore GameSaveStore
+@inject ITraitService TraitService
+
+@rendermode InteractiveServer
+
+@if (_hasError)
+{
+  <p class="text-red-400">Character not found or save not loaded.</p>
+}
+else if (_character is null)
+{
+  <p>Loading...</p>
+}
+else
+{
+  <div class="trpg-layout-page">
+    <h2 class="trpg-title-main"> @_character.Name</h2>
+
+    <p><strong>Age:</strong> @_character.GetAge(DateOnly.FromDateTime(GameSaveStore.CurrentSave!.World.CurrentDate))</p>
+    <p><strong>Sex:</strong> @_character.BiologicalSex</p>
+    <p><strong>Height:</strong> @_character.Height cm</p>
+    <p><strong>Weight:</strong> @_character.Weight kg</p>
+    <p><strong>Muscle mass:</strong> @MuscleMassOptionExtensions.FromKg(_character.MuscleMass).GetDisplayName()</p>
+
+
+    <h3 class="mt-4 text-lg font-semibold">Traits</h3>
+    @if (_traits is null || _traits.Count == 0)
+    {
+      <p class="text-gray-500">No traits.</p>
+    }
+    else
+    {
+      <div class="space-y-1">
+        @foreach (var trait in _traits)
+        {
+          <div>@trait.Name</div>
+        }
+      </div>
+    }
+
+    <h3 class="mt-4 text-lg font-semibold">Relationships</h3>
+
+    @if (_relationships is null || _relationships.Count == 0)
+    {
+      <p class="text-gray-500">No relationships.</p>
+    }
+    else
+    {
+      <div class="space-y-1">
+        @foreach (var rel in _relationships)
+        {
+          <div><strong>@rel.TargetName:</strong> @rel.Type</div>
+        }
+      </div>
+    }
+
+    <NavLink href="/game" class="trpg-btn">Back</NavLink>
+
+  </div>
+}
+
+@code {
+
+  /// <summary>
+  /// Character identifier from the route.
+  /// </summary>
+  [Parameter]
+  public Guid CharacterId { get; set; }
+
+  private Character? _character;
+  private bool _hasError;
+
+  private List<Trait>? _traits;
+  private List<RelationshipDisplay>? _relationships;
+
+  /// <summary>
+  /// Load character details when parameters change.
+  /// </summary>
+  protected override async Task OnParametersSetAsync()
+  {
+    if (GameSaveStore.CurrentSave is null)
+    {
+      _hasError = true;
+      return;
+    }
+
+    await Task.Yield(); // Ensures component is ready
+
+    var world = GameSaveStore.CurrentSave.World;
+    _character = world.Characters.FirstOrDefault(c => c.Id == CharacterId);
+
+    if (_character is null)
+    {
+      _hasError = true;
+      return;
+    }
+
+    var allTraits = await TraitService.GetAllTraitsAsync(CancellationToken.None);
+    _traits = allTraits.Where(t => _character.TraitsId.Contains(t.Id)).ToList();
+
+    _relationships = world.Relationships.Where(r => r.SourceCharacterId == _character.Id || r.TargetCharacterId == _character.Id).GroupBy(r => GetPairKey(r.SourceCharacterId, r.TargetCharacterId)).Select(g =>
+      {
+        var rel = g.First();
+        var isSource = rel.SourceCharacterId == _character.Id;
+        var otherId = isSource ? rel.TargetCharacterId : rel.SourceCharacterId;
+        var otherCharacter = world.Characters.FirstOrDefault(c => c.Id == otherId);
+        var targetName = otherCharacter?.Name ?? "(Unknown)";
+        var displayType = GetRelationshipLabel(rel.Type, isSource);
+        return new RelationshipDisplay(targetName, displayType);
+      }
+    ).ToList();
+  }
+
+  private static string GetRelationshipLabel(RelationshipType type, bool isSource)
+  {
+    return type switch
+    {
+      RelationshipType.Parent => isSource ? "Child" : "Parent",
+      RelationshipType.Child => isSource ? "Parent" : "Child",
+      RelationshipType.Grandparent => isSource ? "Grandchild" : "Grandparent",
+      RelationshipType.Grandchild => isSource ? "Grandparent" : "Grandchild",
+      _ => type.GetDisplayName()
+    };
+  }
+
+  static string GetPairKey(Guid a, Guid b)
+  {
+    return a.CompareTo(b) < 0 ? $"{a}_{b}" : $"{b}_{a}";
+  }
+
+  private record RelationshipDisplay(string TargetName, string Type);
+
+}

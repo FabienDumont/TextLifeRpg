@@ -1,0 +1,13 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="HTTPS Watch" type="RunDotNetWatch" factoryName="RunDotNetWatch">
+    <option name="exePath" value="$PROJECT_DIR$/src/TextLifeRpg.Blazor/bin/Debug/net9.0/TextLifeRpg.Blazor.exe" />
+    <option name="programParameters" value="" />
+    <option name="projectFilePath" value="$PROJECT_DIR$/src/TextLifeRpg.Blazor/TextLifeRpg.Blazor.csproj" />
+    <option name="projectTfm" value="net9.0" />
+    <option name="watchParameters" value="--launch-profile https" />
+    <option name="workingDirectory" value="$PROJECT_DIR$/src/TextLifeRpg.Blazor" />
+    <method v="2">
+      <option name="Build" default="false" projectName="TextLifeRpg.Blazor" projectPath="$PROJECT_DIR$/src/TextLifeRpg.Blazor/TextLifeRpg.Blazor.csproj" />
+    </method>
+  </configuration>
+</component>

@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@layer components {
+    .trpg-layout-page {
+        @apply flex min-h-screen flex-col items-center justify-center space-y-8 px-4 py-8;
+    }
+
+    .trpg-title-main {
+        @apply text-5xl font-extrabold tracking-wide;
+    }
+
+    .trpg-card-form {
+        @apply mx-auto min-h-[28rem] w-full max-w-md rounded-2xl bg-slate-100 p-6 shadow-lg;
+    }
+
+    .trpg-input-label {
+        @apply mb-1 block text-sm font-medium;
+    }
+
+    .trpg-input-field {
+        @apply w-full rounded border border-slate-200 bg-slate-300 p-1 focus:ring-2 focus:ring-blue-500 focus:outline-none;
+    }
+
+    .trpg-validation-message {
+        @apply mt-1 text-sm text-red-400;
+    }
+
+    .trpg-checkbox-label {
+        @apply flex items-center gap-2 text-sm ;
+    }
+
+    .trpg-checkbox-input {
+        @apply h-5 w-5 appearance-none rounded-sm border-slate-200 bg-slate-300 accent-white checked:ring-0 focus:outline-none disabled:border-black disabled:bg-black checked:bg-blue-600;
+    }
+
+    .trpg-btn {
+        @apply cursor-pointer rounded bg-gray-600 px-4 py-2 text-center font-semibold text-white transition hover:bg-gray-700;
+    }
+
+    .trpg-btn-danger {
+        @apply cursor-pointer rounded bg-red-600 px-4 py-2 text-center font-semibold text-white transition hover:bg-red-700;
+    }
+
+    .trpg-btn-submit {
+        @apply cursor-pointer rounded bg-blue-600 px-4 py-2 text-center font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50;
+    }
+
+    @keyframes fade-in-out {
+        0%, 100% {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        10%, 90% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in-out {
+        animation: fade-in-out 5s ease-in-out forwards;
+    }
+}
