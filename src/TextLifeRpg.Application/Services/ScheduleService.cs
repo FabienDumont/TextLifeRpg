@@ -3,10 +3,17 @@ using TextLifeRpg.Domain;
 
 namespace TextLifeRpg.Application.Services;
 
+/// <summary>
+/// Service responsible for generating schedules for characters based on available locations
+/// and time slots.
+/// </summary>
 public class ScheduleService(ILocationService locationService, IRandomProvider randomProvider) : IScheduleService
 {
+  #region Implementation of IScheduleService
+
+  /// <inheritdoc />
   public async Task<List<Schedule>> GenerateSchedulesAsync(
-    IEnumerable<Character> characters, DateOnly currentDate, CancellationToken cancellationToken
+    IEnumerable<Character> characters, CancellationToken cancellationToken
   )
   {
     var streetLocation = await locationService.GetByNameAsync("Street", cancellationToken);
@@ -54,4 +61,6 @@ public class ScheduleService(ILocationService locationService, IRandomProvider r
 
     return schedules;
   }
+
+  #endregion
 }

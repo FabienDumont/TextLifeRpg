@@ -6,7 +6,7 @@ using TextLifeRpg.Infrastructure.Mappers;
 namespace TextLifeRpg.Infrastructure.EfRepositories;
 
 /// <summary>
-///   Repository for exploration actions.
+/// Repository for exploration actions.
 /// </summary>
 public class ExplorationActionRepository(ApplicationContext context)
   : RepositoryBase(context), IExplorationActionRepository

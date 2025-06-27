@@ -35,7 +35,7 @@ public class ScheduleServiceTests
 
     // Act & Assert
     await Assert.ThrowsAsync<InvalidOperationException>(() =>
-      _service.GenerateSchedulesAsync([], DateOnly.FromDateTime(DateTime.Today), CancellationToken.None)
+      _service.GenerateSchedulesAsync([], CancellationToken.None)
     );
   }
 
@@ -64,7 +64,7 @@ public class ScheduleServiceTests
 
     // Act
     var result = await _service.GenerateSchedulesAsync(
-      [character], DateOnly.FromDateTime(DateTime.Today), CancellationToken.None
+      [character], CancellationToken.None
     );
 
     // Assert
@@ -105,7 +105,7 @@ public class ScheduleServiceTests
 
     // Act
     var result = await _service.GenerateSchedulesAsync(
-      [character], DateOnly.FromDateTime(DateTime.Today), CancellationToken.None
+      [character], CancellationToken.None
     );
 
     // Assert

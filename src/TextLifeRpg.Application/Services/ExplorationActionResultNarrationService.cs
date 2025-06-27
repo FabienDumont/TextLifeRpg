@@ -5,7 +5,7 @@ using TextLifeRpg.Domain;
 namespace TextLifeRpg.Application.Services;
 
 /// <summary>
-///   Service for exploration action result narrations.
+/// Service for exploration action result narrations.
 /// </summary>
 public class ExplorationActionResultNarrationService(
   IExplorationActionResultNarrationRepository explorationActionResultNarrationRepository
@@ -13,6 +13,7 @@ public class ExplorationActionResultNarrationService(
 {
   #region Implementation of IExplorationActionResultNarrationService
 
+  /// <inheritdoc />
   public async Task<ExplorationActionResultNarration> GetExplorationActionResultNarrationAsync(
     Guid explorationActionResultId, Character actor, World world, CancellationToken cancellationToken
   )

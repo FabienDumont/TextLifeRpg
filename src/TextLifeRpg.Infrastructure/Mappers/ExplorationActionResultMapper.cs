@@ -5,15 +5,15 @@ using TextLifeRpg.Infrastructure.EfDataModels;
 namespace TextLifeRpg.Infrastructure.Mappers;
 
 /// <summary>
-///   Mapper for converting between <see cref="ExplorationActionResult" /> domain models and
-///   <see cref="ExplorationActionResultDataModel" /> EF data models.
+/// Mapper for converting between <see cref="ExplorationActionResult" /> domain models and
+/// <see cref="ExplorationActionResultDataModel" /> EF data models.
 /// </summary>
 public static class ExplorationActionResultMapper
 {
   #region Methods
 
   /// <summary>
-  ///   Maps an EF data model to its domain counterpart.
+  /// Maps an EF data model to its domain counterpart.
   /// </summary>
   public static ExplorationActionResult ToDomain(this ExplorationActionResultDataModel dataModel)
   {
@@ -24,7 +24,7 @@ public static class ExplorationActionResultMapper
   }
 
   /// <summary>
-  ///   Maps a collection of EF data models to domain models.
+  /// Maps a collection of EF data models to domain models.
   /// </summary>
   public static List<ExplorationActionResult> ToDomainCollection(
     this IEnumerable<ExplorationActionResultDataModel> dataModels
@@ -34,7 +34,7 @@ public static class ExplorationActionResultMapper
   }
 
   /// <summary>
-  ///   Maps a domain model to its EF data model counterpart.
+  /// Maps a domain model to its EF data model counterpart.
   /// </summary>
   public static ExplorationActionResultDataModel ToDataModel(this ExplorationActionResult domain)
   {
@@ -50,7 +50,7 @@ public static class ExplorationActionResultMapper
   }
 
   /// <summary>
-  ///   Maps a collection of domain models to EF data models.
+  /// Maps a collection of domain models to EF data models.
   /// </summary>
   public static List<ExplorationActionResultDataModel> ToDataModelCollection(
     this IEnumerable<ExplorationActionResult> domains

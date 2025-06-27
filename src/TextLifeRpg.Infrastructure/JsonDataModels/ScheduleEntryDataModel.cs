@@ -1,7 +1,7 @@
 ﻿namespace TextLifeRpg.Infrastructure.JsonDataModels;
 
 /// <summary>
-///   JSON data model representing a schedule's entry.
+/// JSON data model representing a schedule's entry.
 /// </summary>
 public class ScheduleEntryDataModel
 {

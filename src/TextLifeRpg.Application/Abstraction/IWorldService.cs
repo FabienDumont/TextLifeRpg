@@ -3,14 +3,14 @@
 namespace TextLifeRpg.Application.Abstraction;
 
 /// <summary>
-///   Service interface for managing worlds.
+/// Service interface for managing worlds.
 /// </summary>
 public interface IWorldService
 {
   #region Methods
 
   /// <summary>
-  ///   Creates a new world instance with the specified date, player character, and game settings.
+  /// Creates a new world instance with the specified date, player character, and game settings.
   /// </summary>
   /// <param name="date">The initial date of the world.</param>
   /// <param name="playerCharacter">The player character to include in the world.</param>
@@ -22,7 +22,7 @@ public interface IWorldService
   );
 
   /// <summary>
-  ///   Advances the in-game time by a specified number of minutes.
+  /// Advances the in-game time by a specified number of minutes.
   /// </summary>
   /// <param name="world">The world instance to update.</param>
   /// <param name="playerCharacterId">The identifier of the player character.</param>

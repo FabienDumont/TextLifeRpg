@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace TextLifeRpg.Infrastructure.EfDataModels;
 
 /// <summary>
-///   EF Core data model representing the narration text associated with a movement.
+/// EF Core data model representing the narration text associated with a movement.
 /// </summary>
 [Table("MovementNarrations")]
 [PrimaryKey(nameof(Id))]
@@ -14,20 +14,20 @@ public class MovementNarrationDataModel
   #region Properties
 
   /// <summary>
-  ///   Unique identifier.
+  /// Unique identifier.
   /// </summary>
   [Column("Id", Order = 1)]
   [Required]
   public Guid Id { get; set; }
 
   /// <summary>
-  ///   Identifier of the associated movement.
+  /// Identifier of the associated movement.
   /// </summary>
   [Column("MovementId", Order = 2)]
   public Guid MovementId { get; set; }
 
   /// <summary>
-  ///   Narration text describing the movement.
+  /// Narration text describing the movement.
   /// </summary>
   [Column("Text", Order = 3)]
   [Required]

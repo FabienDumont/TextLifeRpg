@@ -3,39 +3,39 @@
 namespace TextLifeRpg.Domain;
 
 /// <summary>
-///   Domain class representing a relationship between a source character and a target character.
+/// Domain class representing a relationship between a source character and a target character.
 /// </summary>
 public class Relationship
 {
   #region Properties
 
   /// <summary>
-  ///   Unique identifier of the relationship.
+  /// Unique identifier of the relationship.
   /// </summary>
   public Guid Id { get; }
 
   /// <summary>
-  ///   The character who holds the feelings.
+  /// The character who holds the feelings.
   /// </summary>
   public Guid SourceCharacterId { get; }
 
   /// <summary>
-  ///   The character who is the target of the relationship.
+  /// The character who is the target of the relationship.
   /// </summary>
   public Guid TargetCharacterId { get; }
 
   /// <summary>
-  ///   Relationship intensity, from -100 (hatred) to +100 (deep affection).
+  /// Relationship intensity, from -100 (hatred) to +100 (deep affection).
   /// </summary>
   public int Value { get; set; }
 
   /// <summary>
-  ///   Optional relationship type (friendship, rivalry, etc.).
+  /// Optional relationship type (friendship, rivalry, etc.).
   /// </summary>
   public RelationshipType Type { get; set; }
 
   /// <summary>
-  ///   Historical interaction log and metrics.
+  /// Historical interaction log and metrics.
   /// </summary>
   public RelationshipHistory History { get; }
 
@@ -44,7 +44,7 @@ public class Relationship
   #region Ctors
 
   /// <summary>
-  ///   Private constructor for internal use.
+  /// Private constructor for internal use.
   /// </summary>
   private Relationship(
     Guid id, Guid sourceCharacterId, Guid targetCharacterId, int value, RelationshipType type,
@@ -64,7 +64,7 @@ public class Relationship
   #region Methods
 
   /// <summary>
-  ///   Factory method to create a new instance.
+  /// Factory method to create a new instance.
   /// </summary>
   public static Relationship Create(
     Guid sourceCharacterId, Guid targetCharacterId, RelationshipType type, DateOnly firstInteraction,
@@ -77,7 +77,7 @@ public class Relationship
   }
 
   /// <summary>
-  ///   Factory method to load an existing instance from persistence.
+  /// Factory method to load an existing instance from persistence.
   /// </summary>
   public static Relationship Load(
     Guid id, Guid sourceCharacterId, Guid targetCharacterId, int value, RelationshipType type,
@@ -88,8 +88,8 @@ public class Relationship
   }
 
   /// <summary>
-  ///   Adjusts the relationship intensity by the given delta, clamps the result,
-  ///   updates the interaction timestamp, and changes the relationship type if applicable.
+  /// Adjusts the relationship intensity by the given delta, clamps the result,
+  /// updates the interaction timestamp, and changes the relationship type if applicable.
   /// </summary>
   public void AdjustValue(int delta, DateOnly interactionDate)
   {

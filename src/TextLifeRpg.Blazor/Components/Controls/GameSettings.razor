@@ -27,30 +27,30 @@
 @code {
 
   /// <summary>
-  ///   Callback to invoke when the user confirms the settings.
+  /// Callback to invoke when the user confirms the settings.
   /// </summary>
   [Parameter]
   public EventCallback<Domain.GameSettings> OnSettingsConfirmed { get; set; }
 
   /// <summary>
-  ///   Settings to prefill when the component is loaded.
+  /// Settings to prefill when the component is loaded.
   /// </summary>
   [Parameter]
   public Domain.GameSettings? InitialSettings { get; set; }
 
   /// <summary>
-  ///   Default settings used when resetting.
+  /// Default settings used when resetting.
   /// </summary>
   [Parameter]
   public Domain.GameSettings? DefaultSettings { get; set; }
 
   /// <summary>
-  ///   Form model used for binding user input.
+  /// Form model used for binding user input.
   /// </summary>
   public GameSettingsModel Model { get; set; } = new();
 
   /// <summary>
-  ///   Populate form model from initial settings.
+  /// Populate form model from initial settings.
   /// </summary>
   protected override void OnParametersSet()
   {
@@ -60,7 +60,7 @@
   }
 
   /// <summary>
-  ///   Called on valid form submission.
+  /// Called on valid form submission.
   /// </summary>
   private async Task Confirm()
   {
@@ -69,7 +69,7 @@
   }
 
   /// <summary>
-  ///   Resets the form to the default values.
+  /// Resets the form to the default values.
   /// </summary>
   private void ResetSettings()
   {
@@ -80,12 +80,12 @@
   }
 
   /// <summary>
-  ///   Backing model for game settings form.
+  /// Backing model for game settings form.
   /// </summary>
   public class GameSettingsModel
   {
     /// <summary>
-    ///   Selected NPC density.
+    /// Selected NPC density.
     /// </summary>
     public NpcDensity Density { get; set; } = NpcDensity.Average;
   }

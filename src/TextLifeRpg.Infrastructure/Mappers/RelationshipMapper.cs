@@ -5,15 +5,15 @@ using TextLifeRpg.Infrastructure.JsonDataModels;
 namespace TextLifeRpg.Infrastructure.Mappers;
 
 /// <summary>
-///   Mapper for converting between <see cref="Relationship" /> domain models
-///   and <see cref="RelationshipDataModel" /> JSON data models.
+/// Mapper for converting between <see cref="Relationship" /> domain models
+/// and <see cref="RelationshipDataModel" /> JSON data models.
 /// </summary>
 public static class RelationshipMapper
 {
   #region Methods
 
   /// <summary>
-  ///   Maps a JSON data model to its domain counterpart.
+  /// Maps a JSON data model to its domain counterpart.
   /// </summary>
   public static Relationship ToDomain(this RelationshipDataModel dataModel)
   {
@@ -24,7 +24,7 @@ public static class RelationshipMapper
   }
 
   /// <summary>
-  ///   Maps a collection of JSON data models to a collection of domain models.
+  /// Maps a collection of JSON data models to a collection of domain models.
   /// </summary>
   public static List<Relationship> ToDomainCollection(this IEnumerable<RelationshipDataModel> dataModels)
   {
@@ -32,7 +32,7 @@ public static class RelationshipMapper
   }
 
   /// <summary>
-  ///   Maps a domain model to its JSON data model counterpart.
+  /// Maps a domain model to its JSON data model counterpart.
   /// </summary>
   public static RelationshipDataModel ToDataModel(this Relationship domain)
   {
@@ -49,7 +49,7 @@ public static class RelationshipMapper
   }
 
   /// <summary>
-  ///   Maps a collection of domain models to a collection of JSON data models.
+  /// Maps a collection of domain models to a collection of JSON data models.
   /// </summary>
   public static List<RelationshipDataModel> ToDataModelCollection(this IEnumerable<Relationship> domains)
   {

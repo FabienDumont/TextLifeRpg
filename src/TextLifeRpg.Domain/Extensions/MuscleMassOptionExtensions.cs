@@ -1,7 +1,16 @@
 ﻿namespace TextLifeRpg.Domain.Extensions;
 
+/// <summary>
+/// Provides extension methods for converting between <see cref="MuscleMassOption"/>
+/// values and their equivalent integer representations in kilograms.
+/// </summary>
 public static class MuscleMassOptionExtensions
 {
+  /// <summary>
+  /// Converts a specified MuscleMassOption into its corresponding weight in kilograms.
+  /// </summary>
+  /// <param name="option">The MuscleMassOption to be converted.</param>
+  /// <returns>The weight in kilograms that corresponds to the given MuscleMassOption.</returns>
   public static int ToKg(this MuscleMassOption option) =>
     option switch
     {
@@ -13,6 +22,11 @@ public static class MuscleMassOptionExtensions
       _ => 22
     };
 
+  /// <summary>
+  /// Converts a value in kilograms to its corresponding MuscleMassOption.
+  /// </summary>
+  /// <param name="kg">The weight in kilograms to be converted.</param>
+  /// <returns>The MuscleMassOption that corresponds to the given weight in kilograms.</returns>
   public static MuscleMassOption FromKg(int kg) =>
     kg switch
     {

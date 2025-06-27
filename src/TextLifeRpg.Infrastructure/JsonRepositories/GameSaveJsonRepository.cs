@@ -7,14 +7,14 @@ using TextLifeRpg.Infrastructure.Mappers;
 namespace TextLifeRpg.Infrastructure.JsonRepositories;
 
 /// <summary>
-///   Repository for saving and loading game data using JSON files.
+/// Repository for saving and loading game data using JSON files.
 /// </summary>
 public class GameSaveJsonRepository(string? customPath = null) : IGameSaveRepository
 {
   #region Methods
 
   /// <summary>
-  ///   Determines the file system path where the save file should be stored.
+  /// Determines the file system path where the save file should be stored.
   /// </summary>
   /// <param name="characterName">Name of the character the save is associated with.</param>
   /// <param name="exePathOverride">Optional override for the base directory path.</param>

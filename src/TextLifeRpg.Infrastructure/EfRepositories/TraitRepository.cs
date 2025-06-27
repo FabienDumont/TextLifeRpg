@@ -6,7 +6,7 @@ using TextLifeRpg.Infrastructure.Mappers;
 namespace TextLifeRpg.Infrastructure.EfRepositories;
 
 /// <summary>
-///   Repository for traits.
+/// Repository for traits.
 /// </summary>
 public class TraitRepository(ApplicationContext context) : RepositoryBase(context), ITraitRepository
 {

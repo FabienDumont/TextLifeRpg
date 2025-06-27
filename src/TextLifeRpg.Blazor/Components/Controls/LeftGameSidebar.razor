@@ -25,25 +25,25 @@
 @code {
 
   /// <summary>
-  ///   Callback invoked when a save is successfully loaded.
+  /// Callback invoked when a save is successfully loaded.
   /// </summary>
   [Parameter, EditorRequired]
   public EventCallback OnSaveLoaded { get; set; }
 
   /// <summary>
-  ///   Callback invoked when the user clicks the player character's name.
+  /// Callback invoked when the user clicks the player character's name.
   /// </summary>
   [Parameter, EditorRequired]
   public EventCallback<Character> OnPlayerCharacterClicked { get; set; }
 
   /// <summary>
-  ///   Callback invoked when a save is completed.
+  /// Callback invoked when a save is completed.
   /// </summary>
   [Parameter, EditorRequired]
   public EventCallback OnSaveCompleted { get; set; }
 
   /// <summary>
-  ///   Triggers the OnCharacterClicked callback if the player character exists.
+  /// Triggers the OnCharacterClicked callback if the player character exists.
   /// </summary>
   private async Task OnPlayerCharacterClickedInternal()
   {
@@ -55,7 +55,7 @@
   }
 
   /// <summary>
-  ///   Handles the file selection, deserializes the save, and loads it if valid.
+  /// Handles the file selection, deserializes the save, and loads it if valid.
   /// </summary>
   private async Task OnFileSelected(InputFileChangeEventArgs e)
   {
@@ -74,7 +74,7 @@
   }
 
   /// <summary>
-  ///   Saves the game.
+  /// Saves the game.
   /// </summary>
   private async Task OnSaveClicked()
   {

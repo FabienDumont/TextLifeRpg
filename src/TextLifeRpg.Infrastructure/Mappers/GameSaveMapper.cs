@@ -5,15 +5,15 @@ using TextLifeRpg.Infrastructure.JsonDataModels;
 namespace TextLifeRpg.Infrastructure.Mappers;
 
 /// <summary>
-///   Mapper for converting between <see cref="GameSave" /> domain models and <see cref="GameSaveDataModel" /> JSON data
-///   models.
+/// Mapper for converting between <see cref="GameSave" /> domain models and <see cref="GameSaveDataModel" /> JSON data
+/// models.
 /// </summary>
 public static class GameSaveMapper
 {
   #region Methods
 
   /// <summary>
-  ///   Maps a JSON data model to its domain counterpart.
+  /// Maps a JSON data model to its domain counterpart.
   /// </summary>
   public static GameSave ToDomain(this GameSaveDataModel dataModel)
   {
@@ -24,7 +24,7 @@ public static class GameSaveMapper
   }
 
   /// <summary>
-  ///   Maps a collection of JSON data models to domain models.
+  /// Maps a collection of JSON data models to domain models.
   /// </summary>
   public static List<GameSave> ToDomainCollection(this IEnumerable<GameSaveDataModel> dataModels)
   {
@@ -32,7 +32,7 @@ public static class GameSaveMapper
   }
 
   /// <summary>
-  ///   Maps a domain model to its JSON data model counterpart.
+  /// Maps a domain model to its JSON data model counterpart.
   /// </summary>
   public static GameSaveDataModel ToDataModel(this GameSave domain)
   {

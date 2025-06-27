@@ -4,7 +4,7 @@ using TextLifeRpg.Domain;
 namespace TextLifeRpg.Application.Services;
 
 /// <summary>
-///   Service for managing worlds.
+/// Service for managing worlds.
 /// </summary>
 public class WorldService(
   ICharacterService characterService, ILocationService locationService, IRoomService roomService,
@@ -64,7 +64,7 @@ public class WorldService(
     world.AddRelationships(childRelationships);
 
     world.SetSchedules(
-      await scheduleService.GenerateSchedulesAsync(npcs, DateOnly.FromDateTime(date), cancellationToken)
+      await scheduleService.GenerateSchedulesAsync(npcs, cancellationToken)
     );
 
     RefreshCharactersLocation(world, playerCharacter.Id);
@@ -85,7 +85,7 @@ public class WorldService(
   #region Methods
 
   /// <summary>
-  ///   Refreshes the location of NPCs.
+  /// Refreshes the location of NPCs.
   /// </summary>
   private static void RefreshCharactersLocation(World world, Guid playerCharacterId)
   {
@@ -96,7 +96,7 @@ public class WorldService(
   }
 
   /// <summary>
-  ///   Sets a character location depending on schedule.
+  /// Sets a character location depending on schedule.
   /// </summary>
   private static void SetCharacterLocation(World world, Character character)
   {

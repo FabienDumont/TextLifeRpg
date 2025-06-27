@@ -6,7 +6,7 @@ using TextLifeRpg.Infrastructure.Mappers;
 namespace TextLifeRpg.Infrastructure.EfRepositories;
 
 /// <summary>
-///   Repository for locations' opening hours.
+/// Repository for locations' opening hours.
 /// </summary>
 public class LocationOpeningHoursRepository(ApplicationContext context)
   : RepositoryBase(context), ILocationOpeningHoursRepository

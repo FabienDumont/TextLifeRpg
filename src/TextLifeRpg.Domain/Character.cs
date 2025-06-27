@@ -3,69 +3,69 @@
 namespace TextLifeRpg.Domain;
 
 /// <summary>
-///   Domain class representing a character in the game.
+/// Domain class representing a character in the game.
 /// </summary>
 public class Character
 {
   #region Properties
 
   /// <summary>
-  ///   Unique identifier.
+  /// Unique identifier.
   /// </summary>
   public Guid Id { get; }
 
   /// <summary>
-  ///   Name of the character.
+  /// Name of the character.
   /// </summary>
   public string Name { get; }
 
   /// <summary>
-  ///   Birthdate of the character.
+  /// Birthdate of the character.
   /// </summary>
   public DateOnly BirthDate { get; }
 
   /// <summary>
-  ///   Biological sex of the character.
+  /// Biological sex of the character.
   /// </summary>
   public BiologicalSex BiologicalSex { get; }
 
   /// <summary>
-  ///   Height in centimeters of the character.
+  /// Height in centimeters of the character.
   /// </summary>
   public int Height { get; }
 
   /// <summary>
-  ///   Weight in kilograms of the character.
+  /// Weight in kilograms of the character.
   /// </summary>
   public int Weight { get; }
 
   /// <summary>
-  ///   Muscle mass in kilograms (fat-free lean mass) of the character.
+  /// Muscle mass in kilograms (fat-free lean mass) of the character.
   /// </summary>
   public int MuscleMass { get; private set; }
 
   /// <summary>
-  ///   List of trait identifiers assigned to the character.
+  /// List of trait identifiers assigned to the character.
   /// </summary>
   public List<Guid> TraitsId { get; } = [];
 
   /// <summary>
-  ///   Identifier of the character's current location (optional).
+  /// Identifier of the character's current location (optional).
   /// </summary>
   public Guid? LocationId { get; private set; }
 
   /// <summary>
-  ///   Identifier of the character's current room (optional).
+  /// Identifier of the character's current room (optional).
   /// </summary>
   public Guid? RoomId { get; private set; }
 
   /// <summary>
-  ///   Energy of the character.
+  /// Energy of the character.
   /// </summary>
   public int Energy { get; set; } = 100;
 
   /// <summary>
-  ///   Money of the character.
+  /// Money of the character.
   /// </summary>
   public int Money { get; set; }
 
@@ -74,7 +74,7 @@ public class Character
   #region Ctors
 
   /// <summary>
-  ///   Private constructor used internally.
+  /// Private constructor used internally.
   /// </summary>
   private Character(
     Guid id, string name, DateOnly birthDate, BiologicalSex biologicalSex, int height, int weight, int muscleMass
@@ -94,7 +94,7 @@ public class Character
   #region Methods
 
   /// <summary>
-  ///   Factory method to create a new instance.
+  /// Factory method to create a new instance.
   /// </summary>
   public static Character Create(
     string name, DateOnly birthDate, BiologicalSex biologicalSex, int height, int weight, int muscleMass
@@ -104,7 +104,7 @@ public class Character
   }
 
   /// <summary>
-  ///   Factory method to load an existing instance from persistence.
+  /// Factory method to load an existing instance from persistence.
   /// </summary>
   public static Character Load(
     Guid id, string name, DateOnly birthDate, BiologicalSex biologicalSex, int height, int weight, int muscleMass
@@ -114,7 +114,7 @@ public class Character
   }
 
   /// <summary>
-  ///   Adds traits to the character.
+  /// Adds traits to the character.
   /// </summary>
   public void AddTraits(IEnumerable<Guid> traitIds)
   {
@@ -122,7 +122,7 @@ public class Character
   }
 
   /// <summary>
-  ///   Moves the character to a new location and room.
+  /// Moves the character to a new location and room.
   /// </summary>
   public void MoveTo(Guid? locationId, Guid? roomId)
   {
@@ -145,7 +145,7 @@ public class Character
 }
 
 /// <summary>
-///   Enumeration for biological sex.
+/// Enumeration for biological sex.
 /// </summary>
 public enum BiologicalSex
 {
@@ -153,6 +153,9 @@ public enum BiologicalSex
   Female
 }
 
+/// <summary>
+/// Enumeration representing different levels of muscle mass.
+/// </summary>
 public enum MuscleMassOption
 {
   [Display(Name = "Very low")]

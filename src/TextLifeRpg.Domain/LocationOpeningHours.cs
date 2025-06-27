@@ -1,34 +1,34 @@
 ﻿namespace TextLifeRpg.Domain;
 
 /// <summary>
-///   Domain class representing a location's opening hours in the game world.
+/// Domain class representing a location's opening hours in the game world.
 /// </summary>
 public class LocationOpeningHours
 {
   #region Properties
 
   /// <summary>
-  ///   Unique identifier.
+  /// Unique identifier.
   /// </summary>
   public Guid Id { get; set; }
 
   /// <summary>
-  ///   The location's identifier.
+  /// The location's identifier.
   /// </summary>
   public Guid LocationId { get; }
 
   /// <summary>
-  ///   The day of the week this opening period applies to.
+  /// The day of the week this opening period applies to.
   /// </summary>
   public DayOfWeek DayOfWeek { get; }
 
   /// <summary>
-  ///   Time when the location opens.
+  /// Time when the location opens.
   /// </summary>
   public TimeSpan OpensAt { get; }
 
   /// <summary>
-  ///   Time when the location closes.
+  /// Time when the location closes.
   /// </summary>
   public TimeSpan ClosesAt { get; }
 

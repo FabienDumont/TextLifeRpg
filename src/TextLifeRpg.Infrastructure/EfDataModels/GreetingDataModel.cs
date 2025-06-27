@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace TextLifeRpg.Infrastructure.EfDataModels;
 
 /// <summary>
-///   EF Core data model representing a greeting entry.
+/// EF Core data model representing a greeting entry.
 /// </summary>
 [Table("Greetings")]
 [PrimaryKey(nameof(Id))]
@@ -14,14 +14,14 @@ public class GreetingDataModel
   #region Properties
 
   /// <summary>
-  ///   Unique identifier.
+  /// Unique identifier.
   /// </summary>
   [Column("Id", Order = 1)]
   [Required]
   public Guid Id { get; set; }
 
   /// <summary>
-  ///   The spoken text of the greeting.
+  /// The spoken text of the greeting.
   /// </summary>
   [Column("SpokenText", Order = 2)]
   [Required]

@@ -3,14 +3,14 @@
 namespace TextLifeRpg.Application.Abstraction;
 
 /// <summary>
-///   Service interface for managing locations.
+/// Service interface for managing locations.
 /// </summary>
 public interface ILocationService
 {
   #region Methods
 
   /// <summary>
-  ///   Retrieves a location by its unique identifier.
+  /// Retrieves a location by its unique identifier.
   /// </summary>
   /// <param name="id">The unique identifier of the location.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
@@ -18,7 +18,7 @@ public interface ILocationService
   Task<Location> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
   /// <summary>
-  ///   Retrieves a location by its name.
+  /// Retrieves a location by its name.
   /// </summary>
   /// <param name="name">The name of the location.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
@@ -26,7 +26,7 @@ public interface ILocationService
   Task<Location?> GetByNameAsync(string name, CancellationToken cancellationToken);
 
   /// <summary>
-  ///   Checks whether a location is open at a given day and time.
+  /// Checks whether a location is open at a given day and time.
   /// </summary>
   /// <param name="locationId">Identifier of the current location.</param>
   /// <param name="day">The day.</param>

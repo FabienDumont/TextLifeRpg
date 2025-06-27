@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TextLifeRpg.Infrastructure.EfDataModels;
 
+/// <summary>
+/// EF Core data model representing an exploration action result narration.
+/// </summary>
 [Table("ExplorationActionResultNarrations")]
 [PrimaryKey(nameof(Id))]
 public class ExplorationActionResultNarrationDataModel

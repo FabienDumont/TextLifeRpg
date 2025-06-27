@@ -6,7 +6,7 @@ using TextLifeRpg.Infrastructure.Mappers;
 namespace TextLifeRpg.Infrastructure.EfRepositories;
 
 /// <summary>
-///   Repository for rooms.
+/// Repository for rooms.
 /// </summary>
 public class RoomRepository(ApplicationContext context) : RepositoryBase(context), IRoomRepository
 {

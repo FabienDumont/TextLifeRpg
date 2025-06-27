@@ -3,14 +3,14 @@
 namespace TextLifeRpg.Blazor.Stores;
 
 /// <summary>
-///   Stores and manages the current game save state for the UI layer.
+/// Stores and manages the current game save state for the UI layer.
 /// </summary>
 public class GameSaveStore
 {
   #region Properties
 
   /// <summary>
-  ///   The currently loaded game save.
+  /// The currently loaded game save.
   /// </summary>
   public GameSave? CurrentSave { get; private set; }
 
@@ -19,12 +19,12 @@ public class GameSaveStore
   #region Methods
 
   /// <summary>
-  ///   Event triggered when the game state changes.
+  /// Event triggered when the game state changes.
   /// </summary>
   public event Func<Task>? OnAsyncChange;
 
   /// <summary>
-  ///   Loads the given game save and notifies listeners.
+  /// Loads the given game save and notifies listeners.
   /// </summary>
   public async Task LoadGameAsync(GameSave save)
   {
@@ -33,7 +33,7 @@ public class GameSaveStore
   }
 
   /// <summary>
-  ///   Triggers the <see cref="OnAsyncChange" /> event to notify subscribers.
+  /// Triggers the <see cref="OnAsyncChange" /> event to notify subscribers.
   /// </summary>
   public async Task NotifyStateChangedAsync()
   {

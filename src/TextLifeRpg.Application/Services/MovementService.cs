@@ -5,7 +5,7 @@ using TextLifeRpg.Domain;
 namespace TextLifeRpg.Application.Services;
 
 /// <summary>
-///   Service for movements.
+/// Service for movements.
 /// </summary>
 public class MovementService(IMovementRepository movementRepository, ILocationService locationService)
   : IMovementService

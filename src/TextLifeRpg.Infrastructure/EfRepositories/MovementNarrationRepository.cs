@@ -6,7 +6,7 @@ using TextLifeRpg.Infrastructure.Mappers;
 namespace TextLifeRpg.Infrastructure.EfRepositories;
 
 /// <summary>
-///   Repository for movement narrations.
+/// Repository for movement narrations.
 /// </summary>
 public class MovementNarrationRepository(ApplicationContext context)
   : RepositoryBase(context), IMovementNarrationRepository

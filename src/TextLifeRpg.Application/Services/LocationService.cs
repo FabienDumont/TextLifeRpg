@@ -5,7 +5,7 @@ using TextLifeRpg.Domain;
 namespace TextLifeRpg.Application.Services;
 
 /// <summary>
-///   Service for managing locations.
+/// Service for managing locations.
 /// </summary>
 public class LocationService(ILocationRepository locationRepository) : ILocationService
 {

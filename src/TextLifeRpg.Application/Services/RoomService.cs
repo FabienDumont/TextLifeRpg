@@ -5,7 +5,7 @@ using TextLifeRpg.Domain;
 namespace TextLifeRpg.Application.Services;
 
 /// <summary>
-///   Service for managing rooms.
+/// Service for managing rooms.
 /// </summary>
 public class RoomService(IRoomRepository roomRepository) : IRoomService
 {

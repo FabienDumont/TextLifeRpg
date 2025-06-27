@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace TextLifeRpg.Infrastructure.EfDataModels;
 
 /// <summary>
-///   EF Core data model representing a location in the game world.
+/// EF Core data model representing a location in the game world.
 /// </summary>
 [Table("Locations")]
 [PrimaryKey(nameof(Id))]
@@ -14,14 +14,14 @@ public class LocationDataModel
   #region Properties
 
   /// <summary>
-  ///   Unique identifier.
+  /// Unique identifier.
   /// </summary>
   [Column("Id", Order = 1)]
   [Required]
   public Guid Id { get; set; }
 
   /// <summary>
-  ///   Name of the location.
+  /// Name of the location.
   /// </summary>
   [Column("Name", Order = 2)]
   [Required]

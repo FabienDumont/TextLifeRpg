@@ -5,15 +5,15 @@ using TextLifeRpg.Infrastructure.JsonDataModels;
 namespace TextLifeRpg.Infrastructure.Mappers;
 
 /// <summary>
-///   Mapper for converting between <see cref="Schedule" /> domain models
-///   and <see cref="ScheduleDataModel" /> JSON data models.
+/// Mapper for converting between <see cref="Schedule" /> domain models
+/// and <see cref="ScheduleDataModel" /> JSON data models.
 /// </summary>
 public static class ScheduleMapper
 {
   #region Methods
 
   /// <summary>
-  ///   Maps a JSON data model to its domain counterpart.
+  /// Maps a JSON data model to its domain counterpart.
   /// </summary>
   public static Schedule ToDomain(this ScheduleDataModel dataModel)
   {
@@ -21,7 +21,7 @@ public static class ScheduleMapper
   }
 
   /// <summary>
-  ///   Maps a collection of JSON data models to a collection of domain models.
+  /// Maps a collection of JSON data models to a collection of domain models.
   /// </summary>
   public static List<Schedule> ToDomainCollection(this IEnumerable<ScheduleDataModel> dataModels)
   {
@@ -29,7 +29,7 @@ public static class ScheduleMapper
   }
 
   /// <summary>
-  ///   Maps a domain model to its JSON data model counterpart.
+  /// Maps a domain model to its JSON data model counterpart.
   /// </summary>
   public static ScheduleDataModel ToDataModel(this Schedule domain)
   {
@@ -42,7 +42,7 @@ public static class ScheduleMapper
   }
 
   /// <summary>
-  ///   Maps a collection of domain models to a collection of JSON data models.
+  /// Maps a collection of domain models to a collection of JSON data models.
   /// </summary>
   public static List<ScheduleDataModel> ToDataModelCollection(this IEnumerable<Schedule> domains)
   {

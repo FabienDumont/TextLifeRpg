@@ -5,7 +5,7 @@ using TextLifeRpg.Domain;
 namespace TextLifeRpg.Application.Services;
 
 /// <summary>
-///   Service for managing traits.
+/// Service for managing traits.
 /// </summary>
 public class TraitService(ITraitRepository traitRepository) : ITraitService
 {

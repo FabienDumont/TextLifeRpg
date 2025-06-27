@@ -26,7 +26,7 @@
   private List<ExplorationAction>? _availableExplorationActions;
 
   /// <summary>
-  ///   Loads available movement options on component initialization.
+  /// Loads available movement options on component initialization.
   /// </summary>
   protected override async Task OnInitializedAsync()
   {
@@ -41,7 +41,7 @@
   }
 
   /// <summary>
-  ///   Loads all exploration actions available to the current player character.
+  /// Loads all exploration actions available to the current player character.
   /// </summary>
   private async Task LoadAvailableExplorationActionsAsync()
   {
@@ -59,7 +59,7 @@
   }
 
   /// <summary>
-  ///   Executes the selected exploration action.
+  /// Executes the selected exploration action.
   /// </summary>
   private async Task ExecuteExplorationAction(ExplorationAction explorationAction)
   {
@@ -74,7 +74,7 @@
   }
 
   /// <summary>
-  ///   Unregisters event handlers when the component is disposed.
+  /// Unregisters event handlers when the component is disposed.
   /// </summary>
   public void Dispose()
   {

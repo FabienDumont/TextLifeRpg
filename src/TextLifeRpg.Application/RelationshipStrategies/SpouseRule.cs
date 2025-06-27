@@ -3,6 +3,12 @@ using TextLifeRpg.Domain;
 
 namespace TextLifeRpg.Application.RelationshipStrategies;
 
+/// <summary>
+/// Represents a rule that generates spouse relationships between characters
+/// within the TextLifeRpg application. The rule determines compatibility
+/// and commitment between characters based on factors such as attraction
+/// values and pre-existing relationships. Implements the IRelationshipRule interface.
+/// </summary>
 public class SpouseRule(
   IRandomProvider randomProvider, ICharacterPairSelector pairSelector, ICharacterService characterService,
   IRelationshipFactory relationshipFactory
@@ -10,6 +16,14 @@ public class SpouseRule(
 {
   #region Implementation of IRelationshipRule
 
+  /// <summary>
+  /// Generates a list of new spouse relationships based on provided characters,
+  /// existing relationships, and the current date.
+  /// </summary>
+  /// <param name="characters">The list of characters to evaluate for potential spouse relationships.</param>
+  /// <param name="existingRelationships">The list of existing relationships to consider when generating new ones.</param>
+  /// <param name="currentDate">The current date, used to evaluate relationship attributes such as attraction.</param>
+  /// <returns>A list of newly created spouse relationships.</returns>
   public List<Relationship> Generate(
     List<Character> characters, List<Relationship> existingRelationships, DateOnly currentDate
   )

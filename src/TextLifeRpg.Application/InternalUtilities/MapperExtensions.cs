@@ -1,14 +1,14 @@
 ﻿namespace TextLifeRpg.Application.InternalUtilities;
 
 /// <summary>
-///   Provides extension methods to simplify object-to-object mapping.
+/// Provides extension methods to simplify object-to-object mapping.
 /// </summary>
 public static class MapperExtensions
 {
   #region Methods
 
   /// <summary>
-  ///   Maps a single input object to a result using the specified mapping function.
+  /// Maps a single input object to a result using the specified mapping function.
   /// </summary>
   /// <typeparam name="TInput">Type of the input object.</typeparam>
   /// <typeparam name="TResult">Type of the result object.</typeparam>
@@ -21,7 +21,7 @@ public static class MapperExtensions
   }
 
   /// <summary>
-  ///   Maps a collection of input objects to a list of results using the specified mapping function.
+  /// Maps a collection of input objects to a list of results using the specified mapping function.
   /// </summary>
   /// <typeparam name="TInput">Type of the input objects.</typeparam>
   /// <typeparam name="TResult">Type of the result objects.</typeparam>

@@ -3,7 +3,7 @@
 namespace TextLifeRpg.Infrastructure.Seeders;
 
 /// <summary>
-///   Location data seeder.
+/// Location data seeder.
 /// </summary>
 public class LocationSeeder : IDataSeeder
 {

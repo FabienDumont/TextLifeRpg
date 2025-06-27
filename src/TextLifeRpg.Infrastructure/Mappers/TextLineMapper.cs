@@ -9,7 +9,7 @@ public static class TextLineMapper
   #region Methods
 
   /// <summary>
-  ///   Maps a JSON data model to its domain counterpart.
+  /// Maps a JSON data model to its domain counterpart.
   /// </summary>
   public static TextLine ToDomain(this TextLineDataModel dataModel)
   {
@@ -19,7 +19,7 @@ public static class TextLineMapper
   }
 
   /// <summary>
-  ///   Maps a collection of JSON data models to domain models.
+  /// Maps a collection of JSON data models to domain models.
   /// </summary>
   public static List<TextLine> ToDomainCollection(this IEnumerable<TextLineDataModel> dataModels)
   {
@@ -27,7 +27,7 @@ public static class TextLineMapper
   }
 
   /// <summary>
-  ///   Maps a domain model to its JSON data model counterpart.
+  /// Maps a domain model to its JSON data model counterpart.
   /// </summary>
   public static TextLineDataModel ToDataModel(this TextLine domain)
   {
@@ -42,7 +42,7 @@ public static class TextLineMapper
   }
 
   /// <summary>
-  ///   Maps a collection of domain models to their JSON data model counterparts.
+  /// Maps a collection of domain models to their JSON data model counterparts.
   /// </summary>
   public static List<TextLineDataModel> ToDataModelCollection(this IEnumerable<TextLine> domainModels)
   {

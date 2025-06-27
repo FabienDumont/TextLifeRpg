@@ -3,7 +3,7 @@
 namespace TextLifeRpg.Infrastructure.Seeders;
 
 /// <summary>
-///   Narration data seeder.
+/// Narration data seeder.
 /// </summary>
 public class NarrationSeeder : IDataSeeder
 {

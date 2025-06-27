@@ -5,14 +5,14 @@ using TextLifeRpg.Infrastructure.JsonDataModels;
 namespace TextLifeRpg.Infrastructure.Mappers;
 
 /// <summary>
-///   Mapper for converting between <see cref="World" /> domain models and <see cref="WorldDataModel" /> JSON data models.
+/// Mapper for converting between <see cref="World" /> domain models and <see cref="WorldDataModel" /> JSON data models.
 /// </summary>
 public static class WorldMapper
 {
   #region Methods
 
   /// <summary>
-  ///   Maps a JSON data model to its domain counterpart.
+  /// Maps a JSON data model to its domain counterpart.
   /// </summary>
   public static World ToDomain(this WorldDataModel dataModel)
   {
@@ -24,7 +24,7 @@ public static class WorldMapper
   }
 
   /// <summary>
-  ///   Maps a domain model to its JSON data model counterpart.
+  /// Maps a domain model to its JSON data model counterpart.
   /// </summary>
   public static WorldDataModel ToDataModel(this World domain)
   {

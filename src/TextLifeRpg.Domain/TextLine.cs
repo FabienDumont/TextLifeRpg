@@ -1,14 +1,14 @@
 ﻿namespace TextLifeRpg.Domain;
 
 /// <summary>
-///   Class representing a single line of text with multiple parts, each part having its own color.
+/// Class representing a single line of text with multiple parts, each part having its own color.
 /// </summary>
 public class TextLine
 {
   #region Properties
 
   /// <summary>
-  ///   List of text parts.
+  /// List of text parts.
   /// </summary>
   public List<TextPart> TextParts { get; }
 
@@ -26,7 +26,7 @@ public class TextLine
   #region Methods
 
   /// <summary>
-  ///   Adds a new part of text with a color.
+  /// Adds a new part of text with a color.
   /// </summary>
   /// <param name="text">The text to be added.</param>
   /// <param name="color">The color to be applied to the text.</param>

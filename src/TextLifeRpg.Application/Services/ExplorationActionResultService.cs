@@ -5,7 +5,7 @@ using TextLifeRpg.Domain;
 namespace TextLifeRpg.Application.Services;
 
 /// <summary>
-///   Service for exploration action results.
+/// Service for exploration action results.
 /// </summary>
 public class ExplorationActionResultService(IExplorationActionResultRepository explorationActionResultRepository)
   : IExplorationActionResultService

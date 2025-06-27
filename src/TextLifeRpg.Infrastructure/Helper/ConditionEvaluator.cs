@@ -4,14 +4,14 @@ using TextLifeRpg.Infrastructure.EfDataModels;
 namespace TextLifeRpg.Infrastructure.Helper;
 
 /// <summary>
-///   Evaluates game conditions.
+/// Evaluates game conditions.
 /// </summary>
 public static class ConditionEvaluator
 {
   #region Methods
 
   /// <summary>
-  ///   Evaluates a single condition using the provided game state.
+  /// Evaluates a single condition using the provided game state.
   /// </summary>
   /// <param name="condition">The condition to evaluate.</param>
   /// <param name="gameContext">The game context.</param>
@@ -29,7 +29,7 @@ public static class ConditionEvaluator
   }
 
   /// <summary>
-  ///   Evaluates a "HasTrait" condition by checking if the provided traits include the required trait.
+  /// Evaluates a "HasTrait" condition by checking if the provided traits include the required trait.
   /// </summary>
   /// <param name="condition">The trait-based condition to evaluate.</param>
   /// <param name="traitIds">The list of traits identifiers to search within.</param>
@@ -41,7 +41,7 @@ public static class ConditionEvaluator
   }
 
   /// <summary>
-  ///   Evaluates a numerical comparison for relationship values using the given operator.
+  /// Evaluates a numerical comparison for relationship values using the given operator.
   /// </summary>
   /// <param name="left">The current relationship value.</param>
   /// <param name="op">The comparison operator (e.g., '=', '>=', etc.).</param>

@@ -5,15 +5,15 @@ using TextLifeRpg.Infrastructure.EfDataModels;
 namespace TextLifeRpg.Infrastructure.Mappers;
 
 /// <summary>
-///   Mapper for converting between <see cref="LocationOpeningHours" /> domain models and
-///   <see cref="LocationOpeningHoursDataModel" /> EF data models.
+/// Mapper for converting between <see cref="LocationOpeningHours" /> domain models and
+/// <see cref="LocationOpeningHoursDataModel" /> EF data models.
 /// </summary>
 public static class LocationOpeningHoursMapper
 {
   #region Methods
 
   /// <summary>
-  ///   Maps an EF data model to its domain counterpart.
+  /// Maps an EF data model to its domain counterpart.
   /// </summary>
   public static LocationOpeningHours ToDomain(this LocationOpeningHoursDataModel dataModel)
   {
@@ -21,7 +21,7 @@ public static class LocationOpeningHoursMapper
   }
 
   /// <summary>
-  ///   Maps a collection of EF data models to domain models.
+  /// Maps a collection of EF data models to domain models.
   /// </summary>
   public static List<LocationOpeningHours> ToDomainCollection(
     this IEnumerable<LocationOpeningHoursDataModel> dataModels
@@ -31,7 +31,7 @@ public static class LocationOpeningHoursMapper
   }
 
   /// <summary>
-  ///   Maps a domain model to its EF data model counterpart.
+  /// Maps a domain model to its EF data model counterpart.
   /// </summary>
   public static LocationOpeningHoursDataModel ToDataModel(this LocationOpeningHours domain)
   {
@@ -47,7 +47,7 @@ public static class LocationOpeningHoursMapper
   }
 
   /// <summary>
-  ///   Maps a collection of domain models to EF data models.
+  /// Maps a collection of domain models to EF data models.
   /// </summary>
   public static List<LocationOpeningHoursDataModel> ToDataModelCollection(
     this IEnumerable<LocationOpeningHours> domains

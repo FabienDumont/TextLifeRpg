@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace TextLifeRpg.Infrastructure.EfDataModels;
 
 /// <summary>
-///   EF Core data model representing a condition.
+/// EF Core data model representing a condition.
 /// </summary>
 [Table("Conditions")]
 [PrimaryKey(nameof(Id))]
@@ -40,6 +40,9 @@ public class ConditionDataModel
   #endregion
 }
 
+/// <summary>
+/// Represents the context type associated with a condition or action in the system.
+/// </summary>
 public enum ContextType
 {
   Greeting = 0,
@@ -48,10 +51,13 @@ public enum ContextType
   Narration = 3
 }
 
+/// <summary>
+/// Enumeration representing the various types of conditions that can be evaluated for in-game logic.
+/// </summary>
 public enum ConditionType
 {
   ActorHasTrait = 0,
   ActorEnergy = 1,
-  ActorRelationship = 1,
-  ActorMoney
+  ActorRelationship = 2,
+  ActorMoney = 3
 }

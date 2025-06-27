@@ -4,7 +4,7 @@ using TextLifeRpg.Application.Abstraction.Repositories;
 namespace TextLifeRpg.Application.Services;
 
 /// <summary>
-///   Service for managing movement narrations.
+/// Service for managing movement narrations.
 /// </summary>
 public class MovementNarrationService(IMovementNarrationRepository repository) : IMovementNarrationService
 {

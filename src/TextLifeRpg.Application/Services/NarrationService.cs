@@ -5,7 +5,7 @@ using TextLifeRpg.Domain;
 namespace TextLifeRpg.Application.Services;
 
 /// <summary>
-///   Service for managing narrations.
+/// Service for managing narrations.
 /// </summary>
 public class NarrationService(INarrationRepository repository) : INarrationService
 {

@@ -1,24 +1,24 @@
 ﻿namespace TextLifeRpg.Domain;
 
 /// <summary>
-///   Domain class representing a location in the game world.
+/// Domain class representing a location in the game world.
 /// </summary>
 public class Location
 {
   #region Properties
 
   /// <summary>
-  ///   Unique identifier.
+  /// Unique identifier.
   /// </summary>
   public Guid Id { get; set; }
 
   /// <summary>
-  ///   Name of the location.
+  /// Name of the location.
   /// </summary>
   public string Name { get; set; }
 
   /// <summary>
-  ///   Flag is the location always open.
+  /// Flag is the location always open.
   /// </summary>
   public bool IsAlwaysOpen => OpeningHours.Count == 0;
 
@@ -29,7 +29,7 @@ public class Location
   #region Ctors
 
   /// <summary>
-  ///   Private constructor used internally.
+  /// Private constructor used internally.
   /// </summary>
   private Location(Guid id, string name)
   {
@@ -42,7 +42,7 @@ public class Location
   #region Methods
 
   /// <summary>
-  ///   Factory method to create a new instance.
+  /// Factory method to create a new instance.
   /// </summary>
   public static Location Create(string name)
   {
@@ -50,7 +50,7 @@ public class Location
   }
 
   /// <summary>
-  ///   Factory method to load an existing instance from persistence.
+  /// Factory method to load an existing instance from persistence.
   /// </summary>
   public static Location Load(Guid id, string name, List<LocationOpeningHours> openingHours)
   {
@@ -95,7 +95,7 @@ public class Location
   }
 
   /// <summary>
-  ///   Gets the timeslots where a location is opened for a given day and given allowed durations.
+  /// Gets the timeslots where a location is opened for a given day and given allowed durations.
   /// </summary>
   public List<(TimeSpan Start, TimeSpan End)> GetTimeSlots(
     DayOfWeek day, IReadOnlyCollection<TimeSpan> allowedDurations

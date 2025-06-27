@@ -5,14 +5,14 @@ using TextLifeRpg.Infrastructure.EfDataModels;
 namespace TextLifeRpg.Infrastructure.Mappers;
 
 /// <summary>
-///   Mapper for converting between <see cref="Trait" /> domain models and <see cref="TraitDataModel" /> EF data models.
+/// Mapper for converting between <see cref="Trait" /> domain models and <see cref="TraitDataModel" /> EF data models.
 /// </summary>
 public static class TraitMapper
 {
   #region Methods
 
   /// <summary>
-  ///   Maps an EF data model to its domain counterpart.
+  /// Maps an EF data model to its domain counterpart.
   /// </summary>
   public static Trait ToDomain(this TraitDataModel dataModel)
   {
@@ -20,7 +20,7 @@ public static class TraitMapper
   }
 
   /// <summary>
-  ///   Maps a collection of EF data models to domain models.
+  /// Maps a collection of EF data models to domain models.
   /// </summary>
   public static List<Trait> ToDomainCollection(this IEnumerable<TraitDataModel> dataModels)
   {
@@ -28,7 +28,7 @@ public static class TraitMapper
   }
 
   /// <summary>
-  ///   Maps a domain model to its EF data model counterpart.
+  /// Maps a domain model to its EF data model counterpart.
   /// </summary>
   public static TraitDataModel ToDataModel(this Trait domain)
   {

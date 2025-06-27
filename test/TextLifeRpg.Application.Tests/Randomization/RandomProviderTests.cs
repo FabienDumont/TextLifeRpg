@@ -28,19 +28,6 @@ public class RandomProviderTests
   }
 
   [Fact]
-  public void NextMax_ShouldReturnValueWithinRange()
-  {
-    // Arrange
-    const int max = 10;
-
-    // Act
-    var result = _provider.Next(max);
-
-    // Assert
-    Assert.InRange(result, 0, max - 1);
-  }
-
-  [Fact]
   public void NextDouble_ShouldReturnValueBetweenZeroAndOne()
   {
     // Act

@@ -6,7 +6,7 @@ using TextLifeRpg.Infrastructure.Mappers;
 namespace TextLifeRpg.Infrastructure.EfRepositories;
 
 /// <summary>
-///   Repository for movements.
+/// Repository for movements.
 /// </summary>
 public class MovementRepository(ApplicationContext context) : RepositoryBase(context), IMovementRepository
 {

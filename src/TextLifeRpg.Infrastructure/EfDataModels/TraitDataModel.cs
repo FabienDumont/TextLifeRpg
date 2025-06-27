@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace TextLifeRpg.Infrastructure.EfDataModels;
 
 /// <summary>
-///   EF Core data model representing a character trait.
+/// EF Core data model representing a character trait.
 /// </summary>
 [Table("Traits")]
 [PrimaryKey(nameof(Id))]
@@ -14,14 +14,14 @@ public class TraitDataModel
   #region Properties
 
   /// <summary>
-  ///   Unique identifier.
+  /// Unique identifier.
   /// </summary>
   [Column("Id", Order = 1)]
   [Required]
   public Guid Id { get; set; }
 
   /// <summary>
-  ///   Name of the trait.
+  /// Name of the trait.
   /// </summary>
   [Column("Name", Order = 2)]
   [Required]

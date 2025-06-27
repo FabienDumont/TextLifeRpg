@@ -3,6 +3,10 @@ using TextLifeRpg.Domain;
 
 namespace TextLifeRpg.Application.RelationshipStrategies;
 
+/// <summary>
+/// Represents a rule for generating romantic partner relationships between characters.
+/// Ensures that relationships are created following specific criteria, such as attraction levels and availability.
+/// </summary>
 public class RomanticPartnerRule(
   IRandomProvider randomProvider, ICharacterPairSelector pairSelector, ICharacterService characterService,
   IRelationshipFactory relationshipFactory
@@ -10,6 +14,13 @@ public class RomanticPartnerRule(
 {
   #region Implementation of IRelationshipRule
 
+  /// <summary>
+  /// Generates a list of new romantic partner relationships based on the provided characters, existing relationships, and the current date.
+  /// </summary>
+  /// <param name="characters">The list of all characters available for pairing.</param>
+  /// <param name="existingRelationships">The collection of pre-existing relationships among the characters.</param>
+  /// <param name="currentDate">The current date used for evaluating relationship creation logic.</param>
+  /// <returns>A list of newly created romantic partner relationships.</returns>
   public List<Relationship> Generate(
     List<Character> characters, List<Relationship> existingRelationships, DateOnly currentDate
   )

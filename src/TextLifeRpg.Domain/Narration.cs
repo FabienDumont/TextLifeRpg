@@ -1,24 +1,24 @@
 ﻿namespace TextLifeRpg.Domain;
 
 /// <summary>
-///   Domain class representing a narration.
+/// Domain class representing a narration.
 /// </summary>
 public class Narration
 {
   #region Properties
 
   /// <summary>
-  ///   Unique identifier.
+  /// Unique identifier.
   /// </summary>
   public Guid Id { get; }
 
   /// <summary>
-  ///   Narration key.
+  /// Narration key.
   /// </summary>
   public string Key { get; }
 
   /// <summary>
-  ///   Narration text template.
+  /// Narration text template.
   /// </summary>
   public string Text { get; }
 
@@ -27,7 +27,7 @@ public class Narration
   #region Ctors
 
   /// <summary>
-  ///   Private constructor used internally.
+  /// Private constructor used internally.
   /// </summary>
   private Narration(Guid id, string key, string text)
   {
@@ -41,7 +41,7 @@ public class Narration
   #region Methods
 
   /// <summary>
-  ///   Factory method to create a new instance.
+  /// Factory method to create a new instance.
   /// </summary>
   public static Narration Create(string key, string text)
   {
@@ -49,7 +49,7 @@ public class Narration
   }
 
   /// <summary>
-  ///   Factory method to load an existing instance from persistence.
+  /// Factory method to load an existing instance from persistence.
   /// </summary>
   public static Narration Load(Guid id, string key, string text)
   {

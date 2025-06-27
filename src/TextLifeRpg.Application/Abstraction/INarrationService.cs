@@ -3,14 +3,14 @@
 namespace TextLifeRpg.Application.Abstraction;
 
 /// <summary>
-///   Service interface for managing narrations.
+/// Service interface for managing narrations.
 /// </summary>
 public interface INarrationService
 {
   #region Methods
 
   /// <summary>
-  ///   Retrieves the narration text associated with a specific key.
+  /// Retrieves the narration text associated with a specific key.
   /// </summary>
   /// <param name="key">The key.</param>
   /// <param name="actor">The actor.</param>

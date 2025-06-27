@@ -5,13 +5,13 @@ using TextLifeRpg.Domain;
 namespace TextLifeRpg.Application.Services;
 
 /// <summary>
-///   Service for managing characters.
+/// Service for managing characters.
 /// </summary>
 public class CharacterService(
   INameRepository nameRepository, ITraitService traitService, IRandomProvider randomProvider
 ) : ICharacterService
 {
-  #region MyRegion
+  #region Fields
 
   private IReadOnlyCollection<Trait>? _cachedTraits;
   private IReadOnlyList<(Guid A, Guid B)>? _cachedIncompatibleTraits;
@@ -114,7 +114,7 @@ public class CharacterService(
   #region Methods
 
   /// <summary>
-  ///   Generates 1–3 random, mutually compatible trait IDs.
+  /// Generates 1–3 random, mutually compatible trait IDs.
   /// </summary>
   public List<Guid> GenerateTraits(
     IReadOnlyCollection<Guid> allTraitsIds, IReadOnlyCollection<(Guid A, Guid B)> incompatibleTraitsIds,
@@ -157,6 +157,16 @@ public class CharacterService(
     }
   }
 
+  /// <summary>
+  /// Generates a list of trait IDs based on the specified target count,
+  /// using cached traits and their incompatibility constraints.
+  /// </summary>
+  /// <param name="targetCount">The number of trait IDs to generate.</param>
+  /// <param name="preferred">
+  /// An optional collection of preferred trait IDs that can be selected.
+  /// </param>
+  /// <param name="ct">A cancellation token used to cancel the operation.</param>
+  /// <returns>A task that represents the asynchronous operation. The task result contains the generated list of trait IDs.</returns>
   public async Task<List<Guid>> GenerateTraitIdsAsync(
     int targetCount, IReadOnlyCollection<Guid>? preferred = null, CancellationToken ct = default
   )

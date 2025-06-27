@@ -6,7 +6,7 @@ using TextLifeRpg.Infrastructure.Mappers;
 namespace TextLifeRpg.Infrastructure.EfRepositories;
 
 /// <summary>
-///   Repository for locations.
+/// Repository for locations.
 /// </summary>
 public class LocationRepository(ApplicationContext context) : RepositoryBase(context), ILocationRepository
 {

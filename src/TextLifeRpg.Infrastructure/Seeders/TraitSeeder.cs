@@ -3,7 +3,7 @@
 namespace TextLifeRpg.Infrastructure.Seeders;
 
 /// <summary>
-///   Trait data seeder.
+/// Trait data seeder.
 /// </summary>
 public class TraitSeeder : IDataSeeder
 {

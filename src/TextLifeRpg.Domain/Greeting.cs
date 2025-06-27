@@ -1,19 +1,19 @@
 ﻿namespace TextLifeRpg.Domain;
 
 /// <summary>
-///   Domain class representing a greeting message tied to relationship level and traits.
+/// Domain class representing a greeting message tied to relationship level and traits.
 /// </summary>
 public class Greeting
 {
   #region Properties
 
   /// <summary>
-  ///   Unique identifier.
+  /// Unique identifier.
   /// </summary>
   public Guid Id { get; }
 
   /// <summary>
-  ///   Text spoken when the greeting is triggered.
+  /// Text spoken when the greeting is triggered.
   /// </summary>
   public string SpokenText { get; }
 
@@ -22,7 +22,7 @@ public class Greeting
   #region Ctors
 
   /// <summary>
-  ///   Private constructor used internally.
+  /// Private constructor used internally.
   /// </summary>
   private Greeting(Guid id, string spokenText)
   {
@@ -35,7 +35,7 @@ public class Greeting
   #region Methods
 
   /// <summary>
-  ///   Factory method to create a new instance.
+  /// Factory method to create a new instance.
   /// </summary>
   public static Greeting Create(string spokenText)
   {
@@ -43,7 +43,7 @@ public class Greeting
   }
 
   /// <summary>
-  ///   Factory method to load an existing instance from persistence.
+  /// Factory method to load an existing instance from persistence.
   /// </summary>
   public static Greeting Load(Guid id, string spokenText)
   {

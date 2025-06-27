@@ -1,19 +1,19 @@
 ﻿namespace TextLifeRpg.Domain;
 
 /// <summary>
-///   Domain class representing a character trait.
+/// Domain class representing a character trait.
 /// </summary>
 public class Trait
 {
   #region Properties
 
   /// <summary>
-  ///   Unique identifier.
+  /// Unique identifier.
   /// </summary>
   public Guid Id { get; set; }
 
   /// <summary>
-  ///   Name of the trait.
+  /// Name of the trait.
   /// </summary>
   public string Name { get; set; }
 
@@ -22,7 +22,7 @@ public class Trait
   #region Ctors
 
   /// <summary>
-  ///   Private constructor used internally.
+  /// Private constructor used internally.
   /// </summary>
   private Trait(Guid id, string name)
   {
@@ -35,7 +35,7 @@ public class Trait
   #region Methods
 
   /// <summary>
-  ///   Factory method to create a new instance.
+  /// Factory method to create a new instance.
   /// </summary>
   public static Trait Create(string name)
   {
@@ -43,7 +43,7 @@ public class Trait
   }
 
   /// <summary>
-  ///   Factory method to load an existing instance from persistence.
+  /// Factory method to load an existing instance from persistence.
   /// </summary>
   public static Trait Load(Guid id, string name)
   {

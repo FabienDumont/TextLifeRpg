@@ -5,7 +5,7 @@ using TextLifeRpg.Infrastructure.Helper;
 namespace TextLifeRpg.Infrastructure.Seeders;
 
 /// <summary>
-///   Exploration action data seeder.
+/// Exploration action data seeder.
 /// </summary>
 public class ExplorationActionSeeder : IDataSeeder
 {

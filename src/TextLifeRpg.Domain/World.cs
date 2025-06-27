@@ -1,29 +1,29 @@
 ﻿namespace TextLifeRpg.Domain;
 
 /// <summary>
-///   Domain class representing the game world state, including time and characters.
+/// Domain class representing the game world state, including time and characters.
 /// </summary>
 public class World
 {
   #region Properties
 
   /// <summary>
-  ///   Unique identifier.
+  /// Unique identifier.
   /// </summary>
   public Guid Id { get; }
 
   /// <summary>
-  ///   Current in-game date and time.
+  /// Current in-game date and time.
   /// </summary>
   public DateTime CurrentDate { get; private set; }
 
   /// <summary>
-  ///   List of characters currently present in the world.
+  /// List of characters currently present in the world.
   /// </summary>
   public List<Character> Characters { get; }
 
   /// <summary>
-  ///   List of relationships existing in the world.
+  /// List of relationships existing in the world.
   /// </summary>
   public List<Relationship> Relationships { get; private init; } = [];
 
@@ -37,7 +37,7 @@ public class World
   #region Ctors
 
   /// <summary>
-  ///   Private constructor used internally.
+  /// Private constructor used internally.
   /// </summary>
   private World(Guid id, DateTime currentDate, List<Character> characters)
   {
@@ -51,7 +51,7 @@ public class World
   #region Methods
 
   /// <summary>
-  ///   Factory method to create a new instance.
+  /// Factory method to create a new instance.
   /// </summary>
   public static World Create(DateTime currentDate, List<Character> characters)
   {
@@ -59,7 +59,7 @@ public class World
   }
 
   /// <summary>
-  ///   Factory method to load an existing instance from persistence.
+  /// Factory method to load an existing instance from persistence.
   /// </summary>
   public static World Load(
     Guid id, DateTime currentDate, List<Character> characters, List<Relationship> relationships,
@@ -74,7 +74,7 @@ public class World
   }
 
   /// <summary>
-  ///   Adds a character to the world.
+  /// Adds a character to the world.
   /// </summary>
   public void AddCharacter(Character character)
   {
@@ -82,7 +82,7 @@ public class World
   }
 
   /// <summary>
-  ///   Advances the current world time by a number of minutes.
+  /// Advances the current world time by a number of minutes.
   /// </summary>
   public void AdvanceTime(int minutes)
   {
@@ -90,7 +90,7 @@ public class World
   }
 
   /// <summary>
-  ///   Adds relationships.
+  /// Adds relationships.
   /// </summary>
   public void AddRelationships(IEnumerable<Relationship> relationships)
   {

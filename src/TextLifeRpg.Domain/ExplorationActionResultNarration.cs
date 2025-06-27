@@ -1,24 +1,24 @@
 ﻿namespace TextLifeRpg.Domain;
 
 /// <summary>
-///   Domain class representing an exploration action result narration.
+/// Domain class representing an exploration action result narration.
 /// </summary>
 public class ExplorationActionResultNarration
 {
   #region Properties
 
   /// <summary>
-  ///   Unique identifier.
+  /// Unique identifier.
   /// </summary>
   public Guid Id { get; }
 
   /// <summary>
-  ///   Exploration action result identifier.
+  /// Exploration action result identifier.
   /// </summary>
   public Guid ExplorationActionResultId { get; }
 
   /// <summary>
-  ///   Text of the narration.
+  /// Text of the narration.
   /// </summary>
   public string Text { get; }
 
@@ -27,7 +27,7 @@ public class ExplorationActionResultNarration
   #region Ctors
 
   /// <summary>
-  ///   Private constructor used internally.
+  /// Private constructor used internally.
   /// </summary>
   private ExplorationActionResultNarration(Guid id, Guid explorationActionResultId, string text)
   {
@@ -41,7 +41,7 @@ public class ExplorationActionResultNarration
   #region Methods
 
   /// <summary>
-  ///   Factory method to create a new instance.
+  /// Factory method to create a new instance.
   /// </summary>
   public static ExplorationActionResultNarration Create(Guid explorationActionId, string text)
   {
@@ -49,7 +49,7 @@ public class ExplorationActionResultNarration
   }
 
   /// <summary>
-  ///   Factory method to load an existing instance from persistence.
+  /// Factory method to load an existing instance from persistence.
   /// </summary>
   public static ExplorationActionResultNarration Load(Guid id, Guid explorationActionId, string text)
   {

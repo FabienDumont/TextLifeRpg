@@ -1,44 +1,44 @@
 ﻿namespace TextLifeRpg.Domain;
 
 /// <summary>
-///   Domain class representing a saved game state.
+/// Domain class representing a saved game state.
 /// </summary>
 public class GameSave
 {
   #region Properties
 
   /// <summary>
-  ///   Unique identifier.
+  /// Unique identifier.
   /// </summary>
   public Guid Id { get; }
 
   /// <summary>
-  ///   Name of the save file.
+  /// Name of the save file.
   /// </summary>
   public string Name => $"{PlayerCharacter.Name}_{World.CurrentDate:yyyyMMdd_HHmmss}";
 
   /// <summary>
-  ///   World state at the time of the save.
+  /// World state at the time of the save.
   /// </summary>
   public World World { get; }
 
   /// <summary>
-  ///   Identifier of the player character in the world.
+  /// Identifier of the player character in the world.
   /// </summary>
   public Guid PlayerCharacterId { get; }
 
   /// <summary>
-  ///   The player character referenced by the save.
+  /// The player character referenced by the save.
   /// </summary>
   public Character PlayerCharacter => World.Characters.First(c => c.Id == PlayerCharacterId);
 
   /// <summary>
-  ///   Timestamp of when the save was created.
+  /// Timestamp of when the save was created.
   /// </summary>
   public DateTime SavedAt { get; } = DateTime.UtcNow;
 
   /// <summary>
-  ///   List of text lines displayed to the user (with color formatting).
+  /// List of text lines displayed to the user (with color formatting).
   /// </summary>
   public List<TextLine> TextLines { get; private set; } = [];
 
@@ -47,7 +47,7 @@ public class GameSave
   #region Ctors
 
   /// <summary>
-  ///   Private constructor used internally.
+  /// Private constructor used internally.
   /// </summary>
   private GameSave(Guid id, Guid playerCharacterId, World world)
   {
@@ -61,7 +61,7 @@ public class GameSave
   #region Methods
 
   /// <summary>
-  ///   Factory method to load an existing instance from persistence.
+  /// Factory method to load an existing instance from persistence.
   /// </summary>
   public static GameSave Load(Guid id, Guid playerCharacterId, World world, List<TextLine> textLines)
   {
@@ -77,7 +77,7 @@ public class GameSave
   }
 
   /// <summary>
-  ///   Factory method to create a new instance.
+  /// Factory method to create a new instance.
   /// </summary>
   public static GameSave Create(Character playerCharacter, World world)
   {
@@ -87,7 +87,7 @@ public class GameSave
   }
 
   /// <summary>
-  ///   Adds a line of styled text to the game save.
+  /// Adds a line of styled text to the game save.
   /// </summary>
   private void AddTextLine(TextLine textLine)
   {
@@ -95,7 +95,7 @@ public class GameSave
   }
 
   /// <summary>
-  ///   Adds a new text entry with multiple parts (each part can have its own color) to the save.
+  /// Adds a new text entry with multiple parts (each part can have its own color) to the save.
   /// </summary>
   /// <param name="textParts">A list of TextPart objects representing the text and colors.</param>
   public void AddText(List<TextPart> textParts)
@@ -108,7 +108,7 @@ public class GameSave
   }
 
   /// <summary>
-  ///   Clears the current text log.
+  /// Clears the current text log.
   /// </summary>
   public void ResetText()
   {

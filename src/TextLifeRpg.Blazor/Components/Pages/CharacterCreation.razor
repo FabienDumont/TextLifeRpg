@@ -178,7 +178,7 @@ else
   private const int MaxStep = 2;
 
   /// <summary>
-  ///   Initializes form state and loads available traits.
+  /// Initializes form state and loads available traits.
   /// </summary>
   protected override async Task OnInitializedAsync()
   {
@@ -216,7 +216,7 @@ else
   }
 
   /// <summary>
-  ///   Toggles trait selection and updates compatibility.
+  /// Toggles trait selection and updates compatibility.
   /// </summary>
   private async Task ToggleTrait(TraitViewModel traitViewModel)
   {
@@ -235,7 +235,7 @@ else
   }
 
   /// <summary>
-  ///   Displays a toast if form is invalid.
+  /// Displays a toast if form is invalid.
   /// </summary>
   private async Task HandleInvalidSubmitAsync()
   {
@@ -261,7 +261,7 @@ else
   }
 
   /// <summary>
-  ///   Creates a new character and save file, and navigates to game view.
+  /// Creates a new character and save file, and navigates to game view.
   /// </summary>
   private async Task CreateCharacter()
   {
@@ -281,38 +281,38 @@ else
   }
 
   /// <summary>
-  ///   Backing model for character form input.
+  /// Backing model for character form input.
   /// </summary>
   public class CharacterCreationModel
   {
     /// <summary>
-    ///   The name of the character.
+    /// The name of the character.
     /// </summary>
     [Required(AllowEmptyStrings = false)]
     [StringLength(30)]
     public string Name { get; set; } = "Player";
 
     /// <summary>
-    ///   The age of the character (1–120).
+    /// The age of the character (1–120).
     /// </summary>
     [Required]
     public DateOnly BirthDate { get; set; } = new(2000, 1, 1);
 
     /// <summary>
-    ///   The biological sex of the character.
+    /// The biological sex of the character.
     /// </summary>
     [Required]
     public BiologicalSex BiologicalSex { get; set; }
 
     /// <summary>
-    ///   The height of the character.
+    /// The height of the character.
     /// </summary>
     [Required]
     [Range(100, 220, ErrorMessage = "Height must be between 100cm and 220cm.")]
     public int Height { get; set; } = 170;
 
     /// <summary>
-    ///   The weight of the character.
+    /// The weight of the character.
     /// </summary>
     [Required]
     [Range(40, 200, ErrorMessage = "Weight must be between 40kg and 200kg.")]

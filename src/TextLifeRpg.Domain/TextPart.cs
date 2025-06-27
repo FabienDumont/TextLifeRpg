@@ -1,7 +1,7 @@
 ﻿namespace TextLifeRpg.Domain;
 
 /// <summary>
-///   Class representing a part of text with an optional color.
+/// Class representing a part of text with an optional color.
 /// </summary>
 public class TextPart
 {

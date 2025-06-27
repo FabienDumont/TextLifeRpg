@@ -65,7 +65,7 @@ else
   private bool _showSaveToast;
 
   /// <summary>
-  ///   Registers for game state changes and initializes location display.
+  /// Registers for game state changes and initializes location display.
   /// </summary>
   protected override Task OnInitializedAsync()
   {
@@ -81,7 +81,7 @@ else
   }
 
   /// <summary>
-  ///   Callback triggered when a save is loaded from sidebar.
+  /// Callback triggered when a save is loaded from sidebar.
   /// </summary>
   private void OnSaveLoaded()
   {
@@ -90,7 +90,7 @@ else
   }
 
   /// <summary>
-  ///   Navigates to the character details page.
+  /// Navigates to the character details page.
   /// </summary>
   private void OpenCharacterDetails(Character character)
   {
@@ -99,7 +99,7 @@ else
   }
 
   /// <summary>
-  ///   Scrolls the text output area to the bottom after render.
+  /// Scrolls the text output area to the bottom after render.
   /// </summary>
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
@@ -110,7 +110,7 @@ else
   }
 
   /// <summary>
-  ///   Invokes JavaScript to scroll the text zone to the bottom.
+  /// Invokes JavaScript to scroll the text zone to the bottom.
   /// </summary>
   private async Task ScrollTextZoneToBottomAsync()
   {

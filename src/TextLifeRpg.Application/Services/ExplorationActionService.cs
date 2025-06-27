@@ -5,7 +5,7 @@ using TextLifeRpg.Domain;
 namespace TextLifeRpg.Application.Services;
 
 /// <summary>
-///   Service for exploration actions.
+/// Service for exploration actions.
 /// </summary>
 public class ExplorationActionService(
   IExplorationActionRepository explorationActionRepository, ILocationService locationService,
@@ -15,6 +15,11 @@ public class ExplorationActionService(
 {
   #region Methods
 
+  /// <summary>
+  /// Determines the next day of the week, taking into account that Sunday wraps around to Monday.
+  /// </summary>
+  /// <param name="day">The current day of the week to determine the next day from.</param>
+  /// <returns>The next day of the week.</returns>
   private static DayOfWeek GetNextDay(DayOfWeek day)
   {
     return day == DayOfWeek.Sunday ? DayOfWeek.Monday : (DayOfWeek) (((int) day + 1) % 7);
@@ -60,6 +65,7 @@ public class ExplorationActionService(
     return filtered;
   }
 
+  /// <inheritdoc />
   public async Task<ExplorationActionResultNarration> ExecuteAsync(
     ExplorationAction action, GameSave save, CancellationToken cancellationToken
   )

@@ -8,7 +8,7 @@ using TextLifeRpg.Infrastructure.Mappers;
 namespace TextLifeRpg.Infrastructure.EfRepositories;
 
 /// <summary>
-///   Repository for greetings.
+/// Repository for greetings.
 /// </summary>
 public class GreetingRepository(ApplicationContext context) : RepositoryBase(context), IGreetingRepository
 {

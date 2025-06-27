@@ -4,7 +4,7 @@ using TextLifeRpg.Application.Abstraction.Repositories;
 namespace TextLifeRpg.Infrastructure.JsonRepositories;
 
 /// <summary>
-///   Repository for retrieving character names from JSON files.
+/// Repository for retrieving character names from JSON files.
 /// </summary>
 public class NameJsonRepository(string dataDirectory) : INameRepository
 {

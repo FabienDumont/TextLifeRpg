@@ -4,7 +4,7 @@ using TextLifeRpg.Domain;
 namespace TextLifeRpg.Application.Services;
 
 /// <summary>
-///   Service for managing relationships.
+/// Service for managing relationships.
 /// </summary>
 public class RelationshipService(
   IEnumerable<IRelationshipRule> generators, IRandomProvider randomProvider, ICharacterService characterService

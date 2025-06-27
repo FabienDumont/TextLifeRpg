@@ -3,19 +3,19 @@
 namespace TextLifeRpg.Domain;
 
 /// <summary>
-///   Domain class representing the game's configuration settings.
+/// Domain class representing the game's configuration settings.
 /// </summary>
 public class GameSettings
 {
   #region Properties
 
   /// <summary>
-  ///   Unique identifier.
+  /// Unique identifier.
   /// </summary>
   public Guid Id { get; }
 
   /// <summary>
-  ///   Density of NPC population when starting a new game.
+  /// Density of NPC population when starting a new game.
   /// </summary>
   public NpcDensity NpcDensity { get; }
 
@@ -24,7 +24,7 @@ public class GameSettings
   #region Ctors
 
   /// <summary>
-  ///   Private constructor used internally.
+  /// Private constructor used internally.
   /// </summary>
   private GameSettings(Guid id, NpcDensity npcDensity)
   {
@@ -37,7 +37,7 @@ public class GameSettings
   #region Methods
 
   /// <summary>
-  ///   Factory method to load an existing instance from persistence.
+  /// Factory method to load an existing instance from persistence.
   /// </summary>
   public static GameSettings Load(Guid id, NpcDensity npcDensity)
   {
@@ -45,7 +45,7 @@ public class GameSettings
   }
 
   /// <summary>
-  ///   Factory method to create a new instance.
+  /// Factory method to create a new instance.
   /// </summary>
   public static GameSettings Create(NpcDensity npcDensity)
   {
@@ -53,7 +53,7 @@ public class GameSettings
   }
 
   /// <summary>
-  ///   Gets the number of NPCs to generate for the current density.
+  /// Gets the number of NPCs to generate for the current density.
   /// </summary>
   public int GetNpcCount()
   {
@@ -72,7 +72,7 @@ public class GameSettings
 }
 
 /// <summary>
-///   Enumeration controlling how many NPCs are generated.
+/// Enumeration controlling how many NPCs are generated.
 /// </summary>
 public enum NpcDensity
 {

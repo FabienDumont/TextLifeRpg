@@ -7,14 +7,14 @@ using TextLifeRpg.Infrastructure.JsonRepositories;
 namespace TextLifeRpg.Infrastructure;
 
 /// <summary>
-///   Extension methods for configuring infrastructure services.
+/// Extension methods for configuring infrastructure services.
 /// </summary>
 public static class ServiceCollectionExtensions
 {
   #region Methods
 
   /// <summary>
-  ///   Registers EF Core context, repositories, and JSON-based services in the DI container.
+  /// Registers EF Core context, repositories, and JSON-based services in the DI container.
   /// </summary>
   /// <param name="services">The service collection to configure.</param>
   /// <param name="databasePath">Relative path to the SQLite database file.</param>

@@ -9,67 +9,67 @@ public class ApplicationContext : DbContext
   #region Properties
 
   /// <summary>
-  ///   Represents all traits in the database.
+  /// Represents all traits in the database.
   /// </summary>
   public virtual DbSet<TraitDataModel> Traits { get; init; }
 
   /// <summary>
-  ///   Represents pairs of incompatible traits.
+  /// Represents pairs of incompatible traits.
   /// </summary>
   public virtual DbSet<TraitIncompatibilityDataModel> TraitIncompatibilities { get; init; }
 
   /// <summary>
-  ///   Represents all greetings used in NPC interactions.
+  /// Represents all greetings used in NPC interactions.
   /// </summary>
   public virtual DbSet<GreetingDataModel> Greetings { get; init; }
 
   /// <summary>
-  ///   Represents all conditions used in NPC interactions.
+  /// Represents all conditions used in NPC interactions.
   /// </summary>
   public virtual DbSet<ConditionDataModel> Conditions { get; init; }
 
   /// <summary>
-  ///   Represents all locations in the world.
+  /// Represents all locations in the world.
   /// </summary>
   public virtual DbSet<LocationDataModel> Locations { get; init; }
 
   /// <summary>
-  ///   Represents all locations' opening hours in the world.
+  /// Represents all locations' opening hours in the world.
   /// </summary>
   public virtual DbSet<LocationOpeningHoursDataModel> LocationOpeningHours { get; init; }
 
   /// <summary>
-  ///   Represents rooms inside locations.
+  /// Represents rooms inside locations.
   /// </summary>
   public virtual DbSet<RoomDataModel> Rooms { get; init; }
 
   /// <summary>
-  ///   Represents movements between locations or rooms.
+  /// Represents movements between locations or rooms.
   /// </summary>
   public virtual DbSet<MovementDataModel> Movements { get; init; }
 
   /// <summary>
-  ///   Represents narration texts tied to movements.
+  /// Represents narration texts tied to movements.
   /// </summary>
   public virtual DbSet<MovementNarrationDataModel> MovementNarrations { get; init; }
 
   /// <summary>
-  ///   Represents narration texts.
+  /// Represents narration texts.
   /// </summary>
   public virtual DbSet<NarrationDataModel> Narrations { get; init; }
 
   /// <summary>
-  ///   Represents exploration actions.
+  /// Represents exploration actions.
   /// </summary>
   public virtual DbSet<ExplorationActionDataModel> ExplorationActions { get; init; }
 
   /// <summary>
-  ///   Represents exploration actions' results.
+  /// Represents exploration actions' results.
   /// </summary>
   public virtual DbSet<ExplorationActionResultDataModel> ExplorationActionResults { get; init; }
 
   /// <summary>
-  ///   Represents exploration action results' narrations.
+  /// Represents exploration action results' narrations.
   /// </summary>
   public virtual DbSet<ExplorationActionResultNarrationDataModel> ExplorationActionResultNarrations { get; init; }
 
@@ -78,14 +78,14 @@ public class ApplicationContext : DbContext
   #region Ctors
 
   /// <summary>
-  ///   Initializes a new instance of <see cref="ApplicationContext" /> with options.
+  /// Initializes a new instance of <see cref="ApplicationContext" /> with options.
   /// </summary>
   public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
   {
   }
 
   /// <summary>
-  ///   Parameterless constructor for design-time tools and migrations.
+  /// Parameterless constructor for design-time tools and migrations.
   /// </summary>
   public ApplicationContext()
   {
@@ -96,7 +96,7 @@ public class ApplicationContext : DbContext
   #region Methods
 
   /// <summary>
-  ///   Seeds the database with initial data if not already populated.
+  /// Seeds the database with initial data if not already populated.
   /// </summary>
   public async Task InitializeDataAsync()
   {

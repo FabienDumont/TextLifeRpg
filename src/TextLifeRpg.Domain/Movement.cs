@@ -1,39 +1,39 @@
 ﻿namespace TextLifeRpg.Domain;
 
 /// <summary>
-///   Domain class representing a movement between locations or rooms.
+/// Domain class representing a movement between locations or rooms.
 /// </summary>
 public class Movement
 {
   #region Properties
 
   /// <summary>
-  ///   Unique identifier.
+  /// Unique identifier.
   /// </summary>
   public Guid Id { get; }
 
   /// <summary>
-  ///   Identifier of the location the movement starts from.
+  /// Identifier of the location the movement starts from.
   /// </summary>
   public Guid FromLocationId { get; }
 
   /// <summary>
-  ///   Identifier of the room the movement starts from (optional).
+  /// Identifier of the room the movement starts from (optional).
   /// </summary>
   public Guid? FromRoomId { get; }
 
   /// <summary>
-  ///   Identifier of the destination location.
+  /// Identifier of the destination location.
   /// </summary>
   public Guid ToLocationId { get; }
 
   /// <summary>
-  ///   Identifier of the destination room (optional).
+  /// Identifier of the destination room (optional).
   /// </summary>
   public Guid? ToRoomId { get; }
 
   /// <summary>
-  ///   Identifier of the item required to make the movement (optional).
+  /// Identifier of the item required to make the movement (optional).
   /// </summary>
   public Guid? RequiredItemId { get; }
 
@@ -42,7 +42,7 @@ public class Movement
   #region Ctors
 
   /// <summary>
-  ///   Private constructor used internally.
+  /// Private constructor used internally.
   /// </summary>
   private Movement(
     Guid id, Guid fromLocationId, Guid? fromRoomId, Guid toLocationId, Guid? toRoomId, Guid? requiredItemId
@@ -61,7 +61,7 @@ public class Movement
   #region Methods
 
   /// <summary>
-  ///   Factory method to create a new instance.
+  /// Factory method to create a new instance.
   /// </summary>
   public static Movement Create(
     Guid fromLocationId, Guid? fromRoomId, Guid toLocationId, Guid? toRoomId, Guid? requiredItemId
@@ -71,7 +71,7 @@ public class Movement
   }
 
   /// <summary>
-  ///   Factory method to load an existing instance from persistence.
+  /// Factory method to load an existing instance from persistence.
   /// </summary>
   public static Movement Load(
     Guid id, Guid fromLocationId, Guid? fromRoomId, Guid toLocationId, Guid? toRoomId, Guid? requiredItemId

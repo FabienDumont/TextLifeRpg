@@ -4,7 +4,7 @@ using TextLifeRpg.Domain;
 namespace TextLifeRpg.Application.Randomization;
 
 /// <summary>
-///   Provides a wrapper around <see cref="System.Random" /> to allow injection and testing of randomness.
+/// Provides a wrapper around <see cref="System.Random" /> to allow injection and testing of randomness.
 /// </summary>
 public class RandomProvider : IRandomProvider
 {
@@ -16,31 +16,19 @@ public class RandomProvider : IRandomProvider
 
   #region Implementation of IRandomProvider
 
-  /// <summary>
-  ///   Returns a random integer that is greater than or equal to <paramref name="min" /> and less than
-  ///   <paramref name="max" />.
-  /// </summary>
+  /// <inheritdoc />
   public int Next(int min, int max)
   {
     return _rnd.Next(min, max);
   }
 
-  /// <summary>
-  ///   Returns a random integer that is greater than or equal to 0 and less than <paramref name="max" />.
-  /// </summary>
-  public int Next(int max)
-  {
-    return _rnd.Next(max);
-  }
-
-  /// <summary>
-  ///   Returns a random floating-point number between 0.0 (inclusive) and 1.0 (exclusive).
-  /// </summary>
+  /// <inheritdoc />
   public double NextDouble()
   {
     return _rnd.NextDouble();
   }
 
+  /// <inheritdoc />
   public int NextClampedHeight(BiologicalSex sex)
   {
     double mean = sex switch
@@ -62,6 +50,7 @@ public class RandomProvider : IRandomProvider
     return (int) Math.Clamp(height, 100, 220);
   }
 
+  /// <inheritdoc />
   public int NextClampedWeight(BiologicalSex sex, int height)
   {
     // Rough BMI-based mean targeting: BMI = weight / (height/100)^2
@@ -81,6 +70,7 @@ public class RandomProvider : IRandomProvider
     return (int) Math.Clamp(weight, 40, 200);
   }
 
+  /// <inheritdoc />
   public int NextClampedMuscleMass(BiologicalSex sex, int height)
   {
     var heightM = height / 100.0;
@@ -104,6 +94,12 @@ public class RandomProvider : IRandomProvider
 
   #region Methods
 
+  /// <summary>
+  /// Generates a random value following a Gaussian (normal) distribution with the specified mean and standard deviation.
+  /// </summary>
+  /// <param name="mean">The mean (average) value of the Gaussian distribution.</param>
+  /// <param name="stdDev">The standard deviation, determining the spread or variation in the distribution.</param>
+  /// <returns>A random value following a Gaussian distribution.</returns>
   private double NextGaussian(double mean, double stdDev)
   {
     // Box-Muller transform

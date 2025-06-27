@@ -1,22 +1,22 @@
 ﻿namespace TextLifeRpg.Domain;
 
 /// <summary>
-///   Domain class representing a character's schedule.
+/// Domain class representing a character's schedule.
 /// </summary>
 public class Schedule
 {
   /// <summary>
-  ///   The character linked to the schedule.
+  /// The character linked to the schedule.
   /// </summary>
   public Guid CharacterId { get; }
 
   /// <summary>
-  ///   The schedule's entries.
+  /// The schedule's entries.
   /// </summary>
   public List<ScheduleEntry> Entries { get; }
 
   /// <summary>
-  ///   Private constructor used internally.
+  /// Private constructor used internally.
   /// </summary>
   private Schedule(Guid characterId, List<ScheduleEntry> entries)
   {
@@ -25,13 +25,13 @@ public class Schedule
   }
 
   /// <summary>
-  ///   Factory method to create a new instance.
+  /// Factory method to create a new instance.
   /// </summary>
   public static Schedule Create(Guid characterId, IEnumerable<ScheduleEntry> entries) =>
     new(characterId, entries.ToList());
 
   /// <summary>
-  ///   Gets the current entry depending on the current day and time.
+  /// Gets the current entry depending on the current day and time.
   /// </summary>
   public ScheduleEntry? GetCurrentEntry(DayOfWeek currentDay, TimeSpan currentTime)
   {

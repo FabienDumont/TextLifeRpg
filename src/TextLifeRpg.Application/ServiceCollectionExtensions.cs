@@ -8,14 +8,14 @@ using TextLifeRpg.Application.Services;
 namespace TextLifeRpg.Application;
 
 /// <summary>
-///   Extension methods for configuring application layer services.
+/// Extension methods for configuring application layer services.
 /// </summary>
 public static class ServiceCollectionExtensions
 {
   #region Methods
 
   /// <summary>
-  ///   Registers application services in the DI container.
+  /// Registers application services in the DI container.
   /// </summary>
   /// <param name="services">The service collection to configure.</param>
   public static void AddApplication(this IServiceCollection services)

@@ -31,7 +31,7 @@
   private readonly Dictionary<Guid, string> _movementNames = new();
 
   /// <summary>
-  ///   Loads available movement options on component initialization.
+  /// Loads available movement options on component initialization.
   /// </summary>
   protected override async Task OnInitializedAsync()
   {
@@ -46,7 +46,7 @@
   }
 
   /// <summary>
-  ///   Loads all movements available to the current player character and resolves destination names.
+  /// Loads all movements available to the current player character and resolves destination names.
   /// </summary>
   private async Task LoadAvailableMovementsAsync()
   {
@@ -110,7 +110,7 @@
   }
 
   /// <summary>
-  ///   Executes the selected movement, advances game time, clears current textlines, and adds the movement narration.
+  /// Executes the selected movement, advances game time, clears current textlines, and adds the movement narration.
   /// </summary>
   private async Task MoveToDestination(Movement movement)
   {
@@ -137,7 +137,7 @@
   }
 
   /// <summary>
-  ///   Unregisters event handlers when the component is disposed.
+  /// Unregisters event handlers when the component is disposed.
   /// </summary>
   public void Dispose()
   {

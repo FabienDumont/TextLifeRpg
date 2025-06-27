@@ -5,7 +5,7 @@ using TextLifeRpg.Domain;
 namespace TextLifeRpg.Application.Services;
 
 /// <summary>
-///   Service for managing saves.
+/// Service for managing saves.
 /// </summary>
 public class SaveService(
   IGameSaveRepository saveRepository, IWorldService worldService, INarrationService narrationService

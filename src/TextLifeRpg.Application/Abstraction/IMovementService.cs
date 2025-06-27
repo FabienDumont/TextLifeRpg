@@ -3,14 +3,14 @@
 namespace TextLifeRpg.Application.Abstraction;
 
 /// <summary>
-///   Service interface for managing movements.
+/// Service interface for managing movements.
 /// </summary>
 public interface IMovementService
 {
   #region Methods
 
   /// <summary>
-  ///   Retrieves a list of available movements based on the current location and room.
+  /// Retrieves a list of available movements based on the current location and room.
   /// </summary>
   /// <param name="currentLocationId">Identifier of the current location.</param>
   /// <param name="currentRoomId">Optional identifier of the current room.</param>

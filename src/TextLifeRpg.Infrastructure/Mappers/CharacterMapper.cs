@@ -5,15 +5,15 @@ using TextLifeRpg.Infrastructure.JsonDataModels;
 namespace TextLifeRpg.Infrastructure.Mappers;
 
 /// <summary>
-///   Mapper for converting between <see cref="Character" /> domain models and <see cref="CharacterDataModel" /> JSON data
-///   models.
+/// Mapper for converting between <see cref="Character" /> domain models and <see cref="CharacterDataModel" /> JSON data
+/// models.
 /// </summary>
 public static class CharacterMapper
 {
   #region Methods
 
   /// <summary>
-  ///   Maps a JSON data model to its domain counterpart.
+  /// Maps a JSON data model to its domain counterpart.
   /// </summary>
   public static Character ToDomain(this CharacterDataModel dataModel)
   {
@@ -32,7 +32,7 @@ public static class CharacterMapper
   }
 
   /// <summary>
-  ///   Maps a collection of JSON data models to a collection of domain models.
+  /// Maps a collection of JSON data models to a collection of domain models.
   /// </summary>
   public static List<Character> ToDomainCollection(this IEnumerable<CharacterDataModel> dataModels)
   {
@@ -40,7 +40,7 @@ public static class CharacterMapper
   }
 
   /// <summary>
-  ///   Maps a domain model to its JSON data model counterpart.
+  /// Maps a domain model to its JSON data model counterpart.
   /// </summary>
   public static CharacterDataModel ToDataModel(this Character domain)
   {
@@ -63,7 +63,7 @@ public static class CharacterMapper
   }
 
   /// <summary>
-  ///   Maps a collection of domain models to a collection of JSON data models.
+  /// Maps a collection of domain models to a collection of JSON data models.
   /// </summary>
   public static List<CharacterDataModel> ToDataModelCollection(this IEnumerable<Character> domains)
   {

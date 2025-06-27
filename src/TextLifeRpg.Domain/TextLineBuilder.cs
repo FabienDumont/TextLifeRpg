@@ -3,14 +3,14 @@
 namespace TextLifeRpg.Domain;
 
 /// <summary>
-///   Builds dynamic text lines for narrative purposes, supporting token replacement (e.g. [CHARACTERNAME]).
+/// Builds dynamic text lines for narrative purposes, supporting token replacement (e.g. [CHARACTERNAME]).
 /// </summary>
 public static partial class TextLineBuilder
 {
   #region Fields
 
   /// <summary>
-  ///   Compiled regex to match tokens like [CHARACTERNAME] in the template.
+  /// Compiled regex to match tokens like [CHARACTERNAME] in the template.
   /// </summary>
   private static readonly Regex TokenRegex = MyRegex();
 
@@ -19,7 +19,7 @@ public static partial class TextLineBuilder
   #region Methods
 
   /// <summary>
-  ///   Builds a <see cref="TextLine" /> from a template string by replacing tokens with character-specific data.
+  /// Builds a <see cref="TextLine" /> from a template string by replacing tokens with character-specific data.
   /// </summary>
   /// <param name="template">The text containing tokens like [CHARACTERNAME].</param>
   /// <param name="character">The character to use for token replacement.</param>
@@ -57,7 +57,7 @@ public static partial class TextLineBuilder
   }
 
   /// <summary>
-  ///   Regex factory method to match token patterns in the form [TOKEN].
+  /// Regex factory method to match token patterns in the form [TOKEN].
   /// </summary>
   [GeneratedRegex(@"\[([A-Z]+)\]", RegexOptions.Compiled)]
   private static partial Regex MyRegex();
