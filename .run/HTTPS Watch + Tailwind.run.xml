@@ -1,0 +1,7 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="HTTPS Watch + Tailwind" type="CompoundRunConfigurationType">
+    <toRun name="HTTPS Watch" type="RunDotNetWatch" />
+    <toRun name="tailwind" type="js.build_tools.npm" />
+    <method v="2" />
+  </configuration>
+</component>

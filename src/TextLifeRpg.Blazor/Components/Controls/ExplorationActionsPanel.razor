@@ -1,0 +1,84 @@
+﻿@using TextLifeRpg.Application.Abstraction
+@inject GameSaveStore GameSaveStore
+@inject IExplorationActionService ExplorationActionService
+
+<div class="flex gap-4 p-2">
+  @if (_availableExplorationActions is null)
+  {
+    <p>Loading exploration actions...</p>
+  }
+  else if (!_availableExplorationActions.Any())
+  {
+    <p class="italic">No exploration actions available.</p>
+  }
+  else
+  {
+    @foreach (var explorationAction in _availableExplorationActions)
+    {
+      <button class="trpg-btn inline-block" @onclick="() => ExecuteExplorationAction(explorationAction)">
+        @(explorationAction.Label)
+      </button>
+    }
+  }
+</div>
+
+@code {
+  private List<ExplorationAction>? _availableExplorationActions;
+
+  /// <summary>
+  ///   Loads available movement options on component initialization.
+  /// </summary>
+  protected override async Task OnInitializedAsync()
+  {
+    GameSaveStore.OnAsyncChange += HandleGameSaveChangedAsync;
+    await LoadAvailableExplorationActionsAsync();
+  }
+
+  private async Task HandleGameSaveChangedAsync()
+  {
+    await LoadAvailableExplorationActionsAsync();
+    StateHasChanged();
+  }
+
+  /// <summary>
+  ///   Loads all exploration actions available to the current player character.
+  /// </summary>
+  private async Task LoadAvailableExplorationActionsAsync()
+  {
+    var world = GameSaveStore.CurrentSave!.World;
+    var player = GameSaveStore.CurrentSave!.PlayerCharacter;
+
+    if (player.LocationId.HasValue)
+    {
+      _availableExplorationActions = await ExplorationActionService.GetExplorationActionsAsync(player.LocationId.Value, player.RoomId, world.CurrentDate.DayOfWeek, world.CurrentDate.TimeOfDay, CancellationToken.None);
+    }
+    else
+    {
+      _availableExplorationActions = [];
+    }
+  }
+
+  /// <summary>
+  ///   Executes the selected exploration action.
+  /// </summary>
+  private async Task ExecuteExplorationAction(ExplorationAction explorationAction)
+  {
+    var save = GameSaveStore.CurrentSave!;
+    var narration = await ExplorationActionService.ExecuteAsync(explorationAction, save, CancellationToken.None);
+
+    var line = TextLineBuilder.BuildNarrationLine(narration.Text, save.PlayerCharacter, save.PlayerCharacterId);
+
+    save.AddText(line.TextParts);
+
+    await GameSaveStore.NotifyStateChangedAsync();
+  }
+
+  /// <summary>
+  ///   Unregisters event handlers when the component is disposed.
+  /// </summary>
+  public void Dispose()
+  {
+    GameSaveStore.OnAsyncChange -= HandleGameSaveChangedAsync;
+  }
+
+}

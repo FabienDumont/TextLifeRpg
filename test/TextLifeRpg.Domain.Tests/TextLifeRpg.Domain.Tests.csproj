@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <LangVersion>13</LangVersion>
+  </PropertyGroup>
+  <Import Project="..\..\.common-props\common-test.props"/>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TextLifeRpg.Application\TextLifeRpg.Application.csproj" />
+    <ProjectReference Include="..\..\src\TextLifeRpg.Domain\TextLifeRpg.Domain.csproj" />
+  </ItemGroup>
+</Project>

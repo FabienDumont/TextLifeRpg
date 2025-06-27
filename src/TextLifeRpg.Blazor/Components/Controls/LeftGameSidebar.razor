@@ -1,0 +1,92 @@
+﻿@using TextLifeRpg.Application.Abstraction
+@inject GameSaveStore GameSaveStore
+@inject ISaveService SaveService
+
+<div class="flex h-full flex-col p-2">
+  <div class="flex flex-col items-center">
+    <p class="cursor-pointer text-xl font-bold" @onclick="OnPlayerCharacterClickedInternal">
+      @GameSaveStore.CurrentSave!.PlayerCharacter.Name
+    </p>
+  </div>
+  <div class="flex-grow"></div>
+  <div class="flex flex-col items-center gap-4">
+    <label class="trpg-btn w-full" @onclick="OnSaveClicked">
+      Save
+    </label>
+    <label class="trpg-btn w-full">
+      Load Save
+      <InputFile OnChange="@OnFileSelected" accept=".json" style="display:none"/>
+    </label>
+
+    <NavLink href="/" class="trpg-btn w-full">Main Menu</NavLink>
+  </div>
+</div>
+
+@code {
+
+  /// <summary>
+  ///   Callback invoked when a save is successfully loaded.
+  /// </summary>
+  [Parameter, EditorRequired]
+  public EventCallback OnSaveLoaded { get; set; }
+
+  /// <summary>
+  ///   Callback invoked when the user clicks the player character's name.
+  /// </summary>
+  [Parameter, EditorRequired]
+  public EventCallback<Character> OnPlayerCharacterClicked { get; set; }
+
+  /// <summary>
+  ///   Callback invoked when a save is completed.
+  /// </summary>
+  [Parameter, EditorRequired]
+  public EventCallback OnSaveCompleted { get; set; }
+
+  /// <summary>
+  ///   Triggers the OnCharacterClicked callback if the player character exists.
+  /// </summary>
+  private async Task OnPlayerCharacterClickedInternal()
+  {
+    var character = GameSaveStore.CurrentSave?.PlayerCharacter;
+    if (character is not null)
+    {
+      await OnPlayerCharacterClicked.InvokeAsync(character);
+    }
+  }
+
+  /// <summary>
+  ///   Handles the file selection, deserializes the save, and loads it if valid.
+  /// </summary>
+  private async Task OnFileSelected(InputFileChangeEventArgs e)
+  {
+    var file = e.File;
+
+    await using var stream = file.OpenReadStream();
+    using var reader = new StreamReader(stream);
+    var json = await reader.ReadToEndAsync();
+
+    var save = SaveService.LoadGame(json);
+    if (save != null)
+    {
+      await GameSaveStore.LoadGameAsync(save);
+      await OnSaveLoaded.InvokeAsync();
+    }
+  }
+
+  /// <summary>
+  ///   Saves the game.
+  /// </summary>
+  private async Task OnSaveClicked()
+  {
+    var save = GameSaveStore.CurrentSave;
+
+    if (save is null)
+    {
+      return;
+    }
+
+    await SaveService.SaveGameAsync(save);
+    await OnSaveCompleted.InvokeAsync();
+  }
+
+}
