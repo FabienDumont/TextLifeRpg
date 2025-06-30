@@ -28,6 +28,11 @@ public static class CharacterMapper
     character.Energy = dataModel.Energy;
     character.Money = dataModel.Money;
 
+    if (dataModel.JobId is not null)
+    {
+      character.SetJob(dataModel.JobId.Value);
+    }
+
     return character;
   }
 
@@ -58,7 +63,8 @@ public static class CharacterMapper
         RoomId = u.RoomId,
         Energy = u.Energy,
         Money = u.Money,
-        Attributes = u.Attributes.ToDataModel()
+        Attributes = u.Attributes.ToDataModel(),
+        JobId = u.JobId
       }
     );
   }

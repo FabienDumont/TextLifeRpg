@@ -74,6 +74,11 @@ public class Character
   /// </summary>
   public CharacterAttributes Attributes { get; private set; }
 
+  /// <summary>
+  /// Represents the character's job.
+  /// </summary>
+  public Guid? JobId { get; set; }
+
   #endregion
 
   #region Ctors
@@ -139,6 +144,11 @@ public class Character
     RoomId = roomId;
   }
 
+  /// <summary>
+  /// Calculates the age of the character based on the specified game date and the character's birth date.
+  /// </summary>
+  /// <param name="gameDate">The date in the game on which the age is to be calculated.</param>
+  /// <returns>The age of the character on the specified game date.</returns>
   public int GetAge(DateOnly gameDate)
   {
     var age = gameDate.Year - BirthDate.Year;
@@ -148,6 +158,15 @@ public class Character
     }
 
     return age;
+  }
+
+  /// <summary>
+  /// Assigns a job to the character by setting the job ID.
+  /// </summary>
+  /// <param name="jobId">The unique identifier of the job to assign to the character.</param>
+  public void SetJob(Guid jobId)
+  {
+    JobId = jobId;
   }
 
   #endregion

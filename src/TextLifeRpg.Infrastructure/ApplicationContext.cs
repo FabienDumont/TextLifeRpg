@@ -73,6 +73,11 @@ public class ApplicationContext : DbContext
   /// </summary>
   public virtual DbSet<ExplorationActionResultNarrationDataModel> ExplorationActionResultNarrations { get; init; }
 
+  /// <summary>
+  /// Represents all jobs in the database.
+  /// </summary>
+  public virtual DbSet<JobDataModel> Jobs { get; init; }
+
   #endregion
 
   #region Ctors
@@ -111,7 +116,8 @@ public class ApplicationContext : DbContext
       new GreetingSeeder(),
       new LocationSeeder(),
       new ExplorationActionSeeder(),
-      new NarrationSeeder()
+      new NarrationSeeder(),
+      new JobSeeder()
     };
 
     foreach (var seeder in seeders)

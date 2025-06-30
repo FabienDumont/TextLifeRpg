@@ -1,7 +1,6 @@
 ﻿using MockQueryable.FakeItEasy;
 using TextLifeRpg.Domain;
 using TextLifeRpg.Domain.Tests.Helpers;
-using TextLifeRpg.Infrastructure;
 using TextLifeRpg.Infrastructure.EfDataModels;
 using TextLifeRpg.Infrastructure.EfRepositories;
 

@@ -1,5 +1,4 @@
 ﻿using TextLifeRpg.Domain.Tests.Helpers;
-using TextLifeRpg.Domain;
 
 namespace TextLifeRpg.Domain.Tests;
 

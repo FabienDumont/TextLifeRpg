@@ -1,6 +1,4 @@
-﻿using TextLifeRpg.Domain;
-
-namespace TextLifeRpg.Domain.Tests;
+﻿namespace TextLifeRpg.Domain.Tests;
 
 public class ExplorationActionTests
 {

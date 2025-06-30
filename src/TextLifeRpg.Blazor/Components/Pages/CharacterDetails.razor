@@ -4,6 +4,7 @@
 @using TextLifeRpg.Domain.Extensions
 @inject GameSaveStore GameSaveStore
 @inject ITraitService TraitService
+@inject IJobService JobService
 
 @rendermode InteractiveServer
 
@@ -28,6 +29,7 @@ else
       <p><strong>Height:</strong> @_character.Height cm</p>
       <p><strong>Weight:</strong> @_character.Weight kg</p>
       <p><strong>Muscle mass:</strong> @MuscleMassOptionExtensions.FromKg(_character.MuscleMass).GetDisplayName()</p>
+      <p><strong>Job:</strong> @(_job?.Name ?? "Unemployed")</p>
     </div>
 
     <h3 class="text-2xl">Attributes</h3>
@@ -86,6 +88,7 @@ else
 
   private List<Trait>? _traits;
   private List<RelationshipDisplay>? _relationships;
+  private Job? _job;
 
   /// <summary>
   /// Load character details when parameters change.
@@ -123,6 +126,11 @@ else
         return new RelationshipDisplay(targetName, displayType);
       }
     ).ToList();
+
+    if (_character.JobId is not null)
+    {
+      _job = await JobService.GetByIdAsync(_character.JobId.Value, CancellationToken.None);
+    }
   }
 
   private static string GetRelationshipLabel(RelationshipType type, bool isSource)

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TextLifeRpg.Application;
 using TextLifeRpg.Application.Abstraction;
 using TextLifeRpg.Application.Abstraction.Repositories;
 using TextLifeRpg.Application.Services;

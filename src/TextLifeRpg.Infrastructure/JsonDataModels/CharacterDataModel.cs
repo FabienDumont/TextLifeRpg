@@ -74,5 +74,10 @@ public class CharacterDataModel
   /// </summary>
   public CharacterAttributesDataModel Attributes { get; init; } = new();
 
+  /// <summary>
+  /// Identifier of the character's job.
+  /// </summary>
+  public Guid? JobId { get; set; }
+
   #endregion
 }
