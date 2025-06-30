@@ -10,6 +10,7 @@ public class CharacterBuilder
   private int _height = 170;
   private int _weight = 70;
   private int _muscleMass = 5;
+  private CharacterAttributes _characterAttributes = CharacterAttributes.Create(5, 5, 5);
 
   public CharacterBuilder WithName(string name)
   {
@@ -37,6 +38,6 @@ public class CharacterBuilder
 
   public Character Build()
   {
-    return Character.Create(_name, _birthDate, _sex, _height, _weight, _muscleMass);
+    return Character.Create(_name, _birthDate, _sex, _height, _weight, _muscleMass, _characterAttributes);
   }
 }

@@ -23,32 +23,12 @@ public class CharacterService(
   /// <inheritdoc />
   public async Task<Character> CreateRandomCharacterAsync(DateOnly date)
   {
-    const int minAge = 18;
-    const int maxAge = 69;
+    const int minAge = 18, maxAge = 69;
     var age = randomProvider.Next(minAge, maxAge + 1);
     var birthDate = date.AddYears(-age).AddDays(randomProvider.Next(0, 365));
-
     var sex = randomProvider.Next(0, 2) == 0 ? BiologicalSex.Male : BiologicalSex.Female;
 
-    var names = sex == BiologicalSex.Female
-      ? await nameRepository.GetFemaleNamesAsync()
-      : await nameRepository.GetMaleNamesAsync();
-
-    var name = names[randomProvider.Next(0, names.Count)];
-
-    var height = randomProvider.NextClampedHeight(sex);
-
-    var weight = randomProvider.NextClampedWeight(sex, height);
-
-    var muscleMass = randomProvider.NextClampedMuscleMass(sex, height);
-
-    var character = Character.Create(name, birthDate, sex, height, weight, muscleMass);
-
-    var traitCount = randomProvider.Next(1, 4);
-    var traitIds = await GenerateTraitIdsAsync(traitCount);
-    character.AddTraits(traitIds);
-
-    return character;
+    return await CreateCharacterAsync(birthDate, sex, randomProvider.Next(1, 4));
   }
 
   /// <inheritdoc />
@@ -80,33 +60,12 @@ public class CharacterService(
   {
     const int motherMinAge = 18;
     var motherMaxAge = Math.Min(39, currentDate.Year - mother.BirthDate.Year);
-
     var motherAgeAtBirth = randomProvider.Next(motherMinAge, motherMaxAge + 1);
     var birthDate = mother.BirthDate.AddYears(motherAgeAtBirth);
-
     var sex = randomProvider.Next(0, 2) == 0 ? BiologicalSex.Male : BiologicalSex.Female;
+    var inherited = mother.TraitsId.Concat(father.TraitsId).OrderBy(_ => randomProvider.NextDouble()).Take(2);
 
-    var names = sex == BiologicalSex.Female
-      ? await nameRepository.GetFemaleNamesAsync()
-      : await nameRepository.GetMaleNamesAsync();
-
-    var name = names[randomProvider.Next(0, names.Count)];
-
-    var height = randomProvider.NextClampedHeight(sex);
-
-    var weight = randomProvider.NextClampedWeight(sex, height);
-
-    var muscleMass = randomProvider.NextClampedMuscleMass(sex, height);
-
-    var child = Character.Create(name, birthDate, sex, height, weight, muscleMass);
-
-    var traitCount = randomProvider.Next(1, 4);
-    var inherited = mother.TraitsId.Concat(father.TraitsId).OrderBy(_ => randomProvider.NextDouble()).Take(2).ToList();
-
-    var traitIds = await GenerateTraitIdsAsync(traitCount, inherited);
-    child.AddTraits(traitIds);
-
-    return child;
+    return await CreateCharacterAsync(birthDate, sex, randomProvider.Next(1, 4), inherited);
   }
 
   #endregion
@@ -176,6 +135,47 @@ public class CharacterService(
       .Select(p => (p.Item1.Id, p.Item2.Id)).ToList();
 
     return GenerateTraits(_cachedTraits.Select(t => t.Id).ToList(), _cachedIncompatibleTraits, targetCount, preferred);
+  }
+
+  /// <summary>
+  /// Creates a new character with specified attributes and traits.
+  /// </summary>
+  /// <param name="birthDate">The birth date of the character.</param>
+  /// <param name="sex">The biological sex of the character (Male or Female).</param>
+  /// <param name="traitCount">The number of traits to be assigned to the character.</param>
+  /// <param name="preferredTraits">An optional collection of preferred trait IDs.</param>
+  /// <returns>A newly created <see cref="Character"/> instance populated with the provided parameters and randomly generated values.</returns>
+  private async Task<Character> CreateCharacterAsync(
+    DateOnly birthDate, BiologicalSex sex, int traitCount, IEnumerable<Guid>? preferredTraits = null
+  )
+  {
+    var names = sex == BiologicalSex.Female
+      ? await nameRepository.GetFemaleNamesAsync()
+      : await nameRepository.GetMaleNamesAsync();
+
+    var name = names[randomProvider.Next(0, names.Count)];
+    var height = randomProvider.NextClampedHeight(sex);
+    var weight = randomProvider.NextClampedWeight(sex, height);
+    var muscleMass = randomProvider.NextClampedMuscleMass(sex, height);
+
+    var intelligence = randomProvider.Next(1, 11);
+    var charisma = randomProvider.Next(1, 11);
+
+    // Strength based on muscle mass (normalize 15–40kg to 1–10 scale)
+    var normalized = (muscleMass - 15) / 25.0; // 0.0 to 1.0
+    var baseStrength = (int)(normalized * 9) + 1;
+
+    // Add slight randomness ±1
+    var strength = Math.Clamp(baseStrength + randomProvider.Next(-1, 2), 1, 10);
+
+    var attributes = CharacterAttributes.Create(intelligence, strength, charisma);
+
+    var character = Character.Create(name, birthDate, sex, height, weight, muscleMass, attributes);
+
+    var traitIds = await GenerateTraitIdsAsync(traitCount, preferredTraits?.ToList());
+    character.AddTraits(traitIds);
+
+    return character;
   }
 
   #endregion

@@ -19,7 +19,7 @@ public static class CharacterMapper
   {
     var character = Character.Load(
       dataModel.Id, dataModel.Name, dataModel.BirthDate, dataModel.BiologicalSex, dataModel.Height, dataModel.Weight,
-      dataModel.MuscleMass
+      dataModel.MuscleMass, dataModel.Attributes.ToDomain()
     );
     character.AddTraits(dataModel.TraitsId);
 
@@ -57,7 +57,8 @@ public static class CharacterMapper
         LocationId = u.LocationId,
         RoomId = u.RoomId,
         Energy = u.Energy,
-        Money = u.Money
+        Money = u.Money,
+        Attributes = u.Attributes.ToDataModel()
       }
     );
   }

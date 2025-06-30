@@ -10,7 +10,7 @@
     }
 
     .trpg-card-form {
-        @apply mx-auto min-h-[28rem] w-full max-w-md rounded-2xl bg-slate-100 p-6 shadow-lg;
+        @apply mx-auto min-h-[46rem] min-w-[32rem] rounded-2xl bg-slate-100 p-6 shadow-lg flex flex-col;
     }
 
     .trpg-input-label {
