@@ -5,7 +5,13 @@
 
 @rendermode InteractiveServer
 
-@if (GameSaveStore.CurrentSave is null)
+@if (_isLoading)
+{
+  <div class="trpg-layout-page">
+    <p class="animate-pulse text-gray-500">Loading game...</p>
+  </div>
+}
+else if (GameSaveStore.CurrentSave is null)
 {
   <div class="trpg-layout-page">
     <p>No game loaded. Go to main menu.</p>
@@ -60,18 +66,21 @@ else
 }
 
 @code {
+  private bool _isLoading = true;
   private ElementReference _textZoneRef;
-
   private bool _showSaveToast;
 
   /// <summary>
   /// Registers for game state changes and initializes location display.
   /// </summary>
-  protected override Task OnInitializedAsync()
+  protected override async Task OnInitializedAsync()
   {
     GameSaveStore.OnAsyncChange += HandleGameSaveChanged;
 
-    return Task.CompletedTask;
+    await Task.Delay(10);
+
+    _isLoading = false;
+    StateHasChanged();
   }
 
   private Task HandleGameSaveChanged()

@@ -20,14 +20,17 @@ using (var scope = app.Services.CreateScope())
 
   try
   {
-    Console.WriteLine("[DB] Deleting old database...");
-    await db.Database.EnsureDeletedAsync();
+    var created = await db.Database.EnsureCreatedAsync();
 
-    Console.WriteLine("[DB] Creating new database...");
-    await db.Database.EnsureCreatedAsync();
-
-    Console.WriteLine("[DB] Seeding data...");
-    await db.InitializeDataAsync();
+    if (created)
+    {
+      Console.WriteLine("[DB] Created new database. Seeding data...");
+      await db.InitializeDataAsync();
+    }
+    else
+    {
+      Console.WriteLine("[DB] Database already exists. Skipping seeding.");
+    }
 
     Console.WriteLine("[DB] Ready.");
   }
