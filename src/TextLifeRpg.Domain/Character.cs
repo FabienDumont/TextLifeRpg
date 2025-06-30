@@ -69,6 +69,11 @@ public class Character
   /// </summary>
   public int Money { get; set; }
 
+  /// <summary>
+  /// Represents the character's attributes such as intelligence, strength, and charisma.
+  /// </summary>
+  public CharacterAttributes Attributes { get; private set; }
+
   #endregion
 
   #region Ctors
@@ -77,7 +82,8 @@ public class Character
   /// Private constructor used internally.
   /// </summary>
   private Character(
-    Guid id, string name, DateOnly birthDate, BiologicalSex biologicalSex, int height, int weight, int muscleMass
+    Guid id, string name, DateOnly birthDate, BiologicalSex biologicalSex, int height, int weight, int muscleMass,
+    CharacterAttributes attributes
   )
   {
     Id = id;
@@ -87,6 +93,7 @@ public class Character
     Height = height;
     Weight = weight;
     MuscleMass = muscleMass;
+    Attributes = attributes;
   }
 
   #endregion
@@ -97,20 +104,22 @@ public class Character
   /// Factory method to create a new instance.
   /// </summary>
   public static Character Create(
-    string name, DateOnly birthDate, BiologicalSex biologicalSex, int height, int weight, int muscleMass
+    string name, DateOnly birthDate, BiologicalSex biologicalSex, int height, int weight, int muscleMass,
+    CharacterAttributes attributes
   )
   {
-    return new Character(Guid.NewGuid(), name, birthDate, biologicalSex, height, weight, muscleMass);
+    return new Character(Guid.NewGuid(), name, birthDate, biologicalSex, height, weight, muscleMass, attributes);
   }
 
   /// <summary>
   /// Factory method to load an existing instance from persistence.
   /// </summary>
   public static Character Load(
-    Guid id, string name, DateOnly birthDate, BiologicalSex biologicalSex, int height, int weight, int muscleMass
+    Guid id, string name, DateOnly birthDate, BiologicalSex biologicalSex, int height, int weight, int muscleMass,
+    CharacterAttributes attributes
   )
   {
-    return new Character(id, name, birthDate, biologicalSex, height, weight, muscleMass);
+    return new Character(id, name, birthDate, biologicalSex, height, weight, muscleMass, attributes);
   }
 
   /// <summary>

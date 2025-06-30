@@ -20,14 +20,24 @@ else
   <div class="trpg-layout-page">
     <h2 class="trpg-title-main"> @_character.Name</h2>
 
-    <p><strong>Age:</strong> @_character.GetAge(DateOnly.FromDateTime(GameSaveStore.CurrentSave!.World.CurrentDate))</p>
-    <p><strong>Sex:</strong> @_character.BiologicalSex</p>
-    <p><strong>Height:</strong> @_character.Height cm</p>
-    <p><strong>Weight:</strong> @_character.Weight kg</p>
-    <p><strong>Muscle mass:</strong> @MuscleMassOptionExtensions.FromKg(_character.MuscleMass).GetDisplayName()</p>
+    <h3 class="text-2xl">Basic informations</h3>
+    <div class="space-y-1">
+      <p><strong>Age:</strong> @_character.GetAge(DateOnly.FromDateTime(GameSaveStore.CurrentSave!.World.CurrentDate))
+      </p>
+      <p><strong>Sex:</strong> @_character.BiologicalSex</p>
+      <p><strong>Height:</strong> @_character.Height cm</p>
+      <p><strong>Weight:</strong> @_character.Weight kg</p>
+      <p><strong>Muscle mass:</strong> @MuscleMassOptionExtensions.FromKg(_character.MuscleMass).GetDisplayName()</p>
+    </div>
 
+    <h3 class="text-2xl">Attributes</h3>
+    <div class="space-y-1">
+      <p><strong>Intelligence:</strong> @_character.Attributes.Intelligence</p>
+      <p><strong>Strength:</strong> @_character.Attributes.Strength</p>
+      <p><strong>Charisma:</strong> @_character.Attributes.Charisma</p>
+    </div>
 
-    <h3 class="mt-4 text-lg font-semibold">Traits</h3>
+    <h3 class="text-2xl">Traits</h3>
     @if (_traits is null || _traits.Count == 0)
     {
       <p class="text-gray-500">No traits.</p>
@@ -37,12 +47,12 @@ else
       <div class="space-y-1">
         @foreach (var trait in _traits)
         {
-          <div>@trait.Name</div>
+          <p>@trait.Name</p>
         }
       </div>
     }
 
-    <h3 class="mt-4 text-lg font-semibold">Relationships</h3>
+    <h3 class="text-2xl">Relationships</h3>
 
     @if (_relationships is null || _relationships.Count == 0)
     {
@@ -53,7 +63,7 @@ else
       <div class="space-y-1">
         @foreach (var rel in _relationships)
         {
-          <div><strong>@rel.TargetName:</strong> @rel.Type</div>
+          <p><strong>@rel.TargetName:</strong> @rel.Type</p>
         }
       </div>
     }

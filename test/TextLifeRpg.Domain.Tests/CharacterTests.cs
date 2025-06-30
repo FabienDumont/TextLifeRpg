@@ -1,5 +1,4 @@
 ﻿using TextLifeRpg.Domain.Tests.Helpers;
-using TextLifeRpg.Domain;
 
 namespace TextLifeRpg.Domain.Tests;
 
@@ -17,7 +16,8 @@ public class CharacterTests
     const int height = 180;
     const int weight = 70;
     const int muscleMass = 5;
-    var character = Character.Create(name, birthDate, biologicalSex, height, weight, muscleMass);
+    var attributes = CharacterAttributes.Create(5, 5, 5);
+    var character = Character.Create(name, birthDate, biologicalSex, height, weight, muscleMass, attributes);
 
     // Assert
     Assert.NotNull(character);
@@ -27,6 +27,7 @@ public class CharacterTests
     Assert.Equal(height, character.Height);
     Assert.Equal(weight, character.Weight);
     Assert.Equal(muscleMass, character.MuscleMass);
+    Assert.Equal(attributes, character.Attributes);
     Assert.Null(character.LocationId);
     Assert.Null(character.RoomId);
   }
@@ -38,13 +39,14 @@ public class CharacterTests
     var id = Guid.NewGuid();
     const string name = "Player";
     var birthDate = new DateOnly(1990, 1, 1);
+    const BiologicalSex biologicalSex = BiologicalSex.Male;
     const int height = 180;
     const int weight = 70;
     const int muscleMass = 5;
-    const BiologicalSex biologicalSex = BiologicalSex.Male;
+    var attributes = CharacterAttributes.Create(5, 5, 5);
 
     // Act
-    var character = Character.Load(id, name, birthDate, biologicalSex, height, weight, muscleMass);
+    var character = Character.Load(id, name, birthDate, biologicalSex, height, weight, muscleMass, attributes);
 
     // Assert
     Assert.Equal(id, character.Id);
@@ -53,6 +55,7 @@ public class CharacterTests
     Assert.Equal(height, character.Height);
     Assert.Equal(weight, character.Weight);
     Assert.Equal(muscleMass, character.MuscleMass);
+    Assert.Equal(attributes, character.Attributes);
     Assert.Null(character.LocationId);
     Assert.Null(character.RoomId);
   }
