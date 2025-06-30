@@ -18,7 +18,7 @@ public interface IRelationshipService
   /// Generate children from couples.
   /// </summary>
   Task<(List<Character> children, List<Relationship> relationships)> GenerateChildrenFromCouplesAsync(
-    List<(Character parentA, Character parentB)> couples, DateOnly currentDate
+    List<(Character parentA, Character parentB)> couples, World world, CancellationToken cancellationToken
   );
 
   #endregion

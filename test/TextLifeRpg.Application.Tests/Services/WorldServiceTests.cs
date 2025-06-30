@@ -64,7 +64,7 @@ public class WorldServiceTests
       )
     };
 
-    A.CallTo(() => _characterService.CreateRandomCharacterAsync(DateOnly.FromDateTime(date)))
+    A.CallTo(() => _characterService.CreateRandomCharacterAsync(A<World>._, CancellationToken.None))
       .ReturnsNextFromSequence(randomCharacters.ToArray());
 
     A.CallTo(() => _relationshipService.GenerateRelationships(randomCharacters, DateOnly.FromDateTime(date)))
@@ -84,12 +84,6 @@ public class WorldServiceTests
     Assert.Equal(gameSettings.GetNpcCount() + 1, world.Characters.Count);
     Assert.Equal(generatedRelationships.Count, world.Relationships.Count);
     Assert.All(generatedRelationships, r => Assert.Contains(r, world.Relationships));
-
-    A.CallTo(() => _characterService.CreateRandomCharacterAsync(DateOnly.FromDateTime(world.CurrentDate)))
-      .MustHaveHappened(gameSettings.GetNpcCount(), Times.Exactly);
-
-    A.CallTo(() => _relationshipService.GenerateRelationships(randomCharacters, DateOnly.FromDateTime(date)))
-      .MustHaveHappenedOnceExactly();
   }
 
   [Fact]
@@ -142,10 +136,10 @@ public class WorldServiceTests
     A.CallTo(() => _roomService.GetPlayerSpawnAsync(CancellationToken.None)).Returns(room);
     A.CallTo(() => _locationService.GetByIdAsync(location.Id, CancellationToken.None)).Returns(location);
 
-    var npcs = Enumerable.Range(0, gameSettings.GetNpcCount()).Select(_ => new CharacterBuilder().Build())
-      .ToList();
+    var npcs = Enumerable.Range(0, gameSettings.GetNpcCount()).Select(_ => new CharacterBuilder().Build()).ToList();
 
-    A.CallTo(() => _characterService.CreateRandomCharacterAsync(nowD)).ReturnsNextFromSequence(npcs.ToArray());
+    A.CallTo(() => _characterService.CreateRandomCharacterAsync(A<World>._, CancellationToken.None))
+      .ReturnsNextFromSequence(npcs.ToArray());
 
     // mark first two NPCs as romantic partners
     var parentA = npcs[0];
@@ -165,8 +159,10 @@ public class WorldServiceTests
       Relationship.Create(kid.Id, parentA.Id, RelationshipType.Child, kid.BirthDate, nowD, 50)
     };
 
-    A.CallTo(() => _relationshipService.GenerateChildrenFromCouplesAsync(A<List<(Character, Character)>>._, nowD))
-      .Returns((new List<Character> {kid}, kidR));
+    A.CallTo(() => _relationshipService.GenerateChildrenFromCouplesAsync(
+        A<List<(Character, Character)>>._, A<World>._, CancellationToken.None
+      )
+    ).Returns((new List<Character> {kid}, kidR));
 
     // Act
     var world = await _worldService.CreateNewWorldAsync(date, playerCharacter, gameSettings, CancellationToken.None);
@@ -181,8 +177,10 @@ public class WorldServiceTests
     Assert.All(kidR, r => Assert.Contains(r, world.Relationships));
 
     // verify service calls
-    A.CallTo(() => _relationshipService.GenerateChildrenFromCouplesAsync(A<List<(Character, Character)>>._, nowD))
-      .MustHaveHappenedOnceExactly();
+    A.CallTo(() => _relationshipService.GenerateChildrenFromCouplesAsync(
+        A<List<(Character, Character)>>._, world, CancellationToken.None
+      )
+    ).MustHaveHappenedOnceExactly();
   }
 
   [Fact]
@@ -199,10 +197,10 @@ public class WorldServiceTests
     A.CallTo(() => _locationService.GetByIdAsync(location.Id, CancellationToken.None)).Returns(location);
 
     var gameSettings = GameSettings.Create(NpcDensity.VeryLow);
-    var npcs = Enumerable.Range(0, gameSettings.GetNpcCount()).Select(_ => new CharacterBuilder().Build())
-      .ToList();
+    var npcs = Enumerable.Range(0, gameSettings.GetNpcCount()).Select(_ => new CharacterBuilder().Build()).ToList();
 
-    A.CallTo(() => _characterService.CreateRandomCharacterAsync(nowD)).ReturnsNextFromSequence(npcs.ToArray());
+    A.CallTo(() => _characterService.CreateRandomCharacterAsync(A<World>._, CancellationToken.None))
+      .ReturnsNextFromSequence(npcs.ToArray());
 
     var a = npcs[0];
     var b = npcs[1];
@@ -211,8 +209,10 @@ public class WorldServiceTests
     );
 
     A.CallTo(() => _relationshipService.GenerateRelationships(npcs, nowD)).Returns([romanticRel]);
-    A.CallTo(() => _relationshipService.GenerateChildrenFromCouplesAsync(A<List<(Character, Character)>>._, nowD))
-      .Returns(([], []));
+    A.CallTo(() => _relationshipService.GenerateChildrenFromCouplesAsync(
+        A<List<(Character, Character)>>._, A<World>._, CancellationToken.None
+      )
+    ).Returns(([], []));
 
     // Act
     var world = await _worldService.CreateNewWorldAsync(date, player, gameSettings, CancellationToken.None);

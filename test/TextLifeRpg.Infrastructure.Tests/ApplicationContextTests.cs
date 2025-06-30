@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TextLifeRpg.Infrastructure;
 using TextLifeRpg.Infrastructure.EfDataModels;
 
 namespace TextLifeRpg.Infrastructure.Tests;
@@ -59,6 +58,7 @@ public class ApplicationContextTests
     Assert.NotEmpty(await context.Greetings.ToListAsync());
     Assert.NotEmpty(await context.Locations.ToListAsync());
     Assert.NotEmpty(await context.Rooms.ToListAsync());
+    Assert.NotEmpty(await context.Jobs.ToListAsync());
   }
 
   #endregion

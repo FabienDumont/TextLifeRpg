@@ -34,7 +34,7 @@ public class WorldService(
     var npcs = new List<Character>();
     for (var i = 0; i < gameSettings.GetNpcCount(); i++)
     {
-      var npc = await characterService.CreateRandomCharacterAsync(DateOnly.FromDateTime(date));
+      var npc = await characterService.CreateRandomCharacterAsync(world, cancellationToken);
       world.AddCharacter(npc);
       npcs.Add(npc);
     }
@@ -53,7 +53,7 @@ public class WorldService(
     ).ToList();
 
     var (children, childRelationships) = await relationshipService.GenerateChildrenFromCouplesAsync(
-      couples, DateOnly.FromDateTime(world.CurrentDate)
+      couples, world, cancellationToken
     );
 
     foreach (var child in children)
@@ -63,9 +63,7 @@ public class WorldService(
 
     world.AddRelationships(childRelationships);
 
-    world.SetSchedules(
-      await scheduleService.GenerateSchedulesAsync(npcs, cancellationToken)
-    );
+    world.SetSchedules(await scheduleService.GenerateSchedulesAsync(npcs, cancellationToken));
 
     RefreshCharactersLocation(world, playerCharacter.Id);
 

@@ -16,11 +16,13 @@ public class CharacterMapperTests
     var id = Guid.NewGuid();
     var trait1 = Guid.NewGuid();
     var trait2 = Guid.NewGuid();
+    var jobId = Guid.NewGuid();
     var dataModel = new CharacterDataModel
     {
       Id = id,
       Name = "Guts",
-      TraitsId = [trait1, trait2]
+      TraitsId = [trait1, trait2],
+      JobId = jobId
     };
 
     // Act

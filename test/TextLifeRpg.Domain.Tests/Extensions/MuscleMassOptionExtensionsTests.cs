@@ -1,5 +1,4 @@
-﻿using TextLifeRpg.Domain;
-using TextLifeRpg.Domain.Extensions;
+﻿using TextLifeRpg.Domain.Extensions;
 
 namespace TextLifeRpg.Domain.Tests.Extensions;
 

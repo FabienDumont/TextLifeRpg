@@ -28,7 +28,7 @@ public class RelationshipService(
 
   /// <inheritdoc />
   public async Task<(List<Character> children, List<Relationship> relationships)> GenerateChildrenFromCouplesAsync(
-    List<(Character parentA, Character parentB)> couples, DateOnly currentDate
+    List<(Character parentA, Character parentB)> couples, World world, CancellationToken cancellationToken
   )
   {
     var allChildren = new List<Character>();
@@ -49,17 +49,29 @@ public class RelationshipService(
         var mother = parentA.BiologicalSex == BiologicalSex.Female ? parentA : parentB;
         var father = mother == parentA ? parentB : parentA;
 
-        var child = await characterService.CreateChildAsync(mother, father, currentDate);
+        var child = await characterService.CreateChildAsync(mother, father, world, cancellationToken);
         allChildren.Add(child);
         siblings.Add(child);
 
         // Parent → Child and Child → Parent
         allRelationships.AddRange(
           [
-            Relationship.Create(parentA.Id, child.Id, RelationshipType.Parent, child.BirthDate, currentDate, 50),
-            Relationship.Create(parentB.Id, child.Id, RelationshipType.Parent, child.BirthDate, currentDate, 50),
-            Relationship.Create(child.Id, parentA.Id, RelationshipType.Child, child.BirthDate, currentDate, 50),
-            Relationship.Create(child.Id, parentB.Id, RelationshipType.Child, child.BirthDate, currentDate, 50)
+            Relationship.Create(
+              parentA.Id, child.Id, RelationshipType.Parent, child.BirthDate, DateOnly.FromDateTime(world.CurrentDate),
+              50
+            ),
+            Relationship.Create(
+              parentB.Id, child.Id, RelationshipType.Parent, child.BirthDate, DateOnly.FromDateTime(world.CurrentDate),
+              50
+            ),
+            Relationship.Create(
+              child.Id, parentA.Id, RelationshipType.Child, child.BirthDate, DateOnly.FromDateTime(world.CurrentDate),
+              50
+            ),
+            Relationship.Create(
+              child.Id, parentB.Id, RelationshipType.Child, child.BirthDate, DateOnly.FromDateTime(world.CurrentDate),
+              50
+            )
           ]
         );
       }
@@ -74,8 +86,12 @@ public class RelationshipService(
 
           allRelationships.AddRange(
             [
-              Relationship.Create(sibA.Id, sibB.Id, RelationshipType.Sibling, sibA.BirthDate, currentDate, 50),
-              Relationship.Create(sibB.Id, sibA.Id, RelationshipType.Sibling, sibB.BirthDate, currentDate, 50)
+              Relationship.Create(
+                sibA.Id, sibB.Id, RelationshipType.Sibling, sibA.BirthDate, DateOnly.FromDateTime(world.CurrentDate), 50
+              ),
+              Relationship.Create(
+                sibB.Id, sibA.Id, RelationshipType.Sibling, sibB.BirthDate, DateOnly.FromDateTime(world.CurrentDate), 50
+              )
             ]
           );
         }
