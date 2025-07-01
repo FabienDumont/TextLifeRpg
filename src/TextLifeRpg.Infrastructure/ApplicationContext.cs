@@ -78,6 +78,11 @@ public class ApplicationContext : DbContext
   /// </summary>
   public virtual DbSet<JobDataModel> Jobs { get; init; }
 
+  /// <summary>
+  /// Represents all items in the database.
+  /// </summary>
+  public virtual DbSet<ItemDataModel> Items { get; init; }
+
   #endregion
 
   #region Ctors
@@ -117,7 +122,8 @@ public class ApplicationContext : DbContext
       new LocationSeeder(),
       new ExplorationActionSeeder(),
       new NarrationSeeder(),
-      new JobSeeder()
+      new JobSeeder(),
+      new ItemSeeder()
     };
 
     foreach (var seeder in seeders)

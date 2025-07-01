@@ -4,31 +4,31 @@ using TextLifeRpg.Infrastructure.EfRepositories;
 
 namespace TextLifeRpg.Infrastructure.Tests.EfRepositories;
 
-public class JobRepositoryTests
+public class ItemRepositoryTests
 {
   #region Fields
 
-  private readonly List<JobDataModel> _jobs;
-  private readonly JobRepository _repository;
+  private readonly List<ItemDataModel> _items;
+  private readonly ItemRepository _repository;
 
   #endregion
 
   #region Ctors
 
-  public JobRepositoryTests()
+  public ItemRepositoryTests()
   {
     var context = A.Fake<ApplicationContext>();
 
-    _jobs =
+    _items =
     [
-      new JobDataModel {Id = Guid.NewGuid(), Name = "Cashier", HourIncome = int.MinValue, MaxWorkers = int.MinValue},
-      new JobDataModel {Id = Guid.NewGuid(), Name = "Mechanic", HourIncome = int.MinValue, MaxWorkers = int.MinValue}
+      new ItemDataModel {Id = Guid.NewGuid(), Name = "Key"},
+      new ItemDataModel {Id = Guid.NewGuid(), Name = "Badge"}
     ];
 
-    var mockDbSet = _jobs.AsQueryable().BuildMockDbSet();
-    A.CallTo(() => context.Jobs).Returns(mockDbSet);
+    var mockDbSet = _items.AsQueryable().BuildMockDbSet();
+    A.CallTo(() => context.Items).Returns(mockDbSet);
 
-    _repository = new JobRepository(context);
+    _repository = new ItemRepository(context);
   }
 
   #endregion
@@ -36,10 +36,10 @@ public class JobRepositoryTests
   #region Tests
 
   [Fact]
-  public async Task GetById_ShouldReturnMappedJob_WhenItExists()
+  public async Task GetById_ShouldReturnMappedItem_WhenItExists()
   {
     // Arrange
-    var existing = _jobs[1];
+    var existing = _items[1];
 
     // Act
     var result = await _repository.GetByIdAsync(existing.Id, CancellationToken.None);
@@ -51,10 +51,10 @@ public class JobRepositoryTests
   }
 
   [Fact]
-  public async Task GetByNameAsync_ShouldReturnMappedJob_WhenExists()
+  public async Task GetByNameAsync_ShouldReturnMappedItem_WhenExists()
   {
     // Arrange
-    var target = _jobs[1];
+    var target = _items[1];
 
     // Act
     var result = await _repository.GetByNameAsync(target.Name, CancellationToken.None);
@@ -63,7 +63,6 @@ public class JobRepositoryTests
     Assert.NotNull(result);
     Assert.Equal(target.Id, result.Id);
     Assert.Equal(target.Name, result.Name);
-    Assert.Equal(target.HourIncome, result.HourIncome);
   }
 
   [Fact]
@@ -77,15 +76,15 @@ public class JobRepositoryTests
   }
 
   [Fact]
-  public async Task GetAllAsync_ShouldReturnMappedJobs()
+  public async Task GetAllAsync_ShouldReturnMappedItems()
   {
     var result = await _repository.GetAllAsync(CancellationToken.None);
 
     Assert.NotNull(result);
-    Assert.Equal(_jobs.Count, result.Count);
-    foreach (var job in _jobs)
+    Assert.Equal(_items.Count, result.Count);
+    foreach (var item in _items)
     {
-      Assert.Contains(result, r => r.Id == job.Id);
+      Assert.Contains(result, r => r.Id == item.Id);
     }
   }
 

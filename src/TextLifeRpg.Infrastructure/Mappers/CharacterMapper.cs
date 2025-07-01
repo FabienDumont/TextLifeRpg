@@ -33,6 +33,8 @@ public static class CharacterMapper
       character.SetJob(dataModel.JobId.Value);
     }
 
+    character.AddInventoryEntries(dataModel.InventoryEntries.ToDomainCollection());
+
     return character;
   }
 
@@ -64,7 +66,8 @@ public static class CharacterMapper
         Energy = u.Energy,
         Money = u.Money,
         Attributes = u.Attributes.ToDataModel(),
-        JobId = u.JobId
+        JobId = u.JobId,
+        InventoryEntries = u.InventoryEntries.ToDataModelCollection()
       }
     );
   }

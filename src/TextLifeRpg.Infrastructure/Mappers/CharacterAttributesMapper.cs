@@ -2,8 +2,11 @@
 using TextLifeRpg.Domain;
 using TextLifeRpg.Infrastructure.JsonDataModels;
 
+namespace TextLifeRpg.Infrastructure.Mappers;
+
 /// <summary>
-///
+/// Mapper for converting between <see cref="CharacterAttributes" /> domain models and <see cref="CharacterAttributesDataModel" /> JSON data
+/// models.
 /// </summary>
 public static class CharacterAttributesMapper
 {
@@ -15,7 +18,6 @@ public static class CharacterAttributesMapper
   public static CharacterAttributes ToDomain(this CharacterAttributesDataModel dataModel)
   {
     return CharacterAttributes.Create(dataModel.Intelligence, dataModel.Strength, dataModel.Charisma);
-    ;
   }
 
   /// <summary>

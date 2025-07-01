@@ -115,5 +115,85 @@ public class CharacterTests
     Assert.Equal(expectedAge, age);
   }
 
+  [Fact]
+  public void AddItemToInventory_ShouldAddNewEntry_WhenItemNotPresent()
+  {
+    // Arrange
+    var character = new CharacterBuilder().Build();
+    var itemId = Guid.NewGuid();
+
+    // Act
+    character.AddItemToInventory(itemId, 3);
+
+    // Assert
+    var entry = character.InventoryEntries.FirstOrDefault(i => i.ItemId == itemId);
+    Assert.NotNull(entry);
+    Assert.Equal(3, entry.Quantity);
+  }
+
+  [Fact]
+  public void AddItemToInventory_ShouldIncreaseQuantity_WhenItemAlreadyExists()
+  {
+    // Arrange
+    var character = new CharacterBuilder().Build();
+    var itemId = Guid.NewGuid();
+    character.AddItemToInventory(itemId, 2);
+
+    // Act
+    character.AddItemToInventory(itemId, 5);
+
+    // Assert
+    var entry = character.InventoryEntries.FirstOrDefault(i => i.ItemId == itemId);
+    Assert.NotNull(entry);
+    Assert.Equal(7, entry.Quantity);
+  }
+
+  [Fact]
+  public void RemoveItemFromInventory_ShouldDecreaseQuantity_WhenItemExists()
+  {
+    // Arrange
+    var character = new CharacterBuilder().Build();
+    var itemId = Guid.NewGuid();
+    character.AddItemToInventory(itemId, 5);
+
+    // Act
+    character.RemoveItemFromInventory(itemId, 3);
+
+    // Assert
+    var entry = character.InventoryEntries.FirstOrDefault(i => i.ItemId == itemId);
+    Assert.NotNull(entry);
+    Assert.Equal(2, entry.Quantity);
+  }
+
+  [Fact]
+  public void RemoveItemFromInventory_ShouldRemoveEntry_WhenQuantityReachesZero()
+  {
+    // Arrange
+    var character = new CharacterBuilder().Build();
+    var itemId = Guid.NewGuid();
+    character.AddItemToInventory(itemId, 3);
+
+    // Act
+    character.RemoveItemFromInventory(itemId, 3);
+
+    // Assert
+    var entry = character.InventoryEntries.FirstOrDefault(i => i.ItemId == itemId);
+    Assert.Null(entry); // Should be removed
+  }
+
+  [Fact]
+  public void RemoveItemFromInventory_ShouldDoNothing_WhenItemDoesNotExist()
+  {
+    // Arrange
+    var character = new CharacterBuilder().Build();
+    var itemId = Guid.NewGuid();
+
+    // Act
+    character.RemoveItemFromInventory(itemId, 3);
+
+    // Assert
+    Assert.Empty(character.InventoryEntries);
+  }
+
   #endregion
 }

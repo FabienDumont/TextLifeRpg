@@ -14,7 +14,7 @@ public interface IJobService
   /// </summary>
   /// <param name="id">The job identifier.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
-  /// <returns>The corresponding trait.</returns>
+  /// <returns>The corresponding job.</returns>
   Task<Job?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
   /// <summary>
@@ -22,7 +22,7 @@ public interface IJobService
   /// </summary>
   /// <param name="name">The job name.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
-  /// <returns>The corresponding trait.</returns>
+  /// <returns>The corresponding job.</returns>
   Task<Job?> GetByNameAsync(string name, CancellationToken cancellationToken);
 
   /// <summary>

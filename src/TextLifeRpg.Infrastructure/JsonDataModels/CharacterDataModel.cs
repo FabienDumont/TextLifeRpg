@@ -79,5 +79,10 @@ public class CharacterDataModel
   /// </summary>
   public Guid? JobId { get; set; }
 
+  /// <summary>
+  /// Represents the character's inventory entries.
+  /// </summary>
+  public List<InventoryEntryDataModel> InventoryEntries { get; init; } = [];
+
   #endregion
 }
