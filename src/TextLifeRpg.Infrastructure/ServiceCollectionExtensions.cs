@@ -34,6 +34,8 @@ public static class ServiceCollectionExtensions
     services.AddScoped<IExplorationActionResultRepository, ExplorationActionResultRepository>();
     services.AddScoped<IExplorationActionResultNarrationRepository, ExplorationActionResultNarrationRepository>();
     services.AddScoped<IJobRepository, JobRepository>();
+    services.AddScoped<IItemRepository, ItemRepository>();
+
     services.AddScoped<IGameSaveRepository, GameSaveJsonRepository>();
 
     var dataDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");

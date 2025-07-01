@@ -43,6 +43,7 @@ public static class ServiceCollectionExtensions
     services.AddScoped<IExplorationActionResultService, ExplorationActionResultService>();
     services.AddScoped<IExplorationActionResultNarrationService, ExplorationActionResultNarrationService>();
     services.AddScoped<IJobService, JobService>();
+    services.AddScoped<IItemService, ItemService>();
   }
 
   #endregion

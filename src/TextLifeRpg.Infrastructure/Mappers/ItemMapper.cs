@@ -5,24 +5,24 @@ using TextLifeRpg.Infrastructure.EfDataModels;
 namespace TextLifeRpg.Infrastructure.Mappers;
 
 /// <summary>
-/// Mapper for converting between <see cref="Job" /> domain models and <see cref="JobDataModel" /> JSON data models.
+/// Mapper for converting between <see cref="Item" /> domain models and <see cref="ItemDataModel" /> EF data models.
 /// </summary>
-public static class JobMapper
+public static class ItemMapper
 {
   #region Methods
 
   /// <summary>
   /// Maps an EF data model to its domain counterpart.
   /// </summary>
-  public static Job ToDomain(this JobDataModel dataModel)
+  public static Item ToDomain(this ItemDataModel dataModel)
   {
-    return dataModel.Map(i => Job.Load(i.Id, i.Name, i.HourIncome, i.MaxWorkers));
+    return dataModel.Map(i => Item.Load(i.Id, i.Name));
   }
 
   /// <summary>
   /// Maps a collection of EF data models to domain models.
   /// </summary>
-  public static List<Job> ToDomainCollection(this IEnumerable<JobDataModel> dataModels)
+  public static List<Item> ToDomainCollection(this IEnumerable<ItemDataModel> dataModels)
   {
     return dataModels.MapCollection(ToDomain);
   }
@@ -30,14 +30,12 @@ public static class JobMapper
   /// <summary>
   /// Maps a domain model to its EF data model counterpart.
   /// </summary>
-  public static JobDataModel ToDataModel(this Job domain)
+  public static ItemDataModel ToDataModel(this Item domain)
   {
-    return domain.Map(u => new JobDataModel
+    return domain.Map(u => new ItemDataModel
       {
         Id = u.Id,
-        Name = u.Name,
-        HourIncome = u.HourIncome,
-        MaxWorkers = u.MaxWorkers
+        Name = u.Name
       }
     );
   }

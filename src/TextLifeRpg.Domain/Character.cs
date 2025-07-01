@@ -79,6 +79,11 @@ public class Character
   /// </summary>
   public Guid? JobId { get; set; }
 
+  /// <summary>
+  /// The character's inventory entries.
+  /// </summary>
+  public List<InventoryEntry> InventoryEntries { get; } = [];
+
   #endregion
 
   #region Ctors
@@ -167,6 +172,53 @@ public class Character
   public void SetJob(Guid jobId)
   {
     JobId = jobId;
+  }
+
+  /// <summary>
+  /// Adds inventory entries to the character's inventory.
+  /// </summary>
+  public void AddInventoryEntries(IEnumerable<InventoryEntry> inventoryEntries)
+  {
+    InventoryEntries.AddRange(inventoryEntries);
+  }
+
+  /// <summary>
+  /// Adds an item to the character's inventory or updates the quantity if the item already exists in the inventory.
+  /// </summary>
+  /// <param name="itemId">The unique identifier of the item to be added to the inventory.</param>
+  /// <param name="quantity">The quantity of the item to be added.</param>
+  public void AddItemToInventory(Guid itemId, int quantity)
+  {
+    var entry = InventoryEntries.FirstOrDefault(i => i.ItemId == itemId);
+    if (entry != null)
+    {
+      entry.Add(quantity);
+    }
+    else
+    {
+      InventoryEntries.Add(InventoryEntry.Create(itemId, quantity));
+    }
+  }
+
+  /// <summary>
+  /// Removes a specified quantity of an item from the character's inventory.
+  /// If the item's quantity reaches zero, the item is removed from the inventory.
+  /// </summary>
+  /// <param name="itemId">The unique identifier of the item to be removed.</param>
+  /// <param name="quantity">The amount of the item to be removed from the inventory.</param>
+  public void RemoveItemFromInventory(Guid itemId, int quantity)
+  {
+    var entry = InventoryEntries.FirstOrDefault(i => i.ItemId == itemId);
+    if (entry == null)
+    {
+      return;
+    }
+
+    entry.Remove(quantity);
+    if (entry.Quantity == 0)
+    {
+      InventoryEntries.Remove(entry);
+    }
   }
 
   #endregion

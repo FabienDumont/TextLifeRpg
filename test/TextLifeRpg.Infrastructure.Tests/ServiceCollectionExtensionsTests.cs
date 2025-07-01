@@ -68,6 +68,11 @@ public class ServiceCollectionExtensionsTests
     var jobRepo = provider.GetService<IJobRepository>();
     Assert.NotNull(jobRepo);
     Assert.IsType<JobRepository>(jobRepo);
+
+    // JobRepository
+    var itemRepo = provider.GetService<IItemRepository>();
+    Assert.NotNull(itemRepo);
+    Assert.IsType<ItemRepository>(itemRepo);
   }
 
   #endregion

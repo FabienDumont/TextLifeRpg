@@ -4,6 +4,10 @@ using TextLifeRpg.Infrastructure.JsonDataModels;
 
 namespace TextLifeRpg.Infrastructure.Mappers;
 
+/// <summary>
+/// Mapper for converting between <see cref="TextLine" /> domain models
+/// and <see cref="TextLineDataModel" /> JSON data models.
+/// </summary>
 public static class TextLineMapper
 {
   #region Methods
