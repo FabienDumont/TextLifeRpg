@@ -44,7 +44,7 @@ public class DialogueServiceTests
     Assert.NotNull(result);
     Assert.Equal(expectedGreeting.Id, result.Id);
     A.CallTo(() => _greetingRepository.GetAsync(
-        A<GameContext>.That.Matches(ctx => ctx.Actor == player && ctx.Target == npc && ctx.World == world),
+        A<GameContext>.That.Matches(ctx => ctx.Actor == npc && ctx.Target == player && ctx.World == world),
         A<CancellationToken>._
       )
     ).MustHaveHappenedOnceExactly();
