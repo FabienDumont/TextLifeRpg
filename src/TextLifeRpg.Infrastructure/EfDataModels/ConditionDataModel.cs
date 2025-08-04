@@ -56,8 +56,8 @@ public enum ContextType
 /// </summary>
 public enum ConditionType
 {
-  ActorHasTrait = 0,
-  ActorEnergy = 1,
-  ActorRelationship = 2,
-  ActorMoney = 3
+  ActorHasTrait,
+  ActorEnergy,
+  ActorRelationship,
+  ActorMoney
 }

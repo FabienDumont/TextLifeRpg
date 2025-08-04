@@ -32,24 +32,18 @@
 
     @if (_npcsInLocation.Count > 0)
     {
-      <div class="mt-4 w-full overflow-y-auto pt-2 px-2">
+      <div class="flex flex-col mt-4 w-full overflow-y-auto pt-2 px-2">
         @foreach (var npc in _npcsInLocation.OrderBy(n => n.Name))
         {
-          var colorKey = CharacterColorHelper.GetColorKey(npc, GameSaveStore.CurrentSave!.PlayerCharacterId);
-          var colorClass = colorKey switch
-          {
-            CharacterColor.Yellow => "text-yellow-400",
-            CharacterColor.Blue => "text-blue-400",
-            CharacterColor.Pink => "text-pink-400",
-            CharacterColor.Purple => "text-purple-400",
-            _ => ""
-          };
+          var color = CharacterColorHelper.GetColorKey(npc, GameSaveStore.CurrentSave!.PlayerCharacterId).ToTailwindClass();
 
-          <p
-            class="cursor-pointer @(colorClass)"
-            @onclick="async () => await OnNpcClickedInternal(npc)">
+          <span
+            class="cursor-pointer @color"
+            @onclick="async () => await OnNpcClickedInternal(npc)"
+            @oncontextmenu:preventDefault="true"
+            @oncontextmenu="@(async () => await OnNpcRightClickedInternal(npc))">
             @npc.Name
-          </p>
+          </span>
         }
       </div>
     }
@@ -68,6 +62,12 @@
   /// </summary>
   [Parameter, EditorRequired]
   public EventCallback<Character> OnNpcClicked { get; set; }
+
+  /// <summary>
+  /// Callback invoked when the user right clicks on a NPC's name.
+  /// </summary>
+  [Parameter, EditorRequired]
+  public EventCallback<Character> OnNpcRightClicked { get; set; }
 
   /// <summary>
   /// Registers for game state changes and initializes location display.
@@ -156,6 +156,14 @@
   private async Task OnNpcClickedInternal(Character npc)
   {
     await OnNpcClicked.InvokeAsync(npc);
+  }
+
+  /// <summary>
+  /// Triggers the OnNpcRightClicked callback.
+  /// </summary>
+  private async Task OnNpcRightClickedInternal(Character npc)
+  {
+    await OnNpcRightClicked.InvokeAsync(npc);
   }
 
   /// <summary>

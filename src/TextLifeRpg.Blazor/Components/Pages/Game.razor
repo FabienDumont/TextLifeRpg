@@ -1,7 +1,9 @@
 ﻿@page "/game"
+@using TextLifeRpg.Application.Abstraction
 @inject GameSaveStore GameSaveStore
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
+@inject IDialogueService DialogueService
 
 @rendermode InteractiveServer
 
@@ -59,7 +61,7 @@ else
     </div>
 
     <div class="col-span-2 bg-slate-200">
-      <RightGameSidebar OnNpcClicked="OpenCharacterDetails"/>
+      <RightGameSidebar OnNpcClicked="OpenCharacterDetails" OnNpcRightClicked="StartDialogueAsync"/>
     </div>
 
   </div>
@@ -105,6 +107,22 @@ else
   {
     Navigation.NavigateTo($"/characterdetails/{character.Id}");
     StateHasChanged();
+  }
+
+  private async Task StartDialogueAsync(Character character)
+  {
+    try
+    {
+      var greeting = await DialogueService.GetGreetingAsync(GameSaveStore.CurrentSave!, character, CancellationToken.None);
+      GameSaveStore.CurrentSave!.TextLines.Clear();
+      var textParts = new List<TextPart>([new TextPart(CharacterColorHelper.GetColorKey(character, GameSaveStore.CurrentSave!.PlayerCharacterId), $"{character.Name}"), new TextPart(null, $" : {greeting.SpokenText}")]);
+      GameSaveStore.CurrentSave!.AddText(textParts);
+      StateHasChanged();
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"Failed to start dialogue: {ex.Message}");
+    }
   }
 
   /// <summary>

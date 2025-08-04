@@ -71,7 +71,7 @@ public class GreetingSeeder : IDataSeeder
       greetings.Add(greeting);
 
       var traitId = traitMap[trait].Id;
-      conditions.AddRange(ConditionBuilder.BuildTraitConditions(ContextType.Greeting, greeting.Id, [traitId]));
+      conditions.AddRange(ConditionBuilder.BuildActorTraitConditions(ContextType.Greeting, greeting.Id, [traitId]));
 
       AddRelationshipConditions(greeting.Id, min, max);
     }

@@ -77,9 +77,9 @@ public static class ConditionBuilder
   /// <param name="contextType">The type of the context the conditions apply to.</param>
   /// <param name="contextId">The identifier of the context entity.</param>
   /// <param name="traitIds">The traits required to satisfy the conditions.</param>
-  /// <param name="negate">Whether or not the trait check should be negated.</param>
+  /// <param name="negate">Whether the trait check should be negated.</param>
   /// <returns>A list of trait conditions.</returns>
-  public static IEnumerable<ConditionDataModel> BuildTraitConditions(
+  public static IEnumerable<ConditionDataModel> BuildActorTraitConditions(
     ContextType contextType, Guid contextId, IEnumerable<Guid> traitIds, bool negate = false
   )
   {
