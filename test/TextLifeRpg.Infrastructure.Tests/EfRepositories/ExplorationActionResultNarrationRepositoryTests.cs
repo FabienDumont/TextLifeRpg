@@ -61,8 +61,8 @@ public class ExplorationActionResultNarrationRepositoryTests
       }
     };
 
-    var narrationDbSet = narrations.AsQueryable().BuildMockDbSet();
-    var conditionDbSet = conditions.AsQueryable().BuildMockDbSet();
+    var narrationDbSet = narrations.BuildMockDbSet();
+    var conditionDbSet = conditions.BuildMockDbSet();
 
     var context = A.Fake<ApplicationContext>();
     A.CallTo(() => context.ExplorationActionResultNarrations).Returns(narrationDbSet);
@@ -119,8 +119,8 @@ public class ExplorationActionResultNarrationRepositoryTests
       }
     };
 
-    var narrationDbSet = narrations.AsQueryable().BuildMockDbSet();
-    var conditionDbSet = conditions.AsQueryable().BuildMockDbSet();
+    var narrationDbSet = narrations.BuildMockDbSet();
+    var conditionDbSet = conditions.BuildMockDbSet();
 
     var context = A.Fake<ApplicationContext>();
     A.CallTo(() => context.ExplorationActionResultNarrations).Returns(narrationDbSet);

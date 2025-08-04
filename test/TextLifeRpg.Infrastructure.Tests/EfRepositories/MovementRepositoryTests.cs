@@ -56,9 +56,9 @@ public class MovementRepositoryTests
     };
 
     var context = A.Fake<ApplicationContext>();
-    A.CallTo(() => context.Movements).Returns(movementDataModels.AsQueryable().BuildMockDbSet());
-    A.CallTo(() => context.Rooms).Returns(roomDataModels.AsQueryable().BuildMockDbSet());
-    A.CallTo(() => context.Locations).Returns(locationDataModels.AsQueryable().BuildMockDbSet());
+    A.CallTo(() => context.Movements).Returns(movementDataModels.BuildMockDbSet());
+    A.CallTo(() => context.Rooms).Returns(roomDataModels.BuildMockDbSet());
+    A.CallTo(() => context.Locations).Returns(locationDataModels.BuildMockDbSet());
     A.CallTo(() => context.SaveChangesAsync(A<CancellationToken>._)).Returns(Task.FromResult(1));
 
     _repository = new MovementRepository(context);

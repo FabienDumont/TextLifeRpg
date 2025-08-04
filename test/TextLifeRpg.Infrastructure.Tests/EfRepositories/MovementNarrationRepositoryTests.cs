@@ -32,7 +32,7 @@ public class MovementNarrationRepositoryTests
 
     var context = A.Fake<ApplicationContext>();
 
-    var narrationDbSet = narrationDataModels.AsQueryable().BuildMockDbSet();
+    var narrationDbSet = narrationDataModels.BuildMockDbSet();
 
     A.CallTo(() => context.MovementNarrations).Returns(narrationDbSet);
     A.CallTo(() => context.SaveChangesAsync(A<CancellationToken>._)).Returns(Task.FromResult(1));

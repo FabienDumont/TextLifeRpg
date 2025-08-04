@@ -23,10 +23,10 @@ public class GreetingRepositoryTests
   {
     var context = A.Fake<ApplicationContext>();
 
-    var greetingDbSet = _greetingData.AsQueryable().BuildMockDbSet();
+    var greetingDbSet = _greetingData.BuildMockDbSet();
     A.CallTo(() => context.Greetings).Returns(greetingDbSet);
 
-    var conditionDbSet = _conditionData.AsQueryable().BuildMockDbSet();
+    var conditionDbSet = _conditionData.BuildMockDbSet();
     A.CallTo(() => context.Conditions).Returns(conditionDbSet);
 
     A.CallTo(() => context.SaveChangesAsync(A<CancellationToken>._)).Returns(Task.FromResult(1));

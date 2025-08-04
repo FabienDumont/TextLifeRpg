@@ -25,7 +25,7 @@ public class JobRepositoryTests
       new JobDataModel {Id = Guid.NewGuid(), Name = "Mechanic", HourIncome = int.MinValue, MaxWorkers = int.MinValue}
     ];
 
-    var mockDbSet = _jobs.AsQueryable().BuildMockDbSet();
+    var mockDbSet = _jobs.BuildMockDbSet();
     A.CallTo(() => context.Jobs).Returns(mockDbSet);
 
     _repository = new JobRepository(context);

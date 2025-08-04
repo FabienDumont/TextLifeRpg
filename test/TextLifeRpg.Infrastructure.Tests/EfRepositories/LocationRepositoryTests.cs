@@ -25,7 +25,7 @@ public class LocationRepositoryTests
     ];
 
     _context = A.Fake<ApplicationContext>();
-    var locationsDbSet = _locationDataModels.AsQueryable().BuildMockDbSet();
+    var locationsDbSet = _locationDataModels.BuildMockDbSet();
 
     A.CallTo(() => _context.Locations).Returns(locationsDbSet);
     A.CallTo(() => _context.SaveChangesAsync(A<CancellationToken>._)).Returns(Task.FromResult(1));
@@ -43,7 +43,7 @@ public class LocationRepositoryTests
     // Arrange
     var existingLocation = _locationDataModels.First();
     var fakeContext = A.Fake<ApplicationContext>();
-    var locationsDbSet = _locationDataModels.AsQueryable().BuildMockDbSet();
+    var locationsDbSet = _locationDataModels.BuildMockDbSet();
 
     A.CallTo(() => fakeContext.Locations).Returns(locationsDbSet);
     A.CallTo(() => fakeContext.Locations.FindAsync(
@@ -85,7 +85,7 @@ public class LocationRepositoryTests
     // Arrange
     var existingLocation = _locationDataModels.First();
     var fakeContext = A.Fake<ApplicationContext>();
-    var locationsDbSet = _locationDataModels.AsQueryable().BuildMockDbSet();
+    var locationsDbSet = _locationDataModels.BuildMockDbSet();
 
     A.CallTo(() => fakeContext.Locations).Returns(locationsDbSet);
     A.CallTo(() => fakeContext.Locations.FindAsync(
