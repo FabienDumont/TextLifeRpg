@@ -25,7 +25,7 @@ public class ItemRepositoryTests
       new ItemDataModel {Id = Guid.NewGuid(), Name = "Badge"}
     ];
 
-    var mockDbSet = _items.AsQueryable().BuildMockDbSet();
+    var mockDbSet = _items.BuildMockDbSet();
     A.CallTo(() => context.Items).Returns(mockDbSet);
 
     _repository = new ItemRepository(context);

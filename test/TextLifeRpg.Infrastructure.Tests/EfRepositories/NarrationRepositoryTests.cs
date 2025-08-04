@@ -32,10 +32,10 @@ public class NarrationRepositoryTests
 
     var context = A.Fake<ApplicationContext>();
 
-    var narrationDbSet = narrationDataModels.AsQueryable().BuildMockDbSet();
+    var narrationDbSet = narrationDataModels.BuildMockDbSet();
     A.CallTo(() => context.Narrations).Returns(narrationDbSet);
 
-    var conditionDbSet = new List<ConditionDataModel>().AsQueryable().BuildMockDbSet();
+    var conditionDbSet = new List<ConditionDataModel>().BuildMockDbSet();
     A.CallTo(() => context.Conditions).Returns(conditionDbSet);
 
     A.CallTo(() => context.SaveChangesAsync(A<CancellationToken>._)).Returns(Task.FromResult(1));
@@ -119,8 +119,8 @@ public class NarrationRepositoryTests
     var world = World.Create(DateTime.Now, [character]);
 
     var context = A.Fake<ApplicationContext>();
-    var narrationDbSet = new List<NarrationDataModel> {narration}.AsQueryable().BuildMockDbSet();
-    var conditionDbSet = new List<ConditionDataModel> {failingCondition}.AsQueryable().BuildMockDbSet();
+    var narrationDbSet = new List<NarrationDataModel> {narration}.BuildMockDbSet();
+    var conditionDbSet = new List<ConditionDataModel> {failingCondition}.BuildMockDbSet();
 
     A.CallTo(() => context.Narrations).Returns(narrationDbSet);
     A.CallTo(() => context.Conditions).Returns(conditionDbSet);

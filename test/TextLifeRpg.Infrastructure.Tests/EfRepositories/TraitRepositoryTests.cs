@@ -30,8 +30,8 @@ public class TraitRepositoryTests
   {
     _context = A.Fake<ApplicationContext>();
 
-    var traitDbSet = _traitDataModels.AsQueryable().BuildMockDbSet();
-    var incompatibleDbSet = _incompatibilities.AsQueryable().BuildMockDbSet();
+    var traitDbSet = _traitDataModels.BuildMockDbSet();
+    var incompatibleDbSet = _incompatibilities.BuildMockDbSet();
 
     A.CallTo(() => _context.Traits).Returns(traitDbSet);
     A.CallTo(() => _context.TraitIncompatibilities).Returns(incompatibleDbSet);
@@ -81,8 +81,8 @@ public class TraitRepositoryTests
       }
     );
 
-    var newTraitDb = _traitDataModels.AsQueryable().BuildMockDbSet();
-    var newIncompatibleDb = _incompatibilities.AsQueryable().BuildMockDbSet();
+    var newTraitDb = _traitDataModels.BuildMockDbSet();
+    var newIncompatibleDb = _incompatibilities.BuildMockDbSet();
 
     A.CallTo(() => _context.Traits).Returns(newTraitDb);
     A.CallTo(() => _context.TraitIncompatibilities).Returns(newIncompatibleDb);
@@ -125,8 +125,8 @@ public class TraitRepositoryTests
     );
 
     // Refresh fake DbSets to include new data
-    A.CallTo(() => _context.Traits).Returns(_traitDataModels.AsQueryable().BuildMockDbSet());
-    A.CallTo(() => _context.TraitIncompatibilities).Returns(_incompatibilities.AsQueryable().BuildMockDbSet());
+    A.CallTo(() => _context.Traits).Returns(_traitDataModels.BuildMockDbSet());
+    A.CallTo(() => _context.TraitIncompatibilities).Returns(_incompatibilities.BuildMockDbSet());
 
     // Act
     var result = await _repository.GetIncompatibleTraitsAsync(CancellationToken.None);

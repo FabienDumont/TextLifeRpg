@@ -38,7 +38,7 @@ public class LocationOpeningHoursRepositoryTests
     };
 
     var context = A.Fake<ApplicationContext>();
-    var mockDbSet = openingHoursData.AsQueryable().BuildMockDbSet();
+    var mockDbSet = openingHoursData.BuildMockDbSet();
 
     A.CallTo(() => context.LocationOpeningHours).Returns(mockDbSet);
     A.CallTo(() => context.SaveChangesAsync(A<CancellationToken>._)).Returns(Task.FromResult(1));
