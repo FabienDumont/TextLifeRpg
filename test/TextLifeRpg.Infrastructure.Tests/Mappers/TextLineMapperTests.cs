@@ -12,9 +12,9 @@ public class TextLineMapperTests
   public void ToDataModel_Should_Map_TextLine_To_TextLineDataModel()
   {
     // Arrange
-    var textPart1 = new TextPart("blue", "Daniel: ");
-    var textPart2 = new TextPart("white", "Hello!");
-    var textLine = new TextLine(new List<TextPart> {textPart1, textPart2});
+    var textPart1 = new TextPart(CharacterColor.Blue, "Daniel: ");
+    var textPart2 = new TextPart(null, "Hello!");
+    var textLine = new TextLine([textPart1, textPart2]);
 
     // Act
     var dataModel = textLine.ToDataModel();
@@ -22,9 +22,9 @@ public class TextLineMapperTests
     // Assert
     Assert.NotNull(dataModel.TextParts);
     Assert.Equal(2, dataModel.TextParts.Count);
-    Assert.Equal("blue", dataModel.TextParts[0].Color);
+    Assert.Equal(CharacterColor.Blue, dataModel.TextParts[0].Color);
     Assert.Equal("Daniel: ", dataModel.TextParts[0].Text);
-    Assert.Equal("white", dataModel.TextParts[1].Color);
+    Assert.Equal(null, dataModel.TextParts[1].Color);
     Assert.Equal("Hello!", dataModel.TextParts[1].Text);
   }
 
@@ -32,11 +32,11 @@ public class TextLineMapperTests
   public void ToDomain_Should_Map_TextLineDataModel_To_TextLine()
   {
     // Arrange
-    var textPartDataModel1 = new TextPartDataModel {Color = "blue", Text = "Daniel: "};
-    var textPartDataModel2 = new TextPartDataModel {Color = "white", Text = "Hello!"};
+    var textPartDataModel1 = new TextPartDataModel {Color = CharacterColor.Blue, Text = "Daniel: "};
+    var textPartDataModel2 = new TextPartDataModel {Color = null, Text = "Hello!"};
     var dataModel = new TextLineDataModel
     {
-      TextParts = new List<TextPartDataModel> {textPartDataModel1, textPartDataModel2}
+      TextParts = [textPartDataModel1, textPartDataModel2]
     };
 
     // Act
@@ -45,9 +45,9 @@ public class TextLineMapperTests
     // Assert
     Assert.NotNull(domain.TextParts);
     Assert.Equal(2, domain.TextParts.Count);
-    Assert.Equal("blue", domain.TextParts[0].Color);
+    Assert.Equal(CharacterColor.Blue, domain.TextParts[0].Color);
     Assert.Equal("Daniel: ", domain.TextParts[0].Text);
-    Assert.Equal("white", domain.TextParts[1].Color);
+    Assert.Equal(null, domain.TextParts[1].Color);
     Assert.Equal("Hello!", domain.TextParts[1].Text);
   }
 
@@ -55,15 +55,15 @@ public class TextLineMapperTests
   public void ToDomainCollection_Should_Map_List_Of_TextLineDataModels_To_TextLines()
   {
     // Arrange
-    var textPartDataModel1 = new TextPartDataModel {Color = "blue", Text = "Daniel: "};
-    var textPartDataModel2 = new TextPartDataModel {Color = "white", Text = "Hello!"};
+    var textPartDataModel1 = new TextPartDataModel {Color = CharacterColor.Blue, Text = "Daniel: "};
+    var textPartDataModel2 = new TextPartDataModel {Color = null, Text = "Hello!"};
     var dataModel1 = new TextLineDataModel
     {
-      TextParts = new List<TextPartDataModel> {textPartDataModel1, textPartDataModel2}
+      TextParts = [textPartDataModel1, textPartDataModel2]
     };
     var dataModel2 = new TextLineDataModel
     {
-      TextParts = new List<TextPartDataModel> {textPartDataModel1}
+      TextParts = [textPartDataModel1]
     };
 
     var dataModels = new List<TextLineDataModel> {dataModel1, dataModel2};
@@ -81,10 +81,10 @@ public class TextLineMapperTests
   public void ToDataModelCollection_Should_Map_List_Of_TextLines_To_TextLineDataModels()
   {
     // Arrange
-    var textPart1 = new TextPart("blue", "Daniel: ");
-    var textPart2 = new TextPart("white", "Hello!");
-    var textLine1 = new TextLine(new List<TextPart> {textPart1, textPart2});
-    var textLine2 = new TextLine(new List<TextPart> {textPart1});
+    var textPart1 = new TextPart(CharacterColor.Blue, "Daniel: ");
+    var textPart2 = new TextPart(null, "Hello!");
+    var textLine1 = new TextLine([textPart1, textPart2]);
+    var textLine2 = new TextLine([textPart1]);
 
     var domainLines = new List<TextLine> {textLine1, textLine2};
 

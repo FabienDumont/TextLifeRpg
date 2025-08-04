@@ -1,6 +1,5 @@
 ﻿@page "/characterdetails/{CharacterId:guid}"
 @using TextLifeRpg.Application.Abstraction
-@using TextLifeRpg.Blazor.InternalUtilities
 @using TextLifeRpg.Domain.Extensions
 @inject GameSaveStore GameSaveStore
 @inject ITraitService TraitService
@@ -19,25 +18,55 @@ else if (_character is null)
 else
 {
   <div class="trpg-layout-page">
-    <h2 class="trpg-title-main"> @_character.Name</h2>
+    @{
+      var colorKey = CharacterColorHelper.GetColorKey(_character, GameSaveStore.CurrentSave!.PlayerCharacterId);
+    }
+    <span class="trpg-title-main @colorKey.ToTailwindClass()">@_character.Name</span>
 
     <h3 class="text-2xl">Basic informations</h3>
     <div class="space-y-1">
-      <p><strong>Age:</strong> @_character.GetAge(DateOnly.FromDateTime(GameSaveStore.CurrentSave!.World.CurrentDate))
-      </p>
-      <p><strong>Sex:</strong> @_character.BiologicalSex</p>
-      <p><strong>Height:</strong> @_character.Height cm</p>
-      <p><strong>Weight:</strong> @_character.Weight kg</p>
-      <p><strong>Muscle mass:</strong> @MuscleMassOptionExtensions.FromKg(_character.MuscleMass).GetDisplayName()</p>
-      <p><strong>Job:</strong> @(_job?.Name ?? "Unemployed")</p>
+      <div class="flex">
+        <span class="font-bold">Age</span>
+        <span>&nbsp;:&nbsp;@_character.GetAge(DateOnly.FromDateTime(GameSaveStore.CurrentSave!.World.CurrentDate))</span>
+      </div>
+      <div class="flex">
+        <span class="font-bold">Sex</span>
+        <span>&nbsp;:&nbsp;@_character.BiologicalSex</span>
+      </div>
+      <div class="flex">
+        <span class="font-bold">Height</span>
+        <span>&nbsp;:&nbsp;@_character.Height cm</span>
+      </div>
+      <div class="flex">
+        <span class="font-bold">Weight</span>
+        <span>&nbsp;:&nbsp;@_character.Weight kg</span>
+      </div>
+      <div class="flex">
+        <span class="font-bold">Muscle mass</span>
+        <span>&nbsp;:&nbsp;@MuscleMassOptionExtensions.FromKg(_character.MuscleMass).GetDisplayName()</span>
+      </div>
+      <div class="flex">
+        <span class="font-bold">Job</span>
+        <span>&nbsp;:&nbsp;@(_job?.Name ?? "Unemployed")</span>
+      </div>
     </div>
 
-    <h3 class="text-2xl">Attributes</h3>
+    <h3 class="text-2xl mt-4">Attributes</h3>
     <div class="space-y-1">
-      <p><strong>Intelligence:</strong> @_character.Attributes.Intelligence</p>
-      <p><strong>Strength:</strong> @_character.Attributes.Strength</p>
-      <p><strong>Charisma:</strong> @_character.Attributes.Charisma</p>
+      <div class="flex">
+        <span class="font-bold">Intelligence</span>
+        <span>&nbsp;:&nbsp;@_character.Attributes.Intelligence</span>
+      </div>
+      <div class="flex">
+        <span class="font-bold">Strength</span>
+        <span>&nbsp;:&nbsp;@_character.Attributes.Strength</span>
+      </div>
+      <div class="flex">
+        <span class="font-bold">Charisma</span>
+        <span>&nbsp;:&nbsp;@_character.Attributes.Charisma</span>
+      </div>
     </div>
+
 
     <h3 class="text-2xl">Traits</h3>
     @if (_traits is null || _traits.Count == 0)
@@ -65,7 +94,16 @@ else
       <div class="space-y-1">
         @foreach (var rel in _relationships)
         {
-          <p><strong>@rel.TargetName:</strong> @rel.Type</p>
+          var relationshipCharacterColorKey = CharacterColorHelper.GetColorKey(rel.TargetCharacter, GameSaveStore.CurrentSave!.PlayerCharacterId);
+
+          <div class="flex">
+            <span>
+              <NavLink class=@($"font-bold {relationshipCharacterColorKey.ToTailwindClass()}") href="@($"/characterdetails/{rel.TargetCharacter.Id}")">
+                @rel.TargetCharacter.Name
+              </NavLink>
+            </span>
+            <span>&nbsp;:&nbsp;@rel.Type</span>
+          </div>
         }
       </div>
     }
@@ -115,15 +153,14 @@ else
     var allTraits = await TraitService.GetAllTraitsAsync(CancellationToken.None);
     _traits = allTraits.Where(t => _character.TraitsId.Contains(t.Id)).ToList();
 
-    _relationships = world.Relationships.Where(r => r.SourceCharacterId == _character.Id || r.TargetCharacterId == _character.Id).GroupBy(r => GetPairKey(r.SourceCharacterId, r.TargetCharacterId)).Select(g =>
+    _relationships = world.Relationships.Where(r => r.SourceCharacterId == _character.Id || r.TargetCharacterId == _character.Id).GroupBy(r => GetPairKey(r.SourceCharacterId, r.TargetCharacterId)).SelectMany(g =>
       {
         var rel = g.First();
         var isSource = rel.SourceCharacterId == _character.Id;
         var otherId = isSource ? rel.TargetCharacterId : rel.SourceCharacterId;
         var otherCharacter = world.Characters.FirstOrDefault(c => c.Id == otherId);
-        var targetName = otherCharacter?.Name ?? "(Unknown)";
-        var displayType = GetRelationshipLabel(rel.Type, isSource);
-        return new RelationshipDisplay(targetName, displayType);
+
+        return otherCharacter is null ? Enumerable.Empty<RelationshipDisplay>() : [new RelationshipDisplay(otherCharacter, GetRelationshipLabel(rel.Type, isSource))];
       }
     ).ToList();
 
@@ -150,6 +187,6 @@ else
     return a.CompareTo(b) < 0 ? $"{a}_{b}" : $"{b}_{a}";
   }
 
-  private record RelationshipDisplay(string TargetName, string Type);
+  private record RelationshipDisplay(Character TargetCharacter, string Type);
 
 }

@@ -23,17 +23,17 @@ public class TextLineBuilderTests
     Assert.Null(line.TextParts[0].Color);
 
     Assert.Equal(character.Name, line.TextParts[1].Text);
-    Assert.Equal("yellow", line.TextParts[1].Color);
+    Assert.Equal(CharacterColor.Yellow, line.TextParts[1].Color);
 
     Assert.Equal(", welcome back.", line.TextParts[2].Text);
     Assert.Null(line.TextParts[2].Color);
   }
 
   [Theory]
-  [InlineData(BiologicalSex.Male, "blue")]
-  [InlineData(BiologicalSex.Female, "pink")]
-  [InlineData((BiologicalSex) 99, "purple")]
-  public void BuildNarrationLine_ShouldAssignCorrectColor_BasedOnSex(BiologicalSex sex, string expectedColor)
+  [InlineData(BiologicalSex.Male, CharacterColor.Blue)]
+  [InlineData(BiologicalSex.Female, CharacterColor.Pink)]
+  [InlineData((BiologicalSex) 99, CharacterColor.Purple)]
+  public void BuildNarrationLine_ShouldAssignCorrectColor_BasedOnSex(BiologicalSex sex, CharacterColor expectedColor)
   {
     // Arrange
     var character = new CharacterBuilder().WithBirthDate(new DateOnly(1990, 1, 1)).WithSex(sex).Build();

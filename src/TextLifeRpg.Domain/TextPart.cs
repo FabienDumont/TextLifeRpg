@@ -7,14 +7,14 @@ public class TextPart
 {
   #region Properties
 
-  public string? Color { get; set; }
+  public CharacterColor? Color { get; set; }
   public string Text { get; set; }
 
   #endregion
 
   #region Ctors
 
-  public TextPart(string? color, string text)
+  public TextPart(CharacterColor? color, string text)
   {
     Color = color;
     Text = text;

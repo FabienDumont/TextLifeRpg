@@ -30,7 +30,7 @@ public class TextLine
   /// </summary>
   /// <param name="text">The text to be added.</param>
   /// <param name="color">The color to be applied to the text.</param>
-  public void AddTextPart(string text, string? color = null)
+  public void AddTextPart(string text, CharacterColor? color = null)
   {
     TextParts.Add(new TextPart(color, text));
   }

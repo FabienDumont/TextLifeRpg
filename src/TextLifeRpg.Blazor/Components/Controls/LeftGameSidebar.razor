@@ -4,9 +4,12 @@
 
 <div class="flex h-full flex-col p-2">
   <div class="flex flex-col items-center">
-    <p class="cursor-pointer text-xl font-bold" @onclick="OnPlayerCharacterClickedInternal">
+    @{
+      var colorKey = CharacterColorHelper.GetColorKey(GameSaveStore.CurrentSave!.PlayerCharacter, GameSaveStore.CurrentSave!.PlayerCharacterId);
+    }
+    <span class="cursor-pointer text-xl font-bold @colorKey.ToTailwindClass()" @onclick="OnPlayerCharacterClickedInternal">
       @GameSaveStore.CurrentSave!.PlayerCharacter.Name
-    </p>
+    </span>
   </div>
   <div class="flex-grow"></div>
   <div class="flex flex-col items-center gap-4">
