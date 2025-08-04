@@ -9,7 +9,7 @@ namespace TextLifeRpg.Application.Services;
 /// </summary>
 public class JobService(IJobRepository jobRepository) : IJobService
 {
-  #region Implmentation of IJobService
+  #region Implementation of IJobService
 
   /// <inheritdoc />
   public async Task<Job?> GetByIdAsync(Guid id, CancellationToken cancellationToken)

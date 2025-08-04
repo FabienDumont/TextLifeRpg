@@ -44,6 +44,7 @@ public static class ServiceCollectionExtensions
     services.AddScoped<IExplorationActionResultNarrationService, ExplorationActionResultNarrationService>();
     services.AddScoped<IJobService, JobService>();
     services.AddScoped<IItemService, ItemService>();
+    services.AddScoped<IDialogueService, DialogueService>();
   }
 
   #endregion
