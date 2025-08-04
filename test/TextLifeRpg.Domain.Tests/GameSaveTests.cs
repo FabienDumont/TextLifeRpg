@@ -69,17 +69,17 @@ public class GameSaveTests
 
     save.AddText(
       [
-        new TextPart("blue", "Daniel: "),
-        new TextPart("white", "Hello!")
+        new TextPart(CharacterColor.Blue, "Daniel: "),
+        new TextPart(null, "Hello!")
       ]
     );
 
     Assert.Single(save.TextLines);
     var line = save.TextLines.First();
     Assert.Equal(2, line.TextParts.Count);
-    Assert.Equal("blue", line.TextParts[0].Color);
+    Assert.Equal(CharacterColor.Blue, line.TextParts[0].Color);
     Assert.Equal("Daniel: ", line.TextParts[0].Text);
-    Assert.Equal("white", line.TextParts[1].Color);
+    Assert.Equal(null, line.TextParts[1].Color);
     Assert.Equal("Hello!", line.TextParts[1].Text);
   }
 
@@ -93,8 +93,8 @@ public class GameSaveTests
 
     save.AddText(
       [
-        new TextPart("blue", "Daniel: "),
-        new TextPart("white", "Hello!")
+        new TextPart(CharacterColor.Blue, "Daniel: "),
+        new TextPart(null, "Hello!")
       ]
     );
 

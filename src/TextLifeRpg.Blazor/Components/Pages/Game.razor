@@ -40,7 +40,7 @@ else
             <p>
               @foreach (var part in textLine.TextParts)
               {
-                <span style="color: @(part.Color ?? "inherit")">
+                <span class="@(part.Color.HasValue ? part.Color.Value.ToTailwindClass() : "")">
                   @part.Text
                 </span>
               }

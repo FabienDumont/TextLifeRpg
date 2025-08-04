@@ -40,7 +40,7 @@ public static partial class TextLineBuilder
       parts.Add(
         match.Value switch
         {
-          "[CHARACTERNAME]" => new TextPart(CharacterColorHelper.GetCharacterColor(character, playerCharacterId), character.Name),
+          "[CHARACTERNAME]" => new TextPart(CharacterColorHelper.GetColorKey(character, playerCharacterId), character.Name),
           _ => new TextPart(null, match.Value)
         }
       );

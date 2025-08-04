@@ -253,3 +253,11 @@ public enum MuscleMassOption
   [Display(Name = "Very high")]
   VeryHigh
 }
+
+public enum CharacterColor
+{
+  Yellow,
+  Blue,
+  Pink,
+  Purple
+}

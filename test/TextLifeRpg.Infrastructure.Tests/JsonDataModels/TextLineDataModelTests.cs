@@ -1,4 +1,5 @@
-﻿using TextLifeRpg.Infrastructure.JsonDataModels;
+﻿using TextLifeRpg.Domain;
+using TextLifeRpg.Infrastructure.JsonDataModels;
 
 namespace TextLifeRpg.Infrastructure.Tests.JsonDataModels;
 
@@ -21,8 +22,8 @@ public class TextLineDataModelTests
   public void TextLineDataModel_Should_Allow_Adding_TextParts()
   {
     // Arrange
-    var textPart1 = new TextPartDataModel {Color = "blue", Text = "Daniel:"};
-    var textPart2 = new TextPartDataModel {Color = "white", Text = "Hello, how are you?"};
+    var textPart1 = new TextPartDataModel {Color = CharacterColor.Blue, Text = "Daniel:"};
+    var textPart2 = new TextPartDataModel {Color = null, Text = "Hello, how are you?"};
     var model = new TextLineDataModel();
 
     // Act
@@ -32,10 +33,10 @@ public class TextLineDataModelTests
     // Assert
     Assert.Equal(2, model.TextParts.Count);
 
-    Assert.Equal("blue", model.TextParts[0].Color);
+    Assert.Equal(CharacterColor.Blue, model.TextParts[0].Color);
     Assert.Equal("Daniel:", model.TextParts[0].Text);
 
-    Assert.Equal("white", model.TextParts[1].Color);
+    Assert.Equal(null, model.TextParts[1].Color);
     Assert.Equal("Hello, how are you?", model.TextParts[1].Text);
   }
 
@@ -43,8 +44,8 @@ public class TextLineDataModelTests
   public void TextLineDataModel_Should_Initialize_TextParts_WithGivenValues()
   {
     // Arrange
-    var textPart1 = new TextPartDataModel {Color = "green", Text = "NPC:"};
-    var textPart2 = new TextPartDataModel {Color = "yellow", Text = "Greetings!"};
+    var textPart1 = new TextPartDataModel {Color = CharacterColor.Blue, Text = "NPC:"};
+    var textPart2 = new TextPartDataModel {Color = CharacterColor.Yellow, Text = "Greetings!"};
 
     // Act
     var model = new TextLineDataModel
@@ -55,10 +56,10 @@ public class TextLineDataModelTests
     // Assert
     Assert.Equal(2, model.TextParts.Count);
 
-    Assert.Equal("green", model.TextParts[0].Color);
+    Assert.Equal(CharacterColor.Blue, model.TextParts[0].Color);
     Assert.Equal("NPC:", model.TextParts[0].Text);
 
-    Assert.Equal("yellow", model.TextParts[1].Color);
+    Assert.Equal(CharacterColor.Yellow, model.TextParts[1].Color);
     Assert.Equal("Greetings!", model.TextParts[1].Text);
   }
 

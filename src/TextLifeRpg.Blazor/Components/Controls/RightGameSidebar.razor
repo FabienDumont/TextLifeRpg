@@ -35,8 +35,19 @@
       <div class="mt-4 w-full overflow-y-auto pt-2 px-2">
         @foreach (var npc in _npcsInLocation.OrderBy(n => n.Name))
         {
-          var color = CharacterColorHelper.GetCharacterColor(npc, GameSaveStore.CurrentSave!.PlayerCharacter.Id);
-          <p class="cursor-pointer" style="color:@color" @onclick="async () => await OnNpcClickedInternal(npc)">
+          var colorKey = CharacterColorHelper.GetColorKey(npc, GameSaveStore.CurrentSave!.PlayerCharacterId);
+          var colorClass = colorKey switch
+          {
+            CharacterColor.Yellow => "text-yellow-400",
+            CharacterColor.Blue => "text-blue-400",
+            CharacterColor.Pink => "text-pink-400",
+            CharacterColor.Purple => "text-purple-400",
+            _ => ""
+          };
+
+          <p
+            class="cursor-pointer @(colorClass)"
+            @onclick="async () => await OnNpcClickedInternal(npc)">
             @npc.Name
           </p>
         }
@@ -92,10 +103,7 @@
     await UpdateNamesAsync();
 
     _npcsInLocation.Clear();
-    _npcsInLocation.AddRange(
-      save.World.Characters
-        .Where(c => c.Id != player.Id && c.LocationId == player.LocationId)
-    );
+    _npcsInLocation.AddRange(save.World.Characters.Where(c => c.Id != player.Id && c.LocationId == player.LocationId));
 
     StateHasChanged();
   }
