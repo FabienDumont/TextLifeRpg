@@ -10,12 +10,13 @@ public interface IDialogueService
   #region Methods
 
   /// <summary>
-  /// Asynchronously retrieves a greeting for a specified NPC character based on the current game state.
+  /// Asynchronously executes a greeting interaction between the player character and the currently interacting NPC,
+  /// updating the game state with the resulting dialogue.
   /// </summary>
-  /// <param name="gameSave">The current game save containing the state of the game world and player information.</param>
-  /// <param name="cancellationToken">An optional token to monitor for cancellation requests.</param>
-  /// <returns>A task representing the asynchronous operation. The task result contains the greeting information associated with the NPC.</returns>
-  Task<Greeting> GetGreetingAsync(GameSave gameSave, CancellationToken cancellationToken = default);
+  /// <param name="gameSave">The current game save containing the player's state, interacting NPC, and the world context.</param>
+  /// <param name="cancellationToken">An optional token to monitor for cancellation requests during execution.</param>
+  /// <returns>A task that represents the asynchronous operation.</returns>
+  Task ExecuteGreetingAsync(GameSave gameSave, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Asynchronously retrieves a list of possible dialogue options based on the current game state.

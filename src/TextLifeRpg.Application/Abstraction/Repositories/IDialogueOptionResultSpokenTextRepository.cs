@@ -16,7 +16,7 @@ public interface IDialogueOptionResultSpokenTextRepository
   /// <param name="gameContext">The current game context including the actor, world state, and optional target.</param>
   /// <param name="cancellationToken">Cancellation token to cancel the asynchronous operation if needed.</param>
   /// <returns>A task representing the asynchronous operation. The task result contains the spoken text as a string.</returns>
-  Task<string> GetByDialogueOptionResultIdAsync(
+  Task<string?> GetByDialogueOptionResultIdAsync(
     Guid dialogueOptionResultId, GameContext gameContext, CancellationToken cancellationToken
   );
 

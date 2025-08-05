@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TextLifeRpg.Application.Abstraction.Repositories;
-using TextLifeRpg.Domain;
-using TextLifeRpg.Infrastructure.Mappers;
 
 namespace TextLifeRpg.Infrastructure.EfRepositories;
 

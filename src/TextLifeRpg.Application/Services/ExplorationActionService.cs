@@ -102,9 +102,7 @@ public class ExplorationActionService(
       character.Money += result.MoneyChange.Value;
     }
 
-    var line = TextLineBuilder.BuildNarrationLine(narration, save.PlayerCharacter, save.PlayerCharacterId);
-
-    save.AddText(line.TextParts);
+    TextLineBuilder.BuildNarrationLine(narration, save.PlayerCharacter, null, save);
   }
 
   #endregion

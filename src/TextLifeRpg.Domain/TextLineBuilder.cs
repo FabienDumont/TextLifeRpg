@@ -18,14 +18,7 @@ public static partial class TextLineBuilder
 
   #region Methods
 
-  /// <summary>
-  /// Builds a <see cref="TextLine" /> from a template string by replacing tokens with character-specific data.
-  /// </summary>
-  /// <param name="template">The text containing tokens like [CHARACTERNAME].</param>
-  /// <param name="character">The character to use for token replacement.</param>
-  /// <param name="playerCharacterId">The identifier of the player character.</param>
-  /// <returns>A constructed <see cref="TextLine" /> with formatted parts.</returns>
-  public static TextLine BuildNarrationLine(string template, Character character, Guid playerCharacterId)
+  public static void BuildNarrationLine(string template, Character actor, Character? target, GameSave gameSave)
   {
     var parts = new List<TextPart>();
     var lastIndex = 0;
@@ -40,7 +33,11 @@ public static partial class TextLineBuilder
       parts.Add(
         match.Value switch
         {
-          "[CHARACTERNAME]" => new TextPart(CharacterColorHelper.GetColorKey(character, playerCharacterId), character.Name),
+          "[TARGETNAME]" => new TextPart(
+            CharacterColorHelper.GetColorKey(
+              target ?? throw new ArgumentNullException(nameof(target)), gameSave.PlayerCharacterId
+            ), target.Name
+          ),
           _ => new TextPart(null, match.Value)
         }
       );
@@ -53,7 +50,7 @@ public static partial class TextLineBuilder
       parts.Add(new TextPart(null, template[lastIndex..]));
     }
 
-    return new TextLine(parts);
+    gameSave.AddText(parts);
   }
 
   /// <summary>

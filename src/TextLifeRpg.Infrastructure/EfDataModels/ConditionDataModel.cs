@@ -51,6 +51,8 @@ public enum ContextType
   DialogueOption,
   DialogueOptionSpokenText,
   DialogueOptionResult,
+  DialogueOptionResultNarration,
+  DialogueOptionResultSpokenText,
   Narration
 }
 
