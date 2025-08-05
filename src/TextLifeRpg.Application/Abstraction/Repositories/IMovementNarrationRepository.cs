@@ -1,6 +1,4 @@
-﻿using TextLifeRpg.Domain;
-
-namespace TextLifeRpg.Application.Abstraction.Repositories;
+﻿namespace TextLifeRpg.Application.Abstraction.Repositories;
 
 /// <summary>
 /// Repository interface for movement narrations.

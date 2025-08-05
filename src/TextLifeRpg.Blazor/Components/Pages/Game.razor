@@ -124,10 +124,8 @@ else
     gameSave.StartDialogue(character.Id);
     try
     {
-      var greeting = await DialogueService.GetGreetingAsync(gameSave, CancellationToken.None);
-      GameSaveStore.CurrentSave!.TextLines.Clear();
-      var textParts = new List<TextPart>([new TextPart(CharacterColorHelper.GetColorKey(character, gameSave.PlayerCharacterId), $"{character.Name}"), new TextPart(null, $" : {greeting.SpokenText}")]);
-      GameSaveStore.CurrentSave!.AddText(textParts);
+      await DialogueService.ExecuteGreetingAsync(gameSave, CancellationToken.None);
+
       StateHasChanged();
     }
     catch (Exception ex)

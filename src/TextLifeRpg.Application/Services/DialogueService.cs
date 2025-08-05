@@ -6,14 +6,16 @@ namespace TextLifeRpg.Application.Services;
 
 public class DialogueService(
   IGreetingRepository greetingRepository, IDialogueOptionRepository dialogueOptionRepository,
-  IDialogueOptionSpokenTextRepository dialogueOptionSpokenTextRepositor,
-  IDialogueOptionResultRepository dialogueOptionResultRepository
+  IDialogueOptionSpokenTextRepository dialogueOptionSpokenTextRepository,
+  IDialogueOptionResultRepository dialogueOptionResultRepository,
+  IDialogueOptionResultNarrationRepository dialogueOptionResultNarrationRepository,
+  IDialogueOptionResultSpokenTextRepository dialogueOptionResultSpokenTextRepository
 ) : IDialogueService
 {
   #region Implementation of IDialogueService
 
   /// <inheritdoc />
-  public async Task<Greeting> GetGreetingAsync(GameSave gameSave, CancellationToken cancellationToken = default)
+  public async Task ExecuteGreetingAsync(GameSave gameSave, CancellationToken cancellationToken = default)
   {
     var context = new GameContext
     {
@@ -23,7 +25,10 @@ public class DialogueService(
       Target = gameSave.PlayerCharacter
     };
 
-    return await greetingRepository.GetAsync(context, cancellationToken);
+    var greeting = await greetingRepository.GetAsync(context, cancellationToken);
+    gameSave.TextLines.Clear();
+    TextLineBuilder.BuildSpokenText(greeting.SpokenText, gameSave.InteractingNpc, gameSave.PlayerCharacter, gameSave);
+    await Task.Delay(500, cancellationToken);
   }
 
   /// <inheritdoc />
@@ -47,25 +52,46 @@ public class DialogueService(
     DialogueOption dialogueOption, GameSave gameSave, CancellationToken cancellationToken
   )
   {
+    var player = gameSave.PlayerCharacter;
+    var npc = gameSave.InteractingNpc ??
+              throw new InvalidOperationException($"{nameof(gameSave.InteractingNpc)} shouldn't be null.");
     var context = new GameContext
     {
-      Actor = gameSave.PlayerCharacter,
+      Actor = player,
       World = gameSave.World,
-      Target = gameSave.InteractingNpc ??
-               throw new InvalidOperationException($"{nameof(gameSave.InteractingNpc)} shouldn't be null.")
+      Target = npc
     };
 
-    var spokenText = await dialogueOptionSpokenTextRepositor.GetByDialogueOptionIdAsync(
+    var spokenText = await dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(
       dialogueOption.Id, context, cancellationToken
     );
 
-    var line = TextLineBuilder.BuildNarrationLine(spokenText, gameSave.PlayerCharacter, gameSave.PlayerCharacterId);
-
-    gameSave.AddText(line.TextParts);
+    TextLineBuilder.BuildSpokenText(spokenText, player, npc, gameSave);
+    await Task.Delay(500, cancellationToken);
 
     var result = await dialogueOptionResultRepository.GetByDialogueOptionIdAsync(
       dialogueOption.Id, context, cancellationToken
     );
+
+    var resultSpokenText = await dialogueOptionResultSpokenTextRepository.GetByDialogueOptionResultIdAsync(
+      result.Id, context, cancellationToken
+    );
+
+    if (resultSpokenText is not null)
+    {
+      TextLineBuilder.BuildSpokenText(resultSpokenText, npc, player, gameSave);
+      await Task.Delay(500, cancellationToken);
+    }
+
+    var resultNarration = await dialogueOptionResultNarrationRepository.GetByDialogueOptionResultIdAsync(
+      result.Id, context, cancellationToken
+    );
+
+    if (resultNarration is not null)
+    {
+      TextLineBuilder.BuildNarrationLine(resultNarration, player, npc, gameSave);
+      await Task.Delay(500, cancellationToken);
+    }
 
     if (result.EndDialogue)
     {

@@ -60,6 +60,9 @@ public class ApplicationContextTests
     Assert.NotEmpty(await context.TraitIncompatibilities.ToListAsync());
     Assert.NotEmpty(await context.Greetings.ToListAsync());
     Assert.NotEmpty(await context.DialogueOptions.ToListAsync());
+    Assert.NotEmpty(await context.DialogueOptionResults.ToListAsync());
+    Assert.NotEmpty(await context.DialogueOptionResultNarrations.ToListAsync());
+    Assert.NotEmpty(await context.DialogueOptionResultSpokenTexts.ToListAsync());
     Assert.NotEmpty(await context.Locations.ToListAsync());
     Assert.NotEmpty(await context.Rooms.ToListAsync());
     Assert.NotEmpty(await context.Jobs.ToListAsync());

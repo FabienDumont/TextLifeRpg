@@ -51,8 +51,7 @@ public class MovementService(
     var narration =
       await movementNarrationRepository.GetMovementNarrationFromMovementIdAsync(movement.Id, cancellationToken);
 
-    var line = TextLineBuilder.BuildNarrationLine(narration, player, player.Id);
-    save.AddText(line.TextParts);
+    TextLineBuilder.BuildNarrationLine(narration, player, null, save);
   }
 
   #endregion

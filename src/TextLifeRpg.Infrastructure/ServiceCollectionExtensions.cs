@@ -26,6 +26,8 @@ public static class ServiceCollectionExtensions
     services.AddScoped<IGreetingRepository, GreetingRepository>();
     services.AddScoped<IDialogueOptionRepository, DialogueOptionRepository>();
     services.AddScoped<IDialogueOptionSpokenTextRepository, DialogueOptionSpokenTextRepository>();
+    services.AddScoped<IDialogueOptionResultNarrationRepository, DialogueOptionResultNarrationRepository>();
+    services.AddScoped<IDialogueOptionResultSpokenTextRepository, DialogueOptionResultSpokenTextRepository>();
     services.AddScoped<ILocationRepository, LocationRepository>();
     services.AddScoped<ILocationOpeningHoursRepository, LocationOpeningHoursRepository>();
     services.AddScoped<IRoomRepository, RoomRepository>();

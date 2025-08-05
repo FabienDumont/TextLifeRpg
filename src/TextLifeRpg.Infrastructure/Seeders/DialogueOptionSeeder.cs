@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TextLifeRpg.Infrastructure.EfDataModels;
+﻿using TextLifeRpg.Infrastructure.EfDataModels;
 
 namespace TextLifeRpg.Infrastructure.Seeders;
 
@@ -44,6 +43,26 @@ public class DialogueOptionSeeder : IDataSeeder
         EndDialogue = true
       }
     );
+
+    await context.SaveChangesAsync().ConfigureAwait(false);
+
+    var goodbyeResultSpokenText = new DialogueOptionResultSpokenTextDataModel
+    {
+      Id = Guid.NewGuid(),
+      DialogueOptionResultId = goodbyeResultId,
+      Text = "Alright, goodbye."
+    };
+
+    await context.DialogueOptionResultSpokenTexts.AddRangeAsync(goodbyeResultSpokenText);
+
+    var goodbyeResultNarration = new DialogueOptionResultNarrationDataModel
+    {
+      Id = Guid.NewGuid(),
+      DialogueOptionResultId = goodbyeResultId,
+      Text = "You walk away from [TARGETNAME]"
+    };
+
+    await context.DialogueOptionResultNarrations.AddRangeAsync(goodbyeResultNarration);
 
     await context.SaveChangesAsync().ConfigureAwait(false);
   }
