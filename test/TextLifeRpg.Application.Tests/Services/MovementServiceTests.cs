@@ -2,6 +2,7 @@
 using TextLifeRpg.Application.Abstraction.Repositories;
 using TextLifeRpg.Application.Services;
 using TextLifeRpg.Domain;
+using TextLifeRpg.Domain.Tests.Helpers;
 
 namespace TextLifeRpg.Application.Tests.Services;
 
@@ -9,8 +10,9 @@ public class MovementServiceTests
 {
   #region Fields
 
+  private readonly IMovementRepository _movementRepository = A.Fake<IMovementRepository>();
+  private readonly IMovementNarrationRepository _movementNarrationRepository = A.Fake<IMovementNarrationRepository>();
   private readonly ILocationService _locationService = A.Fake<ILocationService>();
-  private readonly IMovementRepository _repository = A.Fake<IMovementRepository>();
   private readonly MovementService _service;
 
   #endregion
@@ -19,7 +21,7 @@ public class MovementServiceTests
 
   public MovementServiceTests()
   {
-    _service = new MovementService(_repository, _locationService);
+    _service = new MovementService(_movementRepository, _movementNarrationRepository, _locationService);
   }
 
   #endregion
@@ -43,7 +45,7 @@ public class MovementServiceTests
       Movement.Load(Guid.NewGuid(), currentLocationId, currentRoomId, destinationLocation2Id, null, null)
     };
 
-    A.CallTo(() => _repository.GetMovementsAsync(currentLocationId, currentRoomId, A<CancellationToken>._))
+    A.CallTo(() => _movementRepository.GetMovementsAsync(currentLocationId, currentRoomId, A<CancellationToken>._))
       .Returns(Task.FromResult(expectedMovements));
 
     A.CallTo(() => _locationService.IsLocationOpenAsync(
@@ -75,7 +77,7 @@ public class MovementServiceTests
     const DayOfWeek dayOfWeek = DayOfWeek.Monday;
     var timeOfDay = new TimeSpan(8, 0, 0);
 
-    A.CallTo(() => _repository.GetMovementsAsync(currentLocationId, currentRoomId, A<CancellationToken>._))
+    A.CallTo(() => _movementRepository.GetMovementsAsync(currentLocationId, currentRoomId, A<CancellationToken>._))
       .Throws(new InvalidOperationException("Failed to get movements"));
 
     // Act & Assert
@@ -85,6 +87,49 @@ public class MovementServiceTests
     );
 
     Assert.Equal("Failed to get movements", ex.Message);
+  }
+
+  [Fact]
+  public async Task ExecuteAsync_ShouldMovePlayerAdvanceTimeAndAddNarration()
+  {
+    // Arrange
+    var movementId = Guid.NewGuid();
+    var fromLocationId = Guid.NewGuid();
+    var toLocationId = Guid.NewGuid();
+    var toRoomId = Guid.NewGuid();
+
+    var movement = Movement.Load(movementId, fromLocationId, null, toLocationId, toRoomId, null);
+
+    var player = new CharacterBuilder().Build();
+    var world = World.Create(DateTime.Now, [player]);
+    var save = GameSave.Create(player, world);
+
+    var narrationText = "You walk into the next room.";
+
+    A.CallTo(() =>
+      _movementNarrationRepository.GetMovementNarrationFromMovementIdAsync(movementId, A<CancellationToken>._)
+    ).Returns(narrationText);
+
+    var originalTime = world.CurrentDate;
+
+    // Act
+    await _service.ExecuteAsync(movement, save, CancellationToken.None);
+
+    // Assert
+    Assert.Equal(toLocationId, player.LocationId);
+    Assert.Equal(toRoomId, player.RoomId);
+    Assert.True(world.CurrentDate > originalTime); // Time advanced
+
+    var lastLine = save.TextLines.LastOrDefault();
+    Assert.NotNull(lastLine);
+    var fullNarration = string.Concat(lastLine.TextParts.Select(p => p.Text));
+    Assert.Contains(narrationText, fullNarration);
+
+    Assert.Single(save.TextLines);
+
+    A.CallTo(() =>
+      _movementNarrationRepository.GetMovementNarrationFromMovementIdAsync(movementId, A<CancellationToken>._)
+    ).MustHaveHappenedOnceExactly();
   }
 
   #endregion

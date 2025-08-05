@@ -50,12 +50,21 @@ else
           }
         </div>
 
-        <div class="bg-slate-100">
-          <ExplorationActionsPanel/>
-        </div>
-        <div class="bg-slate-100">
-          <MovementPanel/>
-        </div>
+        @if (GameSaveStore.CurrentSave.NpcInteractionType == NpcInteractionType.Dialogue)
+        {
+          <div class="bg-slate-100">
+            <DialogueOptionsPanel/>
+          </div>
+        }
+        else
+        {
+          <div class="bg-slate-100">
+            <ExplorationActionsPanel/>
+          </div>
+          <div class="bg-slate-100">
+            <MovementPanel/>
+          </div>
+        }
       </div>
 
     </div>
@@ -111,11 +120,13 @@ else
 
   private async Task StartDialogueAsync(Character character)
   {
+    var gameSave = GameSaveStore.CurrentSave!;
+    gameSave.StartDialogue(character.Id);
     try
     {
-      var greeting = await DialogueService.GetGreetingAsync(GameSaveStore.CurrentSave!, character, CancellationToken.None);
+      var greeting = await DialogueService.GetGreetingAsync(gameSave, CancellationToken.None);
       GameSaveStore.CurrentSave!.TextLines.Clear();
-      var textParts = new List<TextPart>([new TextPart(CharacterColorHelper.GetColorKey(character, GameSaveStore.CurrentSave!.PlayerCharacterId), $"{character.Name}"), new TextPart(null, $" : {greeting.SpokenText}")]);
+      var textParts = new List<TextPart>([new TextPart(CharacterColorHelper.GetColorKey(character, gameSave.PlayerCharacterId), $"{character.Name}"), new TextPart(null, $" : {greeting.SpokenText}")]);
       GameSaveStore.CurrentSave!.AddText(textParts);
       StateHasChanged();
     }

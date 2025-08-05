@@ -50,12 +50,11 @@ public class MovementNarrationRepositoryTests
   public async Task GetMovementNarrationFromMovementIdAsync_ShouldReturnNarration_WhenExists()
   {
     // Act
-    var result = await _repository.GetMovementNarrationFromMovementIdAsync(_movementId, CancellationToken.None);
+    var narration = await _repository.GetMovementNarrationFromMovementIdAsync(_movementId, CancellationToken.None);
 
     // Assert
-    Assert.NotNull(result);
-    Assert.Equal(_movementId, result.MovementId);
-    Assert.Equal(_expectedNarration, result.Text);
+    Assert.NotNull(narration);
+    Assert.Equal(_expectedNarration, narration);
   }
 
   [Fact]

@@ -12,7 +12,7 @@ public interface IMovementNarrationRepository
   /// <summary>
   /// Retrieves the narration associated with a specific movement.
   /// </summary>
-  Task<MovementNarration> GetMovementNarrationFromMovementIdAsync(Guid movementId, CancellationToken cancellationToken);
+  Task<string> GetMovementNarrationFromMovementIdAsync(Guid movementId, CancellationToken cancellationToken);
 
   #endregion
 }

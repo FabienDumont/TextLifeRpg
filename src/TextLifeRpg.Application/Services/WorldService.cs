@@ -65,51 +65,9 @@ public class WorldService(
 
     world.SetSchedules(await scheduleService.GenerateSchedulesAsync(npcs, cancellationToken));
 
-    RefreshCharactersLocation(world, playerCharacter.Id);
+    world.RefreshCharactersLocation(playerCharacter.Id);
 
     return world;
-  }
-
-  /// <inheritdoc />
-  public void AdvanceTime(World world, Guid playerCharacterId, int minutes)
-  {
-    world.AdvanceTime(minutes);
-
-    RefreshCharactersLocation(world, playerCharacterId);
-  }
-
-  #endregion
-
-  #region Methods
-
-  /// <summary>
-  /// Refreshes the location of NPCs.
-  /// </summary>
-  private static void RefreshCharactersLocation(World world, Guid playerCharacterId)
-  {
-    foreach (var character in world.Characters.Where(c => c.Id != playerCharacterId))
-    {
-      SetCharacterLocation(world, character);
-    }
-  }
-
-  /// <summary>
-  /// Sets a character location depending on schedule.
-  /// </summary>
-  private static void SetCharacterLocation(World world, Character character)
-  {
-    var timeOfDay = world.CurrentDate.TimeOfDay;
-    var schedule = world.Schedules.FirstOrDefault(s => s.CharacterId == character.Id);
-
-    if (schedule is null)
-    {
-      character.MoveTo(null, null);
-    }
-    else
-    {
-      var currentEntry = schedule.GetCurrentEntry(world.CurrentDate.DayOfWeek, timeOfDay);
-      character.MoveTo(currentEntry?.LocationId, currentEntry?.RoomId);
-    }
   }
 
   #endregion

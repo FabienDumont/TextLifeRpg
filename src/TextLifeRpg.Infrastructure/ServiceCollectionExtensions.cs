@@ -24,6 +24,8 @@ public static class ServiceCollectionExtensions
     services.AddDbContext<ApplicationContext>(options => options.UseSqlite(connectionString));
     services.AddScoped<ITraitRepository, TraitRepository>();
     services.AddScoped<IGreetingRepository, GreetingRepository>();
+    services.AddScoped<IDialogueOptionRepository, DialogueOptionRepository>();
+    services.AddScoped<IDialogueOptionSpokenTextRepository, DialogueOptionSpokenTextRepository>();
     services.AddScoped<ILocationRepository, LocationRepository>();
     services.AddScoped<ILocationOpeningHoursRepository, LocationOpeningHoursRepository>();
     services.AddScoped<IRoomRepository, RoomRepository>();

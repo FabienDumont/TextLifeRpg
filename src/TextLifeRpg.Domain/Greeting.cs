@@ -1,7 +1,7 @@
 ﻿namespace TextLifeRpg.Domain;
 
 /// <summary>
-/// Domain class representing a greeting message tied to relationship level and traits.
+/// Domain class representing a greeting.
 /// </summary>
 public class Greeting
 {

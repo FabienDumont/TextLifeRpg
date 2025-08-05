@@ -64,11 +64,7 @@
   private async Task ExecuteExplorationAction(ExplorationAction explorationAction)
   {
     var save = GameSaveStore.CurrentSave!;
-    var narration = await ExplorationActionService.ExecuteAsync(explorationAction, save, CancellationToken.None);
-
-    var line = TextLineBuilder.BuildNarrationLine(narration.Text, save.PlayerCharacter, save.PlayerCharacterId);
-
-    save.AddText(line.TextParts);
+    await ExplorationActionService.ExecuteAsync(explorationAction, save, CancellationToken.None);
 
     await GameSaveStore.NotifyStateChangedAsync();
   }

@@ -106,22 +106,6 @@ public class WorldServiceTests
   }
 
   [Fact]
-  public void AdvanceTime_ShouldAddMinutesToWorldCurrentDate()
-  {
-    // Arrange
-    var initialDate = new DateTime(2025, 4, 24, 8, 0, 0);
-    var playerCharacter = new CharacterBuilder().Build();
-    var world = World.Create(initialDate, []);
-    const int minutesToAdvance = 90;
-
-    // Act
-    _worldService.AdvanceTime(world, playerCharacter.Id, minutesToAdvance);
-
-    // Assert
-    Assert.Equal(initialDate.AddMinutes(minutesToAdvance), world.CurrentDate);
-  }
-
-  [Fact]
   public async Task CreateNewWorld_ShouldAddChildrenFromCouples()
   {
     // Arrange
@@ -219,54 +203,6 @@ public class WorldServiceTests
 
     // Assert
     Assert.Equal(gameSettings.GetNpcCount() + 1, world.Characters.Count);
-  }
-
-  [Fact]
-  public void AdvanceTime_ShouldMoveNpc_WhenScheduleEntryExists()
-  {
-    // Arrange
-    var initial = new DateTime(2025, 1, 6, 8, 0, 0);
-    var player = new CharacterBuilder().Build();
-    var npc = new CharacterBuilder().Build();
-
-    var world = World.Create(initial, [player, npc]);
-
-    var streetId = Guid.NewGuid();
-    var roomId = (Guid?) null;
-
-    var entry = new ScheduleEntry(DayOfWeek.Monday, new TimeSpan(8, 0, 0), new TimeSpan(9, 0, 0), streetId, roomId);
-    var schedule = Schedule.Create(npc.Id, [entry]);
-
-    world.SetSchedules([schedule]);
-
-    // Act
-    _worldService.AdvanceTime(world, player.Id, 10);
-
-    // Assert
-    Assert.Equal(initial.AddMinutes(10), world.CurrentDate);
-    Assert.Equal(streetId, npc.LocationId);
-    Assert.Equal(roomId, npc.RoomId);
-  }
-
-  [Fact]
-  public void AdvanceTime_ShouldNotMoveNpc_WhenNoScheduleEntry()
-  {
-    // Arrange
-    var initial = new DateTime(2025, 4, 24, 8, 0, 0);
-    var npc = new CharacterBuilder().Build();
-    var player = new CharacterBuilder().Build();
-
-    var world = World.Create(initial, [player, npc]);
-
-    world.SetSchedules([]);
-
-    // Act
-    _worldService.AdvanceTime(world, player.Id, 30);
-
-    // Assert
-    Assert.Equal(initial.AddMinutes(30), world.CurrentDate);
-    Assert.Null(npc.LocationId);
-    Assert.Null(npc.RoomId);
   }
 
   #endregion

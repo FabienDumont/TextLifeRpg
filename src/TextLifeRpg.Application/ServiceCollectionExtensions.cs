@@ -37,11 +37,8 @@ public static class ServiceCollectionExtensions
     services.AddScoped<IWorldService, WorldService>();
     services.AddScoped<ICharacterService, CharacterService>();
     services.AddScoped<IMovementService, MovementService>();
-    services.AddScoped<IMovementNarrationService, MovementNarrationService>();
     services.AddScoped<INarrationService, NarrationService>();
     services.AddScoped<IExplorationActionService, ExplorationActionService>();
-    services.AddScoped<IExplorationActionResultService, ExplorationActionResultService>();
-    services.AddScoped<IExplorationActionResultNarrationService, ExplorationActionResultNarrationService>();
     services.AddScoped<IJobService, JobService>();
     services.AddScoped<IItemService, ItemService>();
     services.AddScoped<IDialogueService, DialogueService>();

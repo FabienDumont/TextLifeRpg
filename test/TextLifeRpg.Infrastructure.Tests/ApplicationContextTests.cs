@@ -36,6 +36,9 @@ public class ApplicationContextTests
     var greetings = await context.Greetings.ToListAsync();
     Assert.Empty(greetings);
 
+    var dialogueOptions = await context.DialogueOptions.ToListAsync();
+    Assert.Empty(dialogueOptions);
+
     var locations = await context.Locations.ToListAsync();
     Assert.Empty(locations);
 
@@ -56,6 +59,7 @@ public class ApplicationContextTests
     Assert.NotEmpty(await context.Traits.ToListAsync());
     Assert.NotEmpty(await context.TraitIncompatibilities.ToListAsync());
     Assert.NotEmpty(await context.Greetings.ToListAsync());
+    Assert.NotEmpty(await context.DialogueOptions.ToListAsync());
     Assert.NotEmpty(await context.Locations.ToListAsync());
     Assert.NotEmpty(await context.Rooms.ToListAsync());
     Assert.NotEmpty(await context.Jobs.ToListAsync());

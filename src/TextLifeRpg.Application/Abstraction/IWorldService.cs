@@ -21,13 +21,5 @@ public interface IWorldService
     DateTime date, Character playerCharacter, GameSettings gameSettings, CancellationToken cancellationToken
   );
 
-  /// <summary>
-  /// Advances the in-game time by a specified number of minutes.
-  /// </summary>
-  /// <param name="world">The world instance to update.</param>
-  /// <param name="playerCharacterId">The identifier of the player character.</param>
-  /// <param name="minutes">The number of minutes to advance.</param>
-  void AdvanceTime(World world, Guid playerCharacterId, int minutes);
-
   #endregion
 }

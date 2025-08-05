@@ -15,7 +15,7 @@ public class NarrationRepository(ApplicationContext context) : RepositoryBase(co
   #region Implementation of INarrationRepository
 
   /// <inheritdoc />
-  public async Task<Narration> GetNarrationByKeyAsync(
+  public async Task<string> GetNarrationByKeyAsync(
     string key, GameContext gameContext, CancellationToken cancellationToken
   )
   {
@@ -32,7 +32,7 @@ public class NarrationRepository(ApplicationContext context) : RepositoryBase(co
 
       if (allSatisfied)
       {
-        return narration.ToDomain();
+        return narration.Text;
       }
     }
 

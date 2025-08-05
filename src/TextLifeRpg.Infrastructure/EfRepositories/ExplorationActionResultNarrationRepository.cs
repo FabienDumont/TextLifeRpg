@@ -16,7 +16,7 @@ public class ExplorationActionResultNarrationRepository(ApplicationContext conte
   #region Implementation of IExplorationActionResultNarrationRepository
 
   /// <inheritdoc />
-  public async Task<ExplorationActionResultNarration> GetByExplorationActionResultIdAsync(
+  public async Task<string> GetByExplorationActionResultIdAsync(
     Guid explorationActionResultId, GameContext gameContext, CancellationToken cancellationToken
   )
   {
@@ -36,7 +36,7 @@ public class ExplorationActionResultNarrationRepository(ApplicationContext conte
 
       if (allSatisfied)
       {
-        return explorationActionResultNarration.ToDomain();
+        return explorationActionResultNarration.Text;
       }
     }
 

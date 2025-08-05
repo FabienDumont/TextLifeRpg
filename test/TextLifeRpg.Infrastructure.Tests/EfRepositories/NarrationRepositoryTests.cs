@@ -10,7 +10,7 @@ public class NarrationRepositoryTests
 {
   #region Fields
 
-  private const string _expectedKey = "intro_scene";
+  private const string _key = "intro_scene";
   private const string _expectedText = "You step into the dark forest.";
   private readonly NarrationRepository _repository;
 
@@ -25,7 +25,7 @@ public class NarrationRepositoryTests
       new()
       {
         Id = Guid.NewGuid(),
-        Key = _expectedKey,
+        Key = _key,
         Text = _expectedText
       }
     };
@@ -61,12 +61,11 @@ public class NarrationRepositoryTests
     };
 
     // Act
-    var result = await _repository.GetNarrationByKeyAsync(_expectedKey, gameContext, CancellationToken.None);
+    var result = await _repository.GetNarrationByKeyAsync(_key, gameContext, CancellationToken.None);
 
     // Assert
     Assert.NotNull(result);
-    Assert.Equal(_expectedKey, result.Key);
-    Assert.Equal(_expectedText, result.Text);
+    Assert.Equal(_expectedText, result);
   }
 
   [Fact]
@@ -99,7 +98,7 @@ public class NarrationRepositoryTests
     var narration = new NarrationDataModel
     {
       Id = narrationId,
-      Key = _expectedKey,
+      Key = _key,
       Text = _expectedText
     };
 
@@ -131,10 +130,10 @@ public class NarrationRepositoryTests
 
     // Act & Assert
     var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-      repository.GetNarrationByKeyAsync(_expectedKey, gameContext, CancellationToken.None)
+      repository.GetNarrationByKeyAsync(_key, gameContext, CancellationToken.None)
     );
 
-    Assert.Equal($"No narration found for key {_expectedKey}.", exception.Message);
+    Assert.Equal($"No narration found for key {_key}.", exception.Message);
   }
 
   #endregion
