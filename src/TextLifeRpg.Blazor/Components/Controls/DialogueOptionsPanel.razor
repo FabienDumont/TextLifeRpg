@@ -48,6 +48,12 @@
   {
     var gameSave = GameSaveStore.CurrentSave!;
 
+    if (gameSave.InteractingNpc is null || gameSave.NpcInteractionType != NpcInteractionType.Dialogue)
+    {
+      _availableDialogueOptions = Array.Empty<DialogueOption>();
+      return;
+    }
+
     _availableDialogueOptions = await DialogueService.GetPossibleDialogueOptionsAsync(gameSave, CancellationToken.None);
   }
 
@@ -57,17 +63,18 @@
   private async Task ExecuteDialogueOption(DialogueOption dialogueOption)
   {
     var save = GameSaveStore.CurrentSave!;
-    await DialogueService.ExecuteDialogueOptionAsync(dialogueOption, save, CancellationToken.None);
+    var steps = await DialogueService.BuildDialogueOptionStepsAsync(dialogueOption, save, CancellationToken.None);
 
-    await GameSaveStore.NotifyStateChangedAsync();
+    foreach (var step in steps)
+    {
+      await step.ExecuteAsync(save);
+      await GameSaveStore.NotifyStateChangedAsync();
+      await Task.Delay(500);
+    }
   }
 
-  /// <summary>
-  /// Unregisters event handlers when the component is disposed.
-  /// </summary>
   public void Dispose()
   {
     GameSaveStore.OnAsyncChange -= HandleGameSaveChangedAsync;
   }
-
 }

@@ -25,6 +25,7 @@ public static class ServiceCollectionExtensions
     services.AddScoped<ITraitRepository, TraitRepository>();
     services.AddScoped<IGreetingRepository, GreetingRepository>();
     services.AddScoped<IDialogueOptionRepository, DialogueOptionRepository>();
+    services.AddScoped<IDialogueOptionResultRepository, DialogueOptionResultRepository>();
     services.AddScoped<IDialogueOptionSpokenTextRepository, DialogueOptionSpokenTextRepository>();
     services.AddScoped<IDialogueOptionResultNarrationRepository, DialogueOptionResultNarrationRepository>();
     services.AddScoped<IDialogueOptionResultSpokenTextRepository, DialogueOptionResultSpokenTextRepository>();

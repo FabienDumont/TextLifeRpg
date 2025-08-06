@@ -29,13 +29,14 @@ public interface IDialogueService
   );
 
   /// <summary>
-  /// Asynchronously executes a specified dialogue option within the context of the current game state.
+  /// Asynchronously builds a collection of game flow steps corresponding to the provided dialogue option,
+  /// allowing for sequential execution of the dialogue progression process in the game.
   /// </summary>
-  /// <param name="dialogueOption">The dialogue option to be executed.</param>
-  /// <param name="gameSave">The current game save.</param>
-  /// <param name="cancellationToken">An optional cancellation token to monitor for cancellation requests.</param>
-  /// <returns>A task representing the asynchronous operation.</returns>
-  Task ExecuteDialogueOptionAsync(
+  /// <param name="dialogueOption">The selected dialogue option to process and create steps for.</param>
+  /// <param name="gameSave">The current game save containing the player's state, interacting NPC, and game context.</param>
+  /// <param name="cancellationToken">An optional token to monitor for cancellation requests during execution.</param>
+  /// <returns>A task that represents the asynchronous operation and returns a read-only collection of game flow steps associated with the dialogue option.</returns>
+  Task<IReadOnlyList<GameFlowStep>> BuildDialogueOptionStepsAsync(
     DialogueOption dialogueOption, GameSave gameSave, CancellationToken cancellationToken
   );
 

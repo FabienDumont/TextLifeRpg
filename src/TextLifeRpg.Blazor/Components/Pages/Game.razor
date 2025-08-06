@@ -125,8 +125,7 @@ else
     try
     {
       await DialogueService.ExecuteGreetingAsync(gameSave, CancellationToken.None);
-
-      StateHasChanged();
+      await GameSaveStore.NotifyStateChangedAsync();
     }
     catch (Exception ex)
     {

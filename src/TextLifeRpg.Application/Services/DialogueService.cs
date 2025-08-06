@@ -28,7 +28,6 @@ public class DialogueService(
     var greeting = await greetingRepository.GetAsync(context, cancellationToken);
     gameSave.TextLines.Clear();
     TextLineBuilder.BuildSpokenText(greeting.SpokenText, gameSave.InteractingNpc, gameSave.PlayerCharacter, gameSave);
-    await Task.Delay(500, cancellationToken);
   }
 
   /// <inheritdoc />
@@ -48,13 +47,15 @@ public class DialogueService(
   }
 
   /// <inheritdoc />
-  public async Task ExecuteDialogueOptionAsync(
+  public async Task<IReadOnlyList<GameFlowStep>> BuildDialogueOptionStepsAsync(
     DialogueOption dialogueOption, GameSave gameSave, CancellationToken cancellationToken
   )
   {
+    var steps = new List<GameFlowStep>();
+
     var player = gameSave.PlayerCharacter;
-    var npc = gameSave.InteractingNpc ??
-              throw new InvalidOperationException($"{nameof(gameSave.InteractingNpc)} shouldn't be null.");
+    var npc = gameSave.InteractingNpc ?? throw new InvalidOperationException("InteractingNpc shouldn't be null.");
+
     var context = new GameContext
     {
       Actor = player,
@@ -62,41 +63,75 @@ public class DialogueService(
       Target = npc
     };
 
-    var spokenText = await dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(
-      dialogueOption.Id, context, cancellationToken
+    var spokenText =
+      await dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(
+        dialogueOption.Id, context, cancellationToken
+      );
+    steps.Add(
+      new GameFlowStep
+      {
+        ExecuteAsync = async save =>
+        {
+          TextLineBuilder.BuildSpokenText(spokenText, player, npc, save);
+          await Task.CompletedTask;
+        }
+      }
     );
 
-    TextLineBuilder.BuildSpokenText(spokenText, player, npc, gameSave);
-    await Task.Delay(500, cancellationToken);
+    var result =
+      await dialogueOptionResultRepository.GetByDialogueOptionIdAsync(dialogueOption.Id, context, cancellationToken);
 
-    var result = await dialogueOptionResultRepository.GetByDialogueOptionIdAsync(
-      dialogueOption.Id, context, cancellationToken
-    );
-
-    var resultSpokenText = await dialogueOptionResultSpokenTextRepository.GetByDialogueOptionResultIdAsync(
-      result.Id, context, cancellationToken
-    );
-
+    var resultSpokenText =
+      await dialogueOptionResultSpokenTextRepository.GetByDialogueOptionResultIdAsync(
+        result.Id, context, cancellationToken
+      );
     if (resultSpokenText is not null)
     {
-      TextLineBuilder.BuildSpokenText(resultSpokenText, npc, player, gameSave);
-      await Task.Delay(500, cancellationToken);
+      steps.Add(
+        new GameFlowStep
+        {
+          ExecuteAsync = async save =>
+          {
+            TextLineBuilder.BuildSpokenText(resultSpokenText, npc, player, save);
+            await Task.CompletedTask;
+          }
+        }
+      );
     }
 
-    var resultNarration = await dialogueOptionResultNarrationRepository.GetByDialogueOptionResultIdAsync(
-      result.Id, context, cancellationToken
-    );
-
+    var resultNarration =
+      await dialogueOptionResultNarrationRepository.GetByDialogueOptionResultIdAsync(
+        result.Id, context, cancellationToken
+      );
     if (resultNarration is not null)
     {
-      TextLineBuilder.BuildNarrationLine(resultNarration, player, npc, gameSave);
-      await Task.Delay(500, cancellationToken);
+      steps.Add(
+        new GameFlowStep
+        {
+          ExecuteAsync = async save =>
+          {
+            TextLineBuilder.BuildNarrationLine(resultNarration, player, npc, save);
+            await Task.CompletedTask;
+          }
+        }
+      );
     }
 
     if (result.EndDialogue)
     {
-      gameSave.EndInteraction();
+      steps.Add(
+        new GameFlowStep
+        {
+          ExecuteAsync = async save =>
+          {
+            save.EndInteraction();
+            await Task.CompletedTask;
+          }
+        }
+      );
     }
+
+    return steps;
   }
 
   #endregion

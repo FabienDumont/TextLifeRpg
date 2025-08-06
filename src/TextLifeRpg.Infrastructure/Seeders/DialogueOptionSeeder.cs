@@ -59,7 +59,7 @@ public class DialogueOptionSeeder : IDataSeeder
     {
       Id = Guid.NewGuid(),
       DialogueOptionResultId = goodbyeResultId,
-      Text = "You walk away from [TARGETNAME]"
+      Text = "You walk away from [TARGETNAME]."
     };
 
     await context.DialogueOptionResultNarrations.AddRangeAsync(goodbyeResultNarration);

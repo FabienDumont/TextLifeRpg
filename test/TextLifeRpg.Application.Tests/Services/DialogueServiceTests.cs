@@ -142,14 +142,14 @@ public class DialogueServiceTests
 
     // Act & Assert
     var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-      _dialogueService.ExecuteDialogueOptionAsync(dialogueOption, save, CancellationToken.None)
+      _dialogueService.BuildDialogueOptionStepsAsync(dialogueOption, save, CancellationToken.None)
     );
 
     Assert.Equal("InteractingNpc shouldn't be null.", exception.Message);
   }
 
   [Fact]
-  public async Task ExecuteDialogueOptionAsync_ShouldBuildFullDialogueFlow_WhenDataIsComplete()
+  public async Task BuildDialogueOptionStepsAsync_ShouldBuildFullFlow_WhenAllPartsArePresent()
   {
     // Arrange
     var player = new CharacterBuilder().WithName("Player").WithSex(BiologicalSex.Male).Build();
@@ -159,11 +159,11 @@ public class DialogueServiceTests
     save.StartDialogue(npc.Id);
 
     var dialogueOption = DialogueOption.Create("Ask something");
-    var result = DialogueOptionResult.Create(Guid.NewGuid(), endDialogue: false);
+    var result = DialogueOptionResult.Create(Guid.NewGuid(), endDialogue: true);
 
-    const string playerSpokenText = "Where are you from?";
-    const string npcSpokenText = "I'm from the old city.";
-    const string narrationText = "[TARGETNAME] looks away, uneasy.";
+    const string playerSpokenText = "What happened here?";
+    const string npcSpokenText = "I don't want to talk about it.";
+    const string narrationText = "[TARGETNAME] avoids your gaze.";
 
     A.CallTo(() => _dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(
         dialogueOption.Id, A<GameContext>._, A<CancellationToken>._
@@ -186,71 +186,77 @@ public class DialogueServiceTests
     ).Returns(narrationText);
 
     // Act
-    await _dialogueService.ExecuteDialogueOptionAsync(dialogueOption, save, CancellationToken.None);
+    var steps = await _dialogueService.BuildDialogueOptionStepsAsync(dialogueOption, save, CancellationToken.None);
+
+    foreach (var step in steps)
+    {
+      await step.ExecuteAsync(save);
+    }
 
     // Assert
     Assert.Equal(3, save.TextLines.Count);
 
     var playerLine = save.TextLines[0];
     Assert.Equal("Player", playerLine.TextParts[0].Text);
-    Assert.Equal(CharacterColor.Yellow, playerLine.TextParts[0].Color);
-    Assert.Equal(" : Where are you from?", playerLine.TextParts[1].Text);
-    Assert.Null(playerLine.TextParts[1].Color);
+    Assert.Equal(" : What happened here?", playerLine.TextParts[1].Text);
 
     var npcLine = save.TextLines[1];
     Assert.Equal("NPC", npcLine.TextParts[0].Text);
-    Assert.Equal(CharacterColor.Pink, npcLine.TextParts[0].Color);
-    Assert.Equal(" : I'm from the old city.", npcLine.TextParts[1].Text);
-    Assert.Null(npcLine.TextParts[1].Color);
+    Assert.Equal(" : I don't want to talk about it.", npcLine.TextParts[1].Text);
 
     var narrationLine = save.TextLines[2];
-    Assert.Equal(
-      "[TARGETNAME] looks away, uneasy.".Replace("[TARGETNAME]", npc.Name),
-      string.Concat(narrationLine.TextParts.Select(p => p.Text))
-    );
+    var expectedNarration = $"{npc.Name} avoids your gaze.";
+    var actualNarration = string.Concat(narrationLine.TextParts.Select(p => p.Text));
+    Assert.Equal(expectedNarration, actualNarration);
+
+    Assert.Null(save.InteractingNpc);
+    Assert.Null(save.NpcInteractionType);
   }
 
   [Fact]
-  public async Task ExecuteDialogueOptionAsync_ShouldEndInteraction_WhenResultEndsDialogue()
+  public async Task BuildDialogueOptionStepsAsync_ShouldEndInteraction_WhenResultEndsDialogue()
   {
     // Arrange
-    var player = new CharacterBuilder().WithName("Player").Build();
-    var npc = new CharacterBuilder().WithName("NPC").Build();
+    var player = new CharacterBuilder().Build();
+    var npc = new CharacterBuilder().Build();
     var world = World.Create(DateTime.Now, [player, npc]);
     var save = GameSave.Create(player, world);
     save.StartDialogue(npc.Id);
 
     var dialogueOption = DialogueOption.Create("Say goodbye");
+    var result = DialogueOptionResult.Create(Guid.NewGuid(), endDialogue: true);
 
     A.CallTo(() => _dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(
         dialogueOption.Id, A<GameContext>._, A<CancellationToken>._
       )
-    ).Returns("Bye!");
+    ).Returns(Task.FromResult<string>("Goodbye."));
 
-    var result = DialogueOptionResult.Create(Guid.NewGuid(), endDialogue: true);
     A.CallTo(() => _dialogueOptionResultRepository.GetByDialogueOptionIdAsync(
         dialogueOption.Id, A<GameContext>._, A<CancellationToken>._
       )
     ).Returns(result);
 
-    A.CallTo(() =>
-      _dialogueOptionResultSpokenTextRepository.GetByDialogueOptionResultIdAsync(
+    A.CallTo(() => _dialogueOptionResultSpokenTextRepository.GetByDialogueOptionResultIdAsync(
         result.Id, A<GameContext>._, A<CancellationToken>._
       )
     ).Returns(null as string);
 
-    A.CallTo(() =>
-      _dialogueOptionResultNarrationRepository.GetByDialogueOptionResultIdAsync(
+    A.CallTo(() => _dialogueOptionResultNarrationRepository.GetByDialogueOptionResultIdAsync(
         result.Id, A<GameContext>._, A<CancellationToken>._
       )
     ).Returns(null as string);
 
     // Act
-    await _dialogueService.ExecuteDialogueOptionAsync(dialogueOption, save, CancellationToken.None);
+    var steps = await _dialogueService.BuildDialogueOptionStepsAsync(dialogueOption, save, CancellationToken.None);
+
+    foreach (var step in steps)
+    {
+      await step.ExecuteAsync(save);
+    }
 
     // Assert
-    Assert.Null(save.NpcInteractionType);
     Assert.Null(save.InteractingNpc);
+    Assert.Null(save.NpcInteractionType);
   }
 
   #endregion
