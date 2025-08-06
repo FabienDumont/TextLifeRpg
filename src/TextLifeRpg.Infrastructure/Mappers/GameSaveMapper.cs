@@ -17,10 +17,17 @@ public static class GameSaveMapper
   /// </summary>
   public static GameSave ToDomain(this GameSaveDataModel dataModel)
   {
-    return dataModel.Map(i => GameSave.Load(
+    var gameSave = dataModel.Map(i => GameSave.Load(
         i.Id, i.PlayerCharacterId, i.World.ToDomain(), i.TextLines.ToDomainCollection()
       )
     );
+
+    if (dataModel.InteractingNpcId is not null && dataModel.NpcInteractionType == NpcInteractionType.Dialogue)
+    {
+      gameSave.StartDialogue((Guid)dataModel.InteractingNpcId);
+    }
+
+    return gameSave;
   }
 
   /// <summary>
@@ -36,13 +43,15 @@ public static class GameSaveMapper
   /// </summary>
   public static GameSaveDataModel ToDataModel(this GameSave domain)
   {
-    return domain.Map(u => new GameSaveDataModel
+    return domain.Map(d => new GameSaveDataModel
       {
-        Id = u.Id,
-        Name = u.Name,
-        PlayerCharacterId = u.PlayerCharacterId,
-        World = u.World.ToDataModel(),
-        TextLines = u.TextLines.ToDataModelCollection()
+        Id = d.Id,
+        Name = d.Name,
+        World = d.World.ToDataModel(),
+        PlayerCharacterId = d.PlayerCharacterId,
+        InteractingNpcId = d.InteractingNpcId,
+        NpcInteractionType = d.NpcInteractionType,
+        TextLines = d.TextLines.ToDataModelCollection()
       }
     );
   }

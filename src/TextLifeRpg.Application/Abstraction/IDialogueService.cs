@@ -10,13 +10,35 @@ public interface IDialogueService
   #region Methods
 
   /// <summary>
-  /// Asynchronously retrieves a greeting for a specified NPC character based on the current game state.
+  /// Asynchronously executes a greeting interaction between the player character and the currently interacting NPC,
+  /// updating the game state with the resulting dialogue.
+  /// </summary>
+  /// <param name="gameSave">The current game save containing the player's state, interacting NPC, and the world context.</param>
+  /// <param name="cancellationToken">An optional token to monitor for cancellation requests during execution.</param>
+  /// <returns>A task that represents the asynchronous operation.</returns>
+  Task ExecuteGreetingAsync(GameSave gameSave, CancellationToken cancellationToken = default);
+
+  /// <summary>
+  /// Asynchronously retrieves a list of possible dialogue options based on the current game state.
   /// </summary>
   /// <param name="gameSave">The current game save containing the state of the game world and player information.</param>
-  /// <param name="npc">The NPC character for whom the greeting is to be retrieved.</param>
   /// <param name="cancellationToken">An optional token to monitor for cancellation requests.</param>
-  /// <returns>A task representing the asynchronous operation. The task result contains the greeting information associated with the NPC.</returns>
-  Task<Greeting> GetGreetingAsync(GameSave gameSave, Character npc, CancellationToken cancellationToken = default);
+  /// <returns>A task representing the asynchronous operation. The task result contains a list of dialogue options available for the player.</returns>
+  Task<IReadOnlyCollection<DialogueOption>> GetPossibleDialogueOptionsAsync(
+    GameSave gameSave, CancellationToken cancellationToken = default
+  );
+
+  /// <summary>
+  /// Asynchronously builds a collection of game flow steps corresponding to the provided dialogue option,
+  /// allowing for sequential execution of the dialogue progression process in the game.
+  /// </summary>
+  /// <param name="dialogueOption">The selected dialogue option to process and create steps for.</param>
+  /// <param name="gameSave">The current game save containing the player's state, interacting NPC, and game context.</param>
+  /// <param name="cancellationToken">An optional token to monitor for cancellation requests during execution.</param>
+  /// <returns>A task that represents the asynchronous operation and returns a read-only collection of game flow steps associated with the dialogue option.</returns>
+  Task<IReadOnlyList<GameFlowStep>> BuildDialogueOptionStepsAsync(
+    DialogueOption dialogueOption, GameSave gameSave, CancellationToken cancellationToken
+  );
 
   #endregion
 }

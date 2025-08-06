@@ -47,7 +47,7 @@ public class ExplorationActionResultDataModel
   public int? MoneyChange { get; set; }
 
   /// <summary>
-  /// Navigation property to the location.
+  /// Navigation property to the exploration action.
   /// </summary>
   [ForeignKey(nameof(ExplorationActionId))]
   public ExplorationActionDataModel? ExplorationAction { get; set; }

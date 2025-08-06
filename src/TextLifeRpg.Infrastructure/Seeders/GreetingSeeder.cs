@@ -5,7 +5,7 @@ using TextLifeRpg.Infrastructure.Helper;
 namespace TextLifeRpg.Infrastructure.Seeders;
 
 /// <summary>
-/// Greeting data seeder. Seeds trait-based greetings and generic fallback greetings based on relationship.
+/// Greeting data seeder.
 /// </summary>
 public class GreetingSeeder : IDataSeeder
 {

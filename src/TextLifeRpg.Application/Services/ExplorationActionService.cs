@@ -8,9 +8,10 @@ namespace TextLifeRpg.Application.Services;
 /// Service for exploration actions.
 /// </summary>
 public class ExplorationActionService(
-  IExplorationActionRepository explorationActionRepository, ILocationService locationService,
-  IExplorationActionResultService explorationActionResultService,
-  IExplorationActionResultNarrationService explorationActionResultNarrationService
+  IExplorationActionRepository explorationActionRepository,
+  IExplorationActionResultRepository explorationActionResultRepository,
+  IExplorationActionResultNarrationRepository explorationActionResultNarrationRepository,
+  ILocationService locationService
 ) : IExplorationActionService
 {
   #region Methods
@@ -66,25 +67,29 @@ public class ExplorationActionService(
   }
 
   /// <inheritdoc />
-  public async Task<ExplorationActionResultNarration> ExecuteAsync(
-    ExplorationAction action, GameSave save, CancellationToken cancellationToken
-  )
+  public async Task ExecuteAsync(ExplorationAction action, GameSave save, CancellationToken cancellationToken)
   {
     var character = save.PlayerCharacter;
 
     // Get action result and narration
-    var result = await explorationActionResultService.GetExplorationActionResultAsync(
-      action.Id, character, save.World, cancellationToken
+    var gameContext = new GameContext
+    {
+      Actor = character,
+      World = save.World
+    };
+
+    var result = await explorationActionResultRepository.GetByExplorationActionIdAsync(
+      action.Id, gameContext, cancellationToken
     );
 
-    var narration = await explorationActionResultNarrationService.GetExplorationActionResultNarrationAsync(
-      result.Id, character, save.World, cancellationToken
+    var narration = await explorationActionResultNarrationRepository.GetByExplorationActionResultIdAsync(
+      result.Id, gameContext, cancellationToken
     );
 
     // Apply effects
     if (result.AddMinutes)
     {
-      save.World.AdvanceTime(action.NeededMinutes);
+      save.World.AdvanceTime(action.NeededMinutes, save.PlayerCharacterId);
     }
 
     if (result.EnergyChange is not null)
@@ -97,7 +102,7 @@ public class ExplorationActionService(
       character.Money += result.MoneyChange.Value;
     }
 
-    return narration;
+    TextLineBuilder.BuildNarrationLine(narration, save.PlayerCharacter, null, save);
   }
 
   #endregion

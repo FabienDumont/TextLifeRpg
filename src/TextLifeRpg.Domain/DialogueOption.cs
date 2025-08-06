@@ -1,9 +1,9 @@
 ﻿namespace TextLifeRpg.Domain;
 
 /// <summary>
-/// Domain class representing a narration.
+/// Domain class representing a dialogue option.
 /// </summary>
-public class Narration
+public class DialogueOption
 {
   #region Properties
 
@@ -13,14 +13,9 @@ public class Narration
   public Guid Id { get; }
 
   /// <summary>
-  /// Narration key.
+  /// Label describing the dialogue option.
   /// </summary>
-  public string Key { get; }
-
-  /// <summary>
-  /// Narration text template.
-  /// </summary>
-  public string Text { get; }
+  public string Label { get; }
 
   #endregion
 
@@ -29,11 +24,10 @@ public class Narration
   /// <summary>
   /// Private constructor used internally.
   /// </summary>
-  private Narration(Guid id, string key, string text)
+  private DialogueOption(Guid id, string label)
   {
     Id = id;
-    Key = key;
-    Text = text;
+    Label = label;
   }
 
   #endregion
@@ -43,17 +37,17 @@ public class Narration
   /// <summary>
   /// Factory method to create a new instance.
   /// </summary>
-  public static Narration Create(string key, string text)
+  public static DialogueOption Create(string label)
   {
-    return new Narration(Guid.NewGuid(), key, text);
+    return new DialogueOption(Guid.NewGuid(), label);
   }
 
   /// <summary>
   /// Factory method to load an existing instance from persistence.
   /// </summary>
-  public static Narration Load(Guid id, string key, string text)
+  public static DialogueOption Load(Guid id, string label)
   {
-    return new Narration(id, key, text);
+    return new DialogueOption(id, label);
   }
 
   #endregion

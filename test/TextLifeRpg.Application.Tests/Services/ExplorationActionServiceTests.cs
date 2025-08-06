@@ -10,11 +10,11 @@ public class ExplorationActionServiceTests
 {
   #region Fields
 
-  private readonly IExplorationActionResultNarrationService _explorationActionResultNarrationService =
-    A.Fake<IExplorationActionResultNarrationService>();
+  private readonly IExplorationActionResultRepository _explorationActionResultRepository =
+    A.Fake<IExplorationActionResultRepository>();
 
-  private readonly IExplorationActionResultService _explorationActionResultService =
-    A.Fake<IExplorationActionResultService>();
+  private readonly IExplorationActionResultNarrationRepository _explorationActionResultNarrationRepository =
+    A.Fake<IExplorationActionResultNarrationRepository>();
 
   private readonly ILocationService _locationService = A.Fake<ILocationService>();
   private readonly IExplorationActionRepository _repository = A.Fake<IExplorationActionRepository>();
@@ -27,7 +27,7 @@ public class ExplorationActionServiceTests
   public ExplorationActionServiceTests()
   {
     _service = new ExplorationActionService(
-      _repository, _locationService, _explorationActionResultService, _explorationActionResultNarrationService
+      _repository, _explorationActionResultRepository, _explorationActionResultNarrationRepository, _locationService
     );
   }
 
@@ -113,26 +113,19 @@ public class ExplorationActionServiceTests
 
     var result = ExplorationActionResult.Load(resultId, actionId, true, -10, 100);
 
-    var narration = ExplorationActionResultNarration.Load(
-      Guid.NewGuid(), resultId, "You feel strangely alert after the nap."
-    );
-
     A.CallTo(() =>
-      _explorationActionResultService.GetExplorationActionResultAsync(
-        actionId, character, world, A<CancellationToken>._
-      )
+      _explorationActionResultRepository.GetByExplorationActionIdAsync(actionId, A<GameContext>._, A<CancellationToken>._)
     ).Returns(result);
     A.CallTo(() =>
-      _explorationActionResultNarrationService.GetExplorationActionResultNarrationAsync(
-        resultId, character, world, A<CancellationToken>._
+      _explorationActionResultNarrationRepository.GetByExplorationActionResultIdAsync(
+        resultId, A<GameContext>._, A<CancellationToken>._
       )
-    ).Returns(narration);
+    ).Returns("You feel strangely alert after the nap.");
 
     var originalTime = save.World.CurrentDate;
 
-    var returnedNarration = await _service.ExecuteAsync(action, save, CancellationToken.None);
+    await _service.ExecuteAsync(action, save, CancellationToken.None);
 
-    Assert.Equal(narration, returnedNarration);
     Assert.Equal(40, character.Energy);
     Assert.Equal(110, character.Money);
     Assert.Equal(originalTime.AddMinutes(60), save.World.CurrentDate);

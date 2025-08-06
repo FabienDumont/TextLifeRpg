@@ -71,12 +71,11 @@ public class ExplorationActionResultNarrationRepositoryTests
     var repo = new ExplorationActionResultNarrationRepository(context);
 
     // Act
-    var result = await repo.GetByExplorationActionResultIdAsync(_resultId, gameContext, CancellationToken.None);
+    var narration = await repo.GetByExplorationActionResultIdAsync(_resultId, gameContext, CancellationToken.None);
 
     // Assert
-    Assert.NotNull(result);
-    Assert.Equal(matchingId, result.Id);
-    Assert.Equal("You lie down with a heavy sigh.", result.Text);
+    Assert.NotNull(narration);
+    Assert.Equal("You lie down with a heavy sigh.", narration);
   }
 
   [Fact]

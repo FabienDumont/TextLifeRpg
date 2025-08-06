@@ -1,4 +1,6 @@
-﻿namespace TextLifeRpg.Infrastructure.JsonDataModels;
+﻿using TextLifeRpg.Domain;
+
+namespace TextLifeRpg.Infrastructure.JsonDataModels;
 
 /// <summary>
 /// JSON data model representing a game save.
@@ -26,6 +28,16 @@ public class GameSaveDataModel
   /// Identifier of the player character within the world.
   /// </summary>
   public Guid PlayerCharacterId { get; init; }
+
+  /// <summary>
+  /// Identifier for the NPC currently interacting with the player.
+  /// </summary>
+  public Guid? InteractingNpcId { get; set; }
+
+  /// <summary>
+  /// Indicates the type of interaction with a NPC.
+  /// </summary>
+  public NpcInteractionType? NpcInteractionType { get; set; }
 
   /// <summary>
   /// Timestamp when the game was saved.

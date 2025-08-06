@@ -1,6 +1,4 @@
-﻿using TextLifeRpg.Domain;
-
-namespace TextLifeRpg.Application.Abstraction.Repositories;
+﻿namespace TextLifeRpg.Application.Abstraction.Repositories;
 
 /// <summary>
 /// Repository interface for movement narrations.
@@ -12,7 +10,7 @@ public interface IMovementNarrationRepository
   /// <summary>
   /// Retrieves the narration associated with a specific movement.
   /// </summary>
-  Task<MovementNarration> GetMovementNarrationFromMovementIdAsync(Guid movementId, CancellationToken cancellationToken);
+  Task<string> GetMovementNarrationFromMovementIdAsync(Guid movementId, CancellationToken cancellationToken);
 
   #endregion
 }

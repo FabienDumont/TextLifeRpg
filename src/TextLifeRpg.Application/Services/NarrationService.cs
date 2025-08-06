@@ -23,7 +23,7 @@ public class NarrationService(INarrationRepository repository) : INarrationServi
     };
     var narration = await repository.GetNarrationByKeyAsync(key, gameContext, cancellationToken);
 
-    return narration.Text;
+    return narration;
   }
 
   #endregion

@@ -1,0 +1,80 @@
+﻿@using TextLifeRpg.Application.Abstraction
+@inject GameSaveStore GameSaveStore
+@inject IDialogueService DialogueService
+
+<div class="flex gap-4 p-2">
+  @if (_availableDialogueOptions is null)
+  {
+    <p>Loading dialogue options...</p>
+  }
+  else if (!_availableDialogueOptions.Any())
+  {
+    <p class="italic">No exploration actions available.</p>
+  }
+  else
+  {
+    @foreach (var dialogueOption in _availableDialogueOptions)
+    {
+      <button class="trpg-btn inline-block" @onclick="() => ExecuteDialogueOption(dialogueOption)">
+        @(dialogueOption.Label)
+      </button>
+    }
+  }
+</div>
+
+@code {
+
+  private IReadOnlyCollection<DialogueOption>? _availableDialogueOptions;
+
+  /// <summary>
+  /// Loads available dialogue options on component initialization.
+  /// </summary>
+  protected override async Task OnInitializedAsync()
+  {
+    GameSaveStore.OnAsyncChange += HandleGameSaveChangedAsync;
+    await LoadAvailableDialogueOptionsAsync();
+  }
+
+  private async Task HandleGameSaveChangedAsync()
+  {
+    await LoadAvailableDialogueOptionsAsync();
+    StateHasChanged();
+  }
+
+  /// <summary>
+  /// Loads all dialogue options available to the current player character.
+  /// </summary>
+  private async Task LoadAvailableDialogueOptionsAsync()
+  {
+    var gameSave = GameSaveStore.CurrentSave!;
+
+    if (gameSave.InteractingNpc is null || gameSave.NpcInteractionType != NpcInteractionType.Dialogue)
+    {
+      _availableDialogueOptions = Array.Empty<DialogueOption>();
+      return;
+    }
+
+    _availableDialogueOptions = await DialogueService.GetPossibleDialogueOptionsAsync(gameSave, CancellationToken.None);
+  }
+
+  /// <summary>
+  /// Executes the selected dialogue option.
+  /// </summary>
+  private async Task ExecuteDialogueOption(DialogueOption dialogueOption)
+  {
+    var save = GameSaveStore.CurrentSave!;
+    var steps = await DialogueService.BuildDialogueOptionStepsAsync(dialogueOption, save, CancellationToken.None);
+
+    foreach (var step in steps)
+    {
+      await step.ExecuteAsync(save);
+      await GameSaveStore.NotifyStateChangedAsync();
+      await Task.Delay(500);
+    }
+  }
+
+  public void Dispose()
+  {
+    GameSaveStore.OnAsyncChange -= HandleGameSaveChangedAsync;
+  }
+}

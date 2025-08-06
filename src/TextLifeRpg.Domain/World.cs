@@ -84,9 +84,40 @@ public class World
   /// <summary>
   /// Advances the current world time by a number of minutes.
   /// </summary>
-  public void AdvanceTime(int minutes)
+  public void AdvanceTime(int minutes, Guid playerId)
   {
     CurrentDate = CurrentDate.AddMinutes(minutes);
+    RefreshCharactersLocation(playerId);
+  }
+
+  /// <summary>
+  /// Refreshes the location of NPCs.
+  /// </summary>
+  public void RefreshCharactersLocation(Guid playerId)
+  {
+    foreach (var character in Characters.Where(c => c.Id != playerId))
+    {
+      SetCharacterLocation(character);
+    }
+  }
+
+  /// <summary>
+  /// Sets a character location depending on schedule.
+  /// </summary>
+  private void SetCharacterLocation(Character character)
+  {
+    var timeOfDay = CurrentDate.TimeOfDay;
+    var schedule = Schedules.FirstOrDefault(s => s.CharacterId == character.Id);
+
+    if (schedule is null)
+    {
+      character.MoveTo(null, null);
+    }
+    else
+    {
+      var currentEntry = schedule.GetCurrentEntry(CurrentDate.DayOfWeek, timeOfDay);
+      character.MoveTo(currentEntry?.LocationId, currentEntry?.RoomId);
+    }
   }
 
   /// <summary>

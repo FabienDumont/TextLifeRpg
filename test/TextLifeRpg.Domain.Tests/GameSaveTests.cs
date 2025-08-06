@@ -103,5 +103,42 @@ public class GameSaveTests
     Assert.Empty(save.TextLines);
   }
 
+  [Fact]
+  public void StartDialogue_ShouldSetInteractingNpcIdAndType()
+  {
+    // Arrange
+    var player = new CharacterBuilder().Build();
+    var npc = new CharacterBuilder().Build();
+    var world = World.Create(DateTime.Now, [player, npc]);
+    var save = GameSave.Create(player, world);
+
+    // Act
+    save.StartDialogue(npc.Id);
+
+    // Assert
+    Assert.Equal(npc.Id, save.InteractingNpcId);
+    Assert.Equal(npc, save.InteractingNpc);
+    Assert.Equal(NpcInteractionType.Dialogue, save.NpcInteractionType);
+  }
+
+  [Fact]
+  public void EndInteraction_ShouldClearInteractingNpcAndType()
+  {
+    // Arrange
+    var player = new CharacterBuilder().Build();
+    var npc = new CharacterBuilder().Build();
+    var world = World.Create(DateTime.Now, [player, npc]);
+    var save = GameSave.Create(player, world);
+    save.StartDialogue(npc.Id); // simulate active interaction
+
+    // Act
+    save.EndInteraction();
+
+    // Assert
+    Assert.Null(save.InteractingNpcId);
+    Assert.Null(save.InteractingNpc);
+    Assert.Null(save.NpcInteractionType);
+  }
+
   #endregion
 }

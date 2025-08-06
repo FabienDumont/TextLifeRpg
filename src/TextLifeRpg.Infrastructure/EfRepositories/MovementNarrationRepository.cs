@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TextLifeRpg.Application.Abstraction.Repositories;
-using TextLifeRpg.Domain;
-using TextLifeRpg.Infrastructure.Mappers;
 
 namespace TextLifeRpg.Infrastructure.EfRepositories;
 
@@ -14,7 +12,7 @@ public class MovementNarrationRepository(ApplicationContext context)
   #region Implementation of IMovementNarrationRepository
 
   /// <inheritdoc />
-  public async Task<MovementNarration> GetMovementNarrationFromMovementIdAsync(
+  public async Task<string> GetMovementNarrationFromMovementIdAsync(
     Guid movementId, CancellationToken cancellationToken
   )
   {
@@ -27,7 +25,7 @@ public class MovementNarrationRepository(ApplicationContext context)
       throw new InvalidOperationException($"No narration found for movement {movementId}");
     }
 
-    return dataModel.ToDomain();
+    return dataModel.Text;
   }
 
   #endregion

@@ -1,7 +1,6 @@
 ﻿@using TextLifeRpg.Application.Abstraction
 @inject IMovementService MovementService
 @inject ILocationService LocationService
-@inject IMovementNarrationService MovementNarrationService
 @inject IRoomService RoomService
 @inject GameSaveStore GameSaveStore
 @inject IWorldService WorldService
@@ -114,22 +113,7 @@
   /// </summary>
   private async Task MoveToDestination(Movement movement)
   {
-    var player = GameSaveStore.CurrentSave!.PlayerCharacter;
-
-    // Clears existing textlines when location changes
-    GameSaveStore.CurrentSave.ResetText();
-
-    // Moves player to the new location/room
-    player.MoveTo(movement.ToLocationId, movement.ToRoomId);
-
-    // Advances the world time
-    WorldService.AdvanceTime(GameSaveStore.CurrentSave!.World, GameSaveStore.CurrentSave!.PlayerCharacterId, 1);
-
-    // Get the movement narration text
-    var narration = await MovementNarrationService.GetNarrationTextAsync(movement.Id, CancellationToken.None);
-
-    var line = TextLineBuilder.BuildNarrationLine(narration, player, GameSaveStore.CurrentSave.PlayerCharacterId);
-    GameSaveStore.CurrentSave.AddText(line.TextParts);
+    await MovementService.ExecuteAsync(movement, GameSaveStore.CurrentSave!, CancellationToken.None);
 
     // Reloads available movements and updates the game state
     await LoadAvailableMovementsAsync();

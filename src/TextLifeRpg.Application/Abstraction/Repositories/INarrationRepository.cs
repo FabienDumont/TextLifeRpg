@@ -12,7 +12,7 @@ public interface INarrationRepository
   /// <summary>
   /// Retrieves the narration associated with a specific key for the specified game context.
   /// </summary>
-  Task<Narration> GetNarrationByKeyAsync(string key, GameContext gameContext, CancellationToken cancellationToken);
+  Task<string> GetNarrationByKeyAsync(string key, GameContext gameContext, CancellationToken cancellationToken);
 
   #endregion
 }
