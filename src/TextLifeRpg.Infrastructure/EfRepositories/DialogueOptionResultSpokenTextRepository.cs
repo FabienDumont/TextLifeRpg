@@ -11,31 +11,32 @@ public class DialogueOptionResultSpokenTextRepository(ApplicationContext context
 {
   #region Implementation of IDialogueOptionResultSpokenTextRepository
 
-  public async Task<string?> GetByDialogueOptionResultIdAsync(
+  public async Task<IReadOnlyList<string>> GetByDialogueOptionResultIdAsync(
     Guid dialogueOptionResultId, GameContext gameContext, CancellationToken cancellationToken
   )
   {
-    var spokenTexts = await Context.DialogueOptionResultSpokenTexts
+    var resultSpokenTexts = await Context.DialogueOptionResultSpokenTexts
       .Where(n => n.DialogueOptionResultId == dialogueOptionResultId).ToListAsync(cancellationToken);
 
-    var spokenTextIds = spokenTexts.Select(n => n.Id).ToList();
+    var spokenTextIds = resultSpokenTexts.Select(n => n.Id).ToList();
+
     var allConditions = await Context.Conditions
       .Where(c => c.ContextType == ContextType.DialogueOptionResultSpokenText && spokenTextIds.Contains(c.ContextId))
       .ToListAsync(cancellationToken);
 
-    foreach (var dialogueOptionResultSpokenText in spokenTexts)
+    var validTexts = new List<string>();
+
+    foreach (var resultSpokenText in resultSpokenTexts)
     {
-      var conditions = allConditions.Where(c => c.ContextId == dialogueOptionResultSpokenText.Id);
-
+      var conditions = allConditions.Where(c => c.ContextId == resultSpokenText.Id);
       var allSatisfied = conditions.All(condition => ConditionEvaluator.EvaluateCondition(condition, gameContext));
-
       if (allSatisfied)
       {
-        return dialogueOptionResultSpokenText.Text;
+        validTexts.Add(resultSpokenText.Text);
       }
     }
 
-    return null;
+    return validTexts;
   }
 
   #endregion

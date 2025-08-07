@@ -1,0 +1,53 @@
+﻿{
+  "option": "Say goodbye",
+  "endsDialogue": true,
+  "spokenText": "Goodbye.",
+  "spokenResults": [
+    {
+      "text": "Yeah fuck off, I hate you.",
+      "conditions": [
+        { "trait": "Blunt" },
+        { "actorRelationshipValue": { "operator": "<", "value": -50 } }
+      ]
+    },
+    {
+      "text": "Don't bother next time.",
+      "conditions": [
+        { "trait": "Blunt" },
+        { "actorRelationshipValue": { "operator": "<", "value": 0 } },
+        { "actorRelationshipValue": { "operator": ">=", "value": -50 } }
+      ]
+    },
+    {
+      "text": "Bye.",
+      "conditions": [
+        { "trait": "Blunt" },
+        { "actorRelationshipValue": { "operator": "<", "value": 50 } },
+        { "actorRelationshipValue": { "operator": ">=", "value": 0 } }
+      ]
+    },
+    {
+      "text": "It was nice talking to you. Bye.",
+      "conditions": [
+        { "trait": "Blunt" },
+        { "actorRelationshipValue": { "operator": ">=", "value": 50 } }
+      ]
+    },
+    {
+      "text": "Alright, goodbye.",
+      "conditions": []
+    }
+  ],
+  "narrationResults": [
+    {
+      "text": "You walk away from [TARGETNAME].",
+      "conditions": []
+    },
+    {
+      "text": "You limp away, exhausted.",
+      "conditions": [
+        { "actorEnergy": { "operator": "<", "value": 25 } }
+      ]
+    }
+  ]
+}

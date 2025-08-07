@@ -50,7 +50,7 @@ public class TextVariantBuilderTests
     var traitId = Guid.NewGuid();
 
     // Act
-    var builder = new TextVariantBuilder(contextType, contextId, "test").WithTraitCondition(traitId);
+    var builder = new TextVariantBuilder(contextType, contextId, "test").WithActorTraitCondition(traitId);
 
     var condition = builder.Conditions.Single();
 
@@ -73,7 +73,7 @@ public class TextVariantBuilderTests
     var traitId = Guid.NewGuid();
 
     // Act
-    var builder = new TextVariantBuilder(contextType, contextId, "test").WithTraitCondition(traitId, negate: true);
+    var builder = new TextVariantBuilder(contextType, contextId, "test").WithActorTraitCondition(traitId, negate: true);
 
     var condition = builder.Conditions.Single();
 

@@ -1,4 +1,5 @@
-﻿using TextLifeRpg.Application.Abstraction.Repositories;
+﻿using TextLifeRpg.Application.Abstraction;
+using TextLifeRpg.Application.Abstraction.Repositories;
 using TextLifeRpg.Application.Services;
 using TextLifeRpg.Domain;
 using TextLifeRpg.Domain.Tests.Helpers;
@@ -24,6 +25,8 @@ public class DialogueServiceTests
   private readonly IDialogueOptionResultSpokenTextRepository _dialogueOptionResultSpokenTextRepository =
     A.Fake<IDialogueOptionResultSpokenTextRepository>();
 
+  private readonly IRandomProvider _randomProvider = A.Fake<IRandomProvider>();
+
   private readonly DialogueService _dialogueService;
 
   #endregion
@@ -35,7 +38,7 @@ public class DialogueServiceTests
     _dialogueService = new DialogueService(
       _greetingRepository, _dialogueOptionRepository, _dialogueOptionSpokenTextRepository,
       _dialogueOptionResultRepository, _dialogueOptionResultNarrationRepository,
-      _dialogueOptionResultSpokenTextRepository
+      _dialogueOptionResultSpokenTextRepository, _randomProvider
     );
   }
 
@@ -44,7 +47,7 @@ public class DialogueServiceTests
   #region Methods
 
   [Fact]
-  public async Task ExecuteGreetingAsync_ShouldCallGreetingRepositoryWithCorrectContextAndReturnGreeting()
+  public async Task ExecuteGreetingAsync_ShouldCallGreetingRepositoryWithCorrectContext()
   {
     // Arrange
     var player = new CharacterBuilder().Build();
@@ -53,18 +56,47 @@ public class DialogueServiceTests
     var save = GameSave.Create(player, world);
     save.StartDialogue(npc.Id);
 
-    var expectedGreeting = Greeting.Create("Hello");
-    A.CallTo(() => _greetingRepository.GetAsync(A<GameContext>._, A<CancellationToken>._)).Returns(expectedGreeting);
+    A.CallTo(() => _greetingRepository.GetAsync(A<GameContext>._, A<CancellationToken>._)).Returns(new List<string> { "Hello" });
 
     // Act
     await _dialogueService.ExecuteGreetingAsync(save);
 
     // Assert
+    Assert.Equal(2, world.Relationships.Count);
     A.CallTo(() => _greetingRepository.GetAsync(
         A<GameContext>.That.Matches(ctx => ctx.Actor == npc && ctx.Target == player && ctx.World == world),
         A<CancellationToken>._
       )
     ).MustHaveHappenedOnceExactly();
+  }
+
+  [Fact]
+  public async Task ExecuteGreetingAsync_WithExistingRelationship_ShouldCallGreetingRepositoryWithCorrectContext()
+  {
+    // Arrange
+    var player = new CharacterBuilder().Build();
+    var npc = new CharacterBuilder().Build();
+    var world = World.Create(DateTime.Now, [player, npc]);
+
+    var date = DateOnly.FromDateTime(world.CurrentDate);
+
+    world.AddRelationships(
+      [
+        Relationship.Create(player.Id, npc.Id, RelationshipType.Acquaintance, date, date, 0),
+        Relationship.Create(npc.Id, player.Id, RelationshipType.Acquaintance, date, date, 0)
+      ]
+    );
+
+    var save = GameSave.Create(player, world);
+    save.StartDialogue(npc.Id);
+
+    A.CallTo(() => _greetingRepository.GetAsync(A<GameContext>._, A<CancellationToken>._)).Returns(new List<string> { "Hello" });
+
+    // Act
+    await _dialogueService.ExecuteGreetingAsync(save);
+
+    // Assert
+    Assert.Equal(2, world.Relationships.Count);
   }
 
   [Fact]
@@ -81,6 +113,27 @@ public class DialogueServiceTests
 
     Assert.Equal("InteractingNpc shouldn't be null.", exception.Message);
   }
+
+  [Fact]
+  public async Task ExecuteGreetingAsync_ShouldThrowWhenNoGreetingsExist()
+  {
+    // Arrange
+    var player = new CharacterBuilder().Build();
+    var npc = new CharacterBuilder().Build();
+    var world = World.Create(DateTime.Now, [player, npc]);
+    var save = GameSave.Create(player, world);
+    save.StartDialogue(npc.Id);
+
+    A.CallTo(() => _greetingRepository.GetAsync(A<GameContext>._, A<CancellationToken>._))
+      .Returns(new List<string>());
+
+    // Act & Assert
+    var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+      _dialogueService.ExecuteGreetingAsync(save));
+
+    Assert.Equal("No greetings found.", exception.Message);
+  }
+
 
   [Fact]
   public async Task GetPossibleDialogueOptionsAsync_ShouldCallRepositoryWithCorrectContextAndReturnOptions()
@@ -178,7 +231,7 @@ public class DialogueServiceTests
     A.CallTo(() => _dialogueOptionResultSpokenTextRepository.GetByDialogueOptionResultIdAsync(
         result.Id, A<GameContext>._, A<CancellationToken>._
       )
-    ).Returns(npcSpokenText);
+    ).Returns(new List<string> { npcSpokenText });
 
     A.CallTo(() => _dialogueOptionResultNarrationRepository.GetByDialogueOptionResultIdAsync(
         result.Id, A<GameContext>._, A<CancellationToken>._
@@ -239,7 +292,7 @@ public class DialogueServiceTests
     A.CallTo(() => _dialogueOptionResultSpokenTextRepository.GetByDialogueOptionResultIdAsync(
         result.Id, A<GameContext>._, A<CancellationToken>._
       )
-    ).Returns(null as string);
+    ).Returns(new List<string>());
 
     A.CallTo(() => _dialogueOptionResultNarrationRepository.GetByDialogueOptionResultIdAsync(
         result.Id, A<GameContext>._, A<CancellationToken>._

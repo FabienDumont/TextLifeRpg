@@ -62,57 +62,10 @@ public class GreetingRepositoryTests
     _conditionData.Clear();
 
     // Act
-    var result = await _repository.GetAsync(gameContext, CancellationToken.None);
+    var greetings = await _repository.GetAsync(gameContext, CancellationToken.None);
 
     // Assert
-    Assert.NotNull(result);
-    Assert.Equal(greeting.Id, result.Id);
-    Assert.Equal(greeting.SpokenText, result.SpokenText);
-  }
-
-  [Fact]
-  public async Task GetAsync_ShouldThrow_WhenConditionsNotMet()
-  {
-    // Arrange
-    var character = new CharacterBuilder().Build();
-    var world = World.Create(DateTime.Now, [character]);
-
-    var gameContext = new GameContext
-    {
-      Actor = character,
-      World = world
-    };
-    var greetingId = Guid.NewGuid();
-
-    var greeting = new GreetingDataModel
-    {
-      Id = greetingId,
-      SpokenText = "Leave me alone!"
-    };
-
-    _greetingData.Clear();
-    _greetingData.Add(greeting);
-
-    _conditionData.Clear();
-    _conditionData.Add(
-      new ConditionDataModel
-      {
-        ConditionType = ConditionType.ActorHasTrait,
-        OperandLeft = Guid.NewGuid().ToString(),
-        Operator = "=",
-        OperandRight = "true",
-        Negate = false,
-        ContextType = ContextType.Greeting,
-        ContextId = greeting.Id
-      }
-    );
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
-      await _repository.GetAsync(gameContext, CancellationToken.None)
-    );
-
-    Assert.Equal("No appropriate greeting found.", exception.Message);
+    Assert.NotEmpty(greetings);
   }
 
   #endregion

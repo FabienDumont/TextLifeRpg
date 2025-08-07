@@ -39,7 +39,7 @@ public class ExplorationActionBuilder
 
   public ExplorationActionBuilder AddNarration(string text, Action<TextVariantBuilder> buildConditions)
   {
-    var builder = new TextVariantBuilder(ContextType.ExplorationActionResult, _result.Id, text);
+    var builder = new TextVariantBuilder(ContextType.ExplorationActionResultNarration, _result.Id, text);
     buildConditions(builder);
     _narrationBuilders.Add(builder);
     return this;

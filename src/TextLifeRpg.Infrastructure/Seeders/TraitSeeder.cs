@@ -16,7 +16,7 @@ public class TraitSeeder : IDataSeeder
 
     foreach (var name in new[]
              {
-               "Blunt", "Generous", "Mean", "Outgoing",
+               "Blunt", "Kind", "Generous", "Mean", "Outgoing",
                "Polite", "Rude", "Selfish", "Shy"
              })
     {
@@ -36,6 +36,7 @@ public class TraitSeeder : IDataSeeder
     {
       ("Blunt", "Polite"),
       ("Blunt", "Shy"),
+      ("Kind", "Mean"),
       ("Outgoing", "Shy"),
       ("Generous", "Selfish"),
       ("Polite", "Rude")

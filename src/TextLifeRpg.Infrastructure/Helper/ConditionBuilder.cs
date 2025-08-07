@@ -33,6 +33,58 @@ public static class ConditionBuilder
   }
 
   /// <summary>
+  /// Builds a single condition checking whether the actor has a specific trait.
+  /// </summary>
+  /// <param name="contextType">The type of the context entity the condition applies to.</param>
+  /// <param name="contextId">The identifier of the context entity.</param>
+  /// <param name="conditionType">The condition type.</param>
+  /// <param name="traitId">The identifier of the trait to check for.</param>
+  /// <param name="negate">Whether the condition should check for absence instead of presence.</param>
+  /// <returns>A trait-based <see cref="ConditionDataModel"/>.</returns>
+  private static ConditionDataModel TraitCondition(
+    ContextType contextType, Guid contextId, ConditionType conditionType, Guid traitId, bool negate = false
+  )
+  {
+    return new ConditionDataModel
+    {
+      Id = Guid.NewGuid(),
+      ContextType = contextType,
+      ContextId = contextId,
+      ConditionType = conditionType,
+      OperandLeft = traitId.ToString(),
+      Operator = "=",
+      OperandRight = "true",
+      Negate = negate
+    };
+  }
+
+  /// <summary>
+  /// Constructs a condition that evaluates an actor's relationship value based on the specified operator and value.
+  /// </summary>
+  /// <param name="contextType">
+  /// The type of the entity this condition is associated with (e.g., Dialogue, Action).
+  /// </param>
+  /// <param name="contextId">The unique identifier of the contextual entity.</param>
+  /// <param name="op">The comparison operator to apply.</param>
+  /// <param name="value">The value to compare the relationship against.</param>
+  /// <returns>A configured <see cref="ConditionDataModel"/> for checking the actor's relationship value.</returns>
+  private static ConditionDataModel ActorRelationshipValueCondition(
+    ContextType contextType, Guid contextId, string op, string value
+  )
+  {
+    return new ConditionDataModel
+    {
+      Id = Guid.NewGuid(),
+      ContextType = contextType,
+      ContextId = contextId,
+      ConditionType = ConditionType.ActorRelationship,
+      Operator = op,
+      OperandRight = value,
+      Negate = false
+    };
+  }
+
+  /// <summary>
   /// Builds multiple energy-based conditions for a given context.
   /// </summary>
   /// <param name="contextType">The type of the context entity the conditions belong to.</param>
@@ -47,43 +99,39 @@ public static class ConditionBuilder
   }
 
   /// <summary>
-  /// Builds a single condition checking whether the actor has a specific trait.
-  /// </summary>
-  /// <param name="contextType">The type of the context entity the condition applies to.</param>
-  /// <param name="contextId">The identifier of the context entity.</param>
-  /// <param name="traitId">The identifier of the trait to check for.</param>
-  /// <param name="negate">Whether the condition should check for absence instead of presence.</param>
-  /// <returns>A trait-based <see cref="ConditionDataModel"/>.</returns>
-  private static ConditionDataModel TraitCondition(
-    ContextType contextType, Guid contextId, Guid traitId, bool negate = false
-  )
-  {
-    return new ConditionDataModel
-    {
-      Id = Guid.NewGuid(),
-      ContextType = contextType,
-      ContextId = contextId,
-      ConditionType = ConditionType.ActorHasTrait,
-      OperandLeft = traitId.ToString(),
-      Operator = "=",
-      OperandRight = "true",
-      Negate = negate
-    };
-  }
-
-  /// <summary>
   /// Builds a collection of trait based conditions for the given context.
   /// </summary>
   /// <param name="contextType">The type of the context the conditions apply to.</param>
   /// <param name="contextId">The identifier of the context entity.</param>
+  /// <param name="conditionType">The condition type.</param>
   /// <param name="traitIds">The traits required to satisfy the conditions.</param>
   /// <param name="negate">Whether the trait check should be negated.</param>
   /// <returns>A list of trait conditions.</returns>
-  public static IEnumerable<ConditionDataModel> BuildActorTraitConditions(
-    ContextType contextType, Guid contextId, IEnumerable<Guid> traitIds, bool negate = false
+  public static IEnumerable<ConditionDataModel> BuildTraitConditions(
+    ContextType contextType, Guid contextId, ConditionType conditionType, IEnumerable<Guid> traitIds,
+    bool negate = false
   )
   {
-    return traitIds.Select(id => TraitCondition(contextType, contextId, id, negate));
+    return traitIds.Select(id => TraitCondition(contextType, contextId, conditionType, id, negate));
+  }
+
+  /// <summary>
+  /// Constructs a collection of condition data models that validate actor relationship values
+  /// based on a sequence of operator-value rules.
+  /// </summary>
+  /// <param name="contextType">The type of the entity associated with the conditions (e.g., Dialogue, Action).</param>
+  /// <param name="contextId">The unique identifier of the entity context.</param>
+  /// <param name="rules">
+  /// An array of tuples where each includes an operator and value to define the relationship value conditions.
+  /// </param>
+  /// <returns>
+  /// An enumerable collection of <see cref="ConditionDataModel"/> representing the relationship value conditions.
+  /// </returns>
+  public static IEnumerable<ConditionDataModel> BuildRelationshipValueConditions(
+    ContextType contextType, Guid contextId, (string op, string value)[] rules
+  )
+  {
+    return rules.Select(rule => ActorRelationshipValueCondition(contextType, contextId, rule.op, rule.value));
   }
 
   #endregion

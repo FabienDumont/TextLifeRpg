@@ -9,7 +9,7 @@ public class DialogueService(
   IDialogueOptionSpokenTextRepository dialogueOptionSpokenTextRepository,
   IDialogueOptionResultRepository dialogueOptionResultRepository,
   IDialogueOptionResultNarrationRepository dialogueOptionResultNarrationRepository,
-  IDialogueOptionResultSpokenTextRepository dialogueOptionResultSpokenTextRepository
+  IDialogueOptionResultSpokenTextRepository dialogueOptionResultSpokenTextRepository, IRandomProvider randomProvider
 ) : IDialogueService
 {
   #region Implementation of IDialogueService
@@ -17,17 +17,43 @@ public class DialogueService(
   /// <inheritdoc />
   public async Task ExecuteGreetingAsync(GameSave gameSave, CancellationToken cancellationToken = default)
   {
+    var player = gameSave.PlayerCharacter;
+    var npc = gameSave.InteractingNpc ??
+              throw new InvalidOperationException($"{nameof(gameSave.InteractingNpc)} shouldn't be null.");
+
     var context = new GameContext
     {
-      Actor = gameSave.InteractingNpc ??
-              throw new InvalidOperationException($"{nameof(gameSave.InteractingNpc)} shouldn't be null."),
+      Actor = npc,
       World = gameSave.World,
-      Target = gameSave.PlayerCharacter
+      Target = player
     };
 
-    var greeting = await greetingRepository.GetAsync(context, cancellationToken);
+    var possibleGreetings = await greetingRepository.GetAsync(context, cancellationToken);
+
+    if (possibleGreetings.Count == 0)
+    {
+      throw new InvalidOperationException("No greetings found.");
+    }
+
     gameSave.TextLines.Clear();
-    TextLineBuilder.BuildSpokenText(greeting.SpokenText, gameSave.InteractingNpc, gameSave.PlayerCharacter, gameSave);
+    TextLineBuilder.BuildSpokenText(
+      possibleGreetings[randomProvider.Next(0, possibleGreetings.Count)], npc, player, gameSave
+    );
+
+    var hasBothRelationships =
+      gameSave.World.Relationships.Any(r => r.SourceCharacterId == player.Id && r.TargetCharacterId == npc.Id) &&
+      gameSave.World.Relationships.Any(r => r.SourceCharacterId == npc.Id && r.TargetCharacterId == player.Id);
+
+    if (!hasBothRelationships)
+    {
+      var date = DateOnly.FromDateTime(gameSave.World.CurrentDate);
+      gameSave.World.AddRelationships(
+        [
+          Relationship.Create(player.Id, npc.Id, RelationshipType.Acquaintance, date, date, 0),
+          Relationship.Create(npc.Id, player.Id, RelationshipType.Acquaintance, date, date, 0)
+        ]
+      );
+    }
   }
 
   /// <inheritdoc />
@@ -35,12 +61,14 @@ public class DialogueService(
     GameSave gameSave, CancellationToken cancellationToken = default
   )
   {
+    var player = gameSave.PlayerCharacter;
+    var npc = gameSave.InteractingNpc ?? throw new InvalidOperationException("InteractingNpc shouldn't be null.");
+
     var context = new GameContext
     {
-      Actor = gameSave.PlayerCharacter,
+      Actor = player,
       World = gameSave.World,
-      Target = gameSave.InteractingNpc ??
-               throw new InvalidOperationException($"{nameof(gameSave.InteractingNpc)} shouldn't be null.")
+      Target = npc
     };
 
     return await dialogueOptionRepository.GetPossibleDialogueOptionsAsync(context, cancellationToken);
@@ -81,18 +109,27 @@ public class DialogueService(
     var result =
       await dialogueOptionResultRepository.GetByDialogueOptionIdAsync(dialogueOption.Id, context, cancellationToken);
 
-    var resultSpokenText =
-      await dialogueOptionResultSpokenTextRepository.GetByDialogueOptionResultIdAsync(
-        result.Id, context, cancellationToken
-      );
-    if (resultSpokenText is not null)
+    var dialogueResultSpokenTextContext = new GameContext
+    {
+      Actor = npc,
+      World = gameSave.World,
+      Target = player
+    };
+
+    var possibleSpokenTexts = await dialogueOptionResultSpokenTextRepository.GetByDialogueOptionResultIdAsync(
+      result.Id, dialogueResultSpokenTextContext, cancellationToken
+    );
+
+    if (possibleSpokenTexts.Count > 0)
     {
       steps.Add(
         new GameFlowStep
         {
           ExecuteAsync = async save =>
           {
-            TextLineBuilder.BuildSpokenText(resultSpokenText, npc, player, save);
+            TextLineBuilder.BuildSpokenText(
+              possibleSpokenTexts[randomProvider.Next(0, possibleSpokenTexts.Count)], npc, player, save
+            );
             await Task.CompletedTask;
           }
         }

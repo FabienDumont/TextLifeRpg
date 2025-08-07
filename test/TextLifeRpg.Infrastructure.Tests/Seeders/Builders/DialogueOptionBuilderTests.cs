@@ -16,7 +16,7 @@ public class DialogueOptionBuilderTests
     var context = new ApplicationContext(options);
     var builder = new DialogueOptionBuilder(context, "Say goodbye").EndDialogue()
       .AddSpokenText("Goodbye", c => c.WithEnergyCondition(">", "50"))
-      .AddResultSpokenText("Alright, goodbye.", c => c.WithTraitCondition(Guid.NewGuid())).AddResultNarration(
+      .AddResultSpokenText("Alright, goodbye.", c => c.WithActorTraitCondition(Guid.NewGuid())).AddResultNarration(
         "You walk away from [TARGETNAME].", c => c.WithEnergyCondition("<", "40")
       );
 

@@ -12,7 +12,7 @@ public interface IGreetingRepository
   /// <summary>
   /// Retrieves a greeting depending on the given game context.
   /// </summary>
-  Task<Greeting> GetAsync(GameContext gameContext, CancellationToken cancellationToken);
+  Task<IReadOnlyList<string>> GetAsync(GameContext gameContext, CancellationToken cancellationToken);
 
   #endregion
 }

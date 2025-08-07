@@ -68,7 +68,7 @@ public class DialogueOptionResultSpokenTextRepositoryTests
     var result = await repo.GetByDialogueOptionResultIdAsync(_resultId, gameContext, CancellationToken.None);
 
     // Assert
-    Assert.Equal("I can't go on like this.", result);
+    Assert.Contains("I can't go on like this.", result);
   }
 
   [Fact]
@@ -123,7 +123,7 @@ public class DialogueOptionResultSpokenTextRepositoryTests
     var result = await repo.GetByDialogueOptionResultIdAsync(_resultId, gameContext, CancellationToken.None);
 
     // Assert
-    Assert.Null(result);
+    Assert.Empty(result);
   }
 
   #endregion

@@ -10,13 +10,21 @@ public interface IDialogueOptionResultSpokenTextRepository
   #region Methods
 
   /// <summary>
-  /// Retrieves a spoken text associated with the specified dialogue option result ID.
+  /// Retrieves a list of spoken text associated with a specific dialogue option result.
   /// </summary>
-  /// <param name="dialogueOptionResultId">The unique identifier of the dialogue option result.</param>
-  /// <param name="gameContext">The current game context including the actor, world state, and optional target.</param>
-  /// <param name="cancellationToken">Cancellation token to cancel the asynchronous operation if needed.</param>
-  /// <returns>A task representing the asynchronous operation. The task result contains the spoken text as a string.</returns>
-  Task<string?> GetByDialogueOptionResultIdAsync(
+  /// <param name="dialogueOptionResultId">
+  /// The unique identifier of the dialogue option result for which the spoken text is retrieved.
+  /// </param>
+  /// <param name="gameContext">
+  /// The context in which the game is being played, providing relevant information such as the actor and world.
+  /// </param>
+  /// <param name="cancellationToken">
+  /// The token used to cancel the operation, if necessary, to manage task cancellation.
+  /// </param>
+  /// <returns>
+  /// A task representing the asynchronous operation, containing a read-only list of strings that are the spoken text associated with the dialogue option result.
+  /// </returns>
+  Task<IReadOnlyList<string>> GetByDialogueOptionResultIdAsync(
     Guid dialogueOptionResultId, GameContext gameContext, CancellationToken cancellationToken
   );
 

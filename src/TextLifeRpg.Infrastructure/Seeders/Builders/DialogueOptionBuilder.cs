@@ -35,7 +35,7 @@ public class DialogueOptionBuilder
 
   public DialogueOptionBuilder AddSpokenText(string text, Action<TextVariantBuilder> buildConditions)
   {
-    var builder = new TextVariantBuilder(ContextType.DialogueOption, _option.Id, text);
+    var builder = new TextVariantBuilder(ContextType.DialogueOptionSpokenText, _option.Id, text);
     buildConditions(builder);
     _spokenTextVariants.Add(builder);
     return this;
@@ -43,7 +43,7 @@ public class DialogueOptionBuilder
 
   public DialogueOptionBuilder AddResultSpokenText(string text, Action<TextVariantBuilder> buildConditions)
   {
-    var builder = new TextVariantBuilder(ContextType.DialogueOptionResult, _result.Id, text);
+    var builder = new TextVariantBuilder(ContextType.DialogueOptionResultSpokenText, _result.Id, text);
     buildConditions(builder);
     _resultSpokenTextVariants.Add(builder);
     return this;
@@ -51,7 +51,7 @@ public class DialogueOptionBuilder
 
   public DialogueOptionBuilder AddResultNarration(string text, Action<TextVariantBuilder> buildConditions)
   {
-    var builder = new TextVariantBuilder(ContextType.DialogueOptionResult, _result.Id, text);
+    var builder = new TextVariantBuilder(ContextType.DialogueOptionResultNarration, _result.Id, text);
     buildConditions(builder);
     _resultNarrationBuilders.Add(builder);
     return this;

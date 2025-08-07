@@ -20,7 +20,7 @@ public class ExplorationActionBuilderTests
     var locationId = Guid.NewGuid();
     var roomId = Guid.NewGuid();
 
-    // Seed dummy location and room (required FK)
+    // Seed location and room (required FK)
     context.Locations.Add(new LocationDataModel {Id = locationId, Name = "Test Location"});
     context.Rooms.Add(new RoomDataModel {Id = roomId, Name = "Test Room", LocationId = locationId});
     await context.SaveChangesAsync();
@@ -54,7 +54,7 @@ public class ExplorationActionBuilderTests
     var condition = await context.Conditions.SingleOrDefaultAsync();
     Assert.NotNull(condition);
     Assert.Equal(narration.Id, condition.ContextId);
-    Assert.Equal(ContextType.ExplorationActionResult, condition.ContextType);
+    Assert.Equal(ContextType.ExplorationActionResultNarration, condition.ContextType);
   }
 
   #endregion
