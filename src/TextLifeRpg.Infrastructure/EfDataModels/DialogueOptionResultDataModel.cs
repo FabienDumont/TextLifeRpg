@@ -28,9 +28,15 @@ public class DialogueOptionResultDataModel
   public required Guid DialogueOptionId { get; set; }
 
   /// <summary>
+  /// Relationship change when getting this result.
+  /// </summary>
+  [Column("TargetRelationshipValueChange", Order = 3)]
+  public int? TargetRelationshipValueChange { get; set; }
+
+  /// <summary>
   /// Indicates whether the dialogue ends after selecting this option.
   /// </summary>
-  [Column("EndDialogue", Order = 3)]
+  [Column("EndDialogue", Order = 4)]
   public bool EndDialogue { get; set; }
 
   /// <summary>

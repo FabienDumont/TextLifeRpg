@@ -33,6 +33,12 @@ public class DialogueOptionBuilder
     return this;
   }
 
+  public DialogueOptionBuilder WithTargetRelationshipValueChange(int targetRelationshipValueChange)
+  {
+    _result.TargetRelationshipValueChange = targetRelationshipValueChange;
+    return this;
+  }
+
   public DialogueOptionBuilder AddSpokenText(string text, Action<TextVariantBuilder> buildConditions)
   {
     var builder = new TextVariantBuilder(ContextType.DialogueOptionSpokenText, _option.Id, text);

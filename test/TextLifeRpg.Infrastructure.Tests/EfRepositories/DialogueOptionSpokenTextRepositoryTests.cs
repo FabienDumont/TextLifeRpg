@@ -127,13 +127,9 @@ public class DialogueOptionSpokenTextRepositoryTests
     var repo = new DialogueOptionSpokenTextRepository(context);
 
     // Act & Assert
-    var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-      repo.GetByDialogueOptionIdAsync(_dialogueOptionId, gameContext, CancellationToken.None)
-    );
+    var result = await repo.GetByDialogueOptionIdAsync(_dialogueOptionId, gameContext, CancellationToken.None);
 
-    Assert.Equal(
-      $"No appropriate dialogue option spoken text found for dialogue option {_dialogueOptionId}.", ex.Message
-    );
+    Assert.Null(result);
   }
 
   #endregion

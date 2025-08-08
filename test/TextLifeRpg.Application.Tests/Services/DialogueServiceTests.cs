@@ -56,7 +56,8 @@ public class DialogueServiceTests
     var save = GameSave.Create(player, world);
     save.StartDialogue(npc.Id);
 
-    A.CallTo(() => _greetingRepository.GetAsync(A<GameContext>._, A<CancellationToken>._)).Returns(new List<string> { "Hello" });
+    A.CallTo(() => _greetingRepository.GetAsync(A<GameContext>._, A<CancellationToken>._))
+      .Returns(new List<string> {"Hello"});
 
     // Act
     await _dialogueService.ExecuteGreetingAsync(save);
@@ -90,7 +91,8 @@ public class DialogueServiceTests
     var save = GameSave.Create(player, world);
     save.StartDialogue(npc.Id);
 
-    A.CallTo(() => _greetingRepository.GetAsync(A<GameContext>._, A<CancellationToken>._)).Returns(new List<string> { "Hello" });
+    A.CallTo(() => _greetingRepository.GetAsync(A<GameContext>._, A<CancellationToken>._))
+      .Returns(new List<string> {"Hello"});
 
     // Act
     await _dialogueService.ExecuteGreetingAsync(save);
@@ -124,16 +126,15 @@ public class DialogueServiceTests
     var save = GameSave.Create(player, world);
     save.StartDialogue(npc.Id);
 
-    A.CallTo(() => _greetingRepository.GetAsync(A<GameContext>._, A<CancellationToken>._))
-      .Returns(new List<string>());
+    A.CallTo(() => _greetingRepository.GetAsync(A<GameContext>._, A<CancellationToken>._)).Returns(new List<string>());
 
     // Act & Assert
     var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-      _dialogueService.ExecuteGreetingAsync(save));
+      _dialogueService.ExecuteGreetingAsync(save)
+    );
 
     Assert.Equal("No greetings found.", exception.Message);
   }
-
 
   [Fact]
   public async Task GetPossibleDialogueOptionsAsync_ShouldCallRepositoryWithCorrectContextAndReturnOptions()
@@ -208,11 +209,24 @@ public class DialogueServiceTests
     var player = new CharacterBuilder().WithName("Player").WithSex(BiologicalSex.Male).Build();
     var npc = new CharacterBuilder().WithName("NPC").WithSex(BiologicalSex.Female).Build();
     var world = World.Create(DateTime.Now, [player, npc]);
+
+    var date = DateOnly.FromDateTime(world.CurrentDate);
+
+    var relationshipPlayer = Relationship.Create(player.Id, npc.Id, RelationshipType.Acquaintance, date, date, 0);
+    var relationshipNpc = Relationship.Create(npc.Id, player.Id, RelationshipType.Acquaintance, date, date, 0);
+
+    world.AddRelationships(
+      [
+        relationshipPlayer,
+        relationshipNpc
+      ]
+    );
+
     var save = GameSave.Create(player, world);
     save.StartDialogue(npc.Id);
 
     var dialogueOption = DialogueOption.Create("Ask something");
-    var result = DialogueOptionResult.Create(Guid.NewGuid(), endDialogue: true);
+    var result = DialogueOptionResult.Create(Guid.NewGuid(), 5, endDialogue: true);
 
     const string playerSpokenText = "What happened here?";
     const string npcSpokenText = "I don't want to talk about it.";
@@ -231,7 +245,7 @@ public class DialogueServiceTests
     A.CallTo(() => _dialogueOptionResultSpokenTextRepository.GetByDialogueOptionResultIdAsync(
         result.Id, A<GameContext>._, A<CancellationToken>._
       )
-    ).Returns(new List<string> { npcSpokenText });
+    ).Returns(new List<string> {npcSpokenText});
 
     A.CallTo(() => _dialogueOptionResultNarrationRepository.GetByDialogueOptionResultIdAsync(
         result.Id, A<GameContext>._, A<CancellationToken>._
@@ -248,6 +262,7 @@ public class DialogueServiceTests
 
     // Assert
     Assert.Equal(3, save.TextLines.Count);
+    Assert.Equal(3, steps.Count(s => s.Delay));
 
     var playerLine = save.TextLines[0];
     Assert.Equal("Player", playerLine.TextParts[0].Text);
@@ -264,6 +279,8 @@ public class DialogueServiceTests
 
     Assert.Null(save.InteractingNpc);
     Assert.Null(save.NpcInteractionType);
+
+    Assert.Equal(5, relationshipNpc.Value);
   }
 
   [Fact]
@@ -277,12 +294,12 @@ public class DialogueServiceTests
     save.StartDialogue(npc.Id);
 
     var dialogueOption = DialogueOption.Create("Say goodbye");
-    var result = DialogueOptionResult.Create(Guid.NewGuid(), endDialogue: true);
+    var result = DialogueOptionResult.Create(Guid.NewGuid(), null, endDialogue: true);
 
     A.CallTo(() => _dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(
         dialogueOption.Id, A<GameContext>._, A<CancellationToken>._
       )
-    ).Returns(Task.FromResult<string>("Goodbye."));
+    ).Returns(Task.FromResult<string?>("Goodbye."));
 
     A.CallTo(() => _dialogueOptionResultRepository.GetByDialogueOptionIdAsync(
         dialogueOption.Id, A<GameContext>._, A<CancellationToken>._

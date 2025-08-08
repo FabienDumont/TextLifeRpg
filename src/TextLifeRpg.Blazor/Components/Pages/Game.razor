@@ -161,7 +161,10 @@ else
       {
         await step.ExecuteAsync(save);
         await GameSaveStore.NotifyStateChangedAsync();
-        await Task.Delay(500);
+        if (step.Delay)
+        {
+          await Task.Delay(500);
+        }
       }
     }
     finally

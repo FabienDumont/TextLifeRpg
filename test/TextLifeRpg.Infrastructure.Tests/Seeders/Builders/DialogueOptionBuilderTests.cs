@@ -14,7 +14,7 @@ public class DialogueOptionBuilderTests
     var options = new DbContextOptionsBuilder<ApplicationContext>()
       .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
     var context = new ApplicationContext(options);
-    var builder = new DialogueOptionBuilder(context, "Say goodbye").EndDialogue()
+    var builder = new DialogueOptionBuilder(context, "Say goodbye").WithTargetRelationshipValueChange(5).EndDialogue()
       .AddSpokenText("Goodbye", c => c.WithActorEnergyCondition(">", "50"))
       .AddResultSpokenText("Alright, goodbye.", c => c.WithActorTraitCondition(Guid.NewGuid())).AddResultNarration(
         "You walk away from [TARGETNAME].", c => c.WithActorEnergyCondition("<", "40")
@@ -30,6 +30,7 @@ public class DialogueOptionBuilderTests
     // Assert: Result
     var result = await context.DialogueOptionResults.SingleAsync();
     Assert.Equal(option.Id, result.DialogueOptionId);
+    Assert.Equal(5, result.TargetRelationshipValueChange);
     Assert.True(result.EndDialogue);
 
     // Assert: SpokenText

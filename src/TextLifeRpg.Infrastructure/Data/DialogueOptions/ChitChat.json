@@ -1,0 +1,14 @@
+﻿{
+  "Label": "Chit chat",
+  "Results": [
+    {
+      "TargetRelationshipValueChange": 1,
+      "ResultNarrations": [
+        {
+          "Text": "You chit chat with [TARGETNAME] for some time.",
+          "Conditions": []
+        }
+      ]
+    }
+  ]
+}

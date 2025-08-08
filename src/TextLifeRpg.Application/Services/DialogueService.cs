@@ -95,16 +95,21 @@ public class DialogueService(
       await dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(
         dialogueOption.Id, context, cancellationToken
       );
-    steps.Add(
-      new GameFlowStep
-      {
-        ExecuteAsync = async save =>
+
+    if (spokenText is not null)
+    {
+      steps.Add(
+        new GameFlowStep
         {
-          TextLineBuilder.BuildSpokenText(spokenText, player, npc, save);
-          await Task.CompletedTask;
+          Delay = true,
+          ExecuteAsync = async save =>
+          {
+            TextLineBuilder.BuildSpokenText(spokenText, player, npc, save);
+            await Task.CompletedTask;
+          }
         }
-      }
-    );
+      );
+    }
 
     var result =
       await dialogueOptionResultRepository.GetByDialogueOptionIdAsync(dialogueOption.Id, context, cancellationToken);
@@ -125,6 +130,7 @@ public class DialogueService(
       steps.Add(
         new GameFlowStep
         {
+          Delay = true,
           ExecuteAsync = async save =>
           {
             TextLineBuilder.BuildSpokenText(
@@ -140,14 +146,38 @@ public class DialogueService(
       await dialogueOptionResultNarrationRepository.GetByDialogueOptionResultIdAsync(
         result.Id, context, cancellationToken
       );
+
     if (resultNarration is not null)
+    {
+      steps.Add(
+        new GameFlowStep
+        {
+          Delay = true,
+          ExecuteAsync = async save =>
+          {
+            TextLineBuilder.BuildNarrationLine(resultNarration, player, npc, save);
+            await Task.CompletedTask;
+          }
+        }
+      );
+    }
+
+    if (result.TargetRelationshipValueChange is not null)
     {
       steps.Add(
         new GameFlowStep
         {
           ExecuteAsync = async save =>
           {
-            TextLineBuilder.BuildNarrationLine(resultNarration, player, npc, save);
+            var relationship = save.World.Relationships.FirstOrDefault(r =>
+              r.SourceCharacterId == npc.Id && r.TargetCharacterId == player.Id
+            );
+
+            if (relationship != null)
+            {
+              relationship.Value += result.TargetRelationshipValueChange.Value;
+            }
+
             await Task.CompletedTask;
           }
         }

@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\src\TextLifeRpg.Infrastructure\Data\DialogueOptions.json">
-      <Link>Data\DialogueOptions.json</Link>
+    <None Include="..\..\src\TextLifeRpg.Infrastructure\Data\DialogueOptions\**\*.json">
+      <Link>Data\DialogueOptions\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\src\TextLifeRpg.Infrastructure\Data\ExplorationActions.json">

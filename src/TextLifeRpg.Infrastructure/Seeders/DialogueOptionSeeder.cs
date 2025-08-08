@@ -16,15 +16,16 @@ public class DialogueOptionSeeder : IDataSeeder
   public async Task SeedAsync(ApplicationContext context)
   {
     var traitMap = await context.Traits.ToDictionaryAsync(t => t.Name, t => t.Id).ConfigureAwait(false);
-    var baseDir = AppContext.BaseDirectory;
-    var fullPath = Path.Combine(baseDir, "Data/DialogueOptions.json");
+    var folderPath = Path.Combine(AppContext.BaseDirectory, "Data", "DialogueOptions");
+    var files = Directory.GetFiles(folderPath, "*.json", SearchOption.AllDirectories);
 
-    await using var stream = File.OpenRead(fullPath);
-    var definitions = await JsonSerializer.DeserializeAsync<List<DialogueOptionDefinition>>(stream) ??
-                      throw new InvalidOperationException("Failed to parse dialogue definition file.");
-
-    foreach (var def in definitions)
+    foreach (var file in files)
     {
+      var json = await File.ReadAllTextAsync(file);
+
+      var def = JsonSerializer.Deserialize<DialogueOptionDefinition>(json) ??
+                throw new InvalidOperationException($"Failed to parse dialogue definition file: {file}");
+
       var builder = new DialogueOptionBuilder(context, def.Label);
 
       foreach (var spokenText in def.SpokenTexts)
@@ -34,6 +35,11 @@ public class DialogueOptionSeeder : IDataSeeder
 
       foreach (var result in def.Results)
       {
+        if (result.TargetRelationshipValueChange is not null)
+        {
+          builder.WithTargetRelationshipValueChange(result.TargetRelationshipValueChange.Value);
+        }
+
         if (result.EndsDialogue)
         {
           builder.EndDialogue();
@@ -58,6 +64,12 @@ public class DialogueOptionSeeder : IDataSeeder
 
   #region Methods
 
+  /// <summary>
+  /// Applies a series of conditions to a <see cref="TextVariantBuilder"/> object.
+  /// </summary>
+  /// <param name="b">The <see cref="TextVariantBuilder"/> instance to which the conditions will be applied.</param>
+  /// <param name="conditions">A list of <see cref="DialogueOptionConditionDefinition"/> representing the conditions to be applied.</param>
+  /// <param name="traitMap">A dictionary mapping trait names to their corresponding GUIDs.</param>
   private static void ApplyConditions(
     TextVariantBuilder b, List<DialogueOptionConditionDefinition> conditions, Dictionary<string, Guid> traitMap
   )

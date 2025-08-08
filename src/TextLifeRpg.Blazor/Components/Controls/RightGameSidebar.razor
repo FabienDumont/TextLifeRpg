@@ -58,6 +58,20 @@
           @_interactingNpc.Name
         </span>
       </div>
+      <div class="flex mt-4">
+        <span>
+          Relationship :&nbsp;
+        </span>
+        <span>
+          @{
+            var playerId = GameSaveStore.CurrentSave!.PlayerCharacterId;
+            var relationship = GameSaveStore.CurrentSave!.World.Relationships.FirstOrDefault(r => r.SourceCharacterId == _interactingNpc.Id && r.TargetCharacterId == playerId);
+
+            var relationshipValue = relationship?.Value ?? 0;
+          }
+          @relationshipValue
+        </span>
+      </div>
     }
   </div>
   <div class="flex-grow"></div>

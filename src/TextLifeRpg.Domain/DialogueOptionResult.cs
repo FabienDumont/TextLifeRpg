@@ -18,6 +18,11 @@ public class DialogueOptionResult
   public Guid DialogueOptionId { get; }
 
   /// <summary>
+  /// Indicates the target character relationship value change.
+  /// </summary>
+  public int? TargetRelationshipValueChange { get; }
+
+  /// <summary>
   /// Indicates whether the dialogue ends after selecting this option.
   /// </summary>
   public bool EndDialogue { get; }
@@ -29,10 +34,11 @@ public class DialogueOptionResult
   /// <summary>
   /// Private constructor used internally.
   /// </summary>
-  private DialogueOptionResult(Guid id, Guid dialogueOptionId, bool endDialogue)
+  private DialogueOptionResult(Guid id, Guid dialogueOptionId, int? targetRelationshipValueChange, bool endDialogue)
   {
     Id = id;
     DialogueOptionId = dialogueOptionId;
+    TargetRelationshipValueChange = targetRelationshipValueChange;
     EndDialogue = endDialogue;
   }
 
@@ -43,17 +49,19 @@ public class DialogueOptionResult
   /// <summary>
   /// Factory method to create a new instance.
   /// </summary>
-  public static DialogueOptionResult Create(Guid dialogueOptionId, bool endDialogue)
+  public static DialogueOptionResult Create(Guid dialogueOptionId, int? targetRelationshipValueChange, bool endDialogue)
   {
-    return new DialogueOptionResult(Guid.NewGuid(), dialogueOptionId, endDialogue);
+    return new DialogueOptionResult(Guid.NewGuid(), dialogueOptionId, targetRelationshipValueChange, endDialogue);
   }
 
   /// <summary>
   /// Factory method to load an existing instance from persistence.
   /// </summary>
-  public static DialogueOptionResult Load(Guid id, Guid dialogueOptionId, bool endDialogue)
+  public static DialogueOptionResult Load(
+    Guid id, Guid dialogueOptionId, int? targetRelationshipValueChange, bool endDialogue
+  )
   {
-    return new DialogueOptionResult(id, dialogueOptionId, endDialogue);
+    return new DialogueOptionResult(id, dialogueOptionId, targetRelationshipValueChange, endDialogue);
   }
 
   #endregion

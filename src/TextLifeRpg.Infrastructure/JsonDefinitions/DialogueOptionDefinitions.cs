@@ -15,6 +15,7 @@ public class DialogueOptionSpokenTextDefinition
 
 public class DialogueOptionResultDefinition
 {
+  public int? TargetRelationshipValueChange { get; set; }
   public bool EndsDialogue { get; set; }
   public List<DialogueOptionResultSpokenTextDefinition> ResultSpokenTexts { get; set; } = [];
   public List<DialogueOptionResultNarrationDefinition> ResultNarrations { get; set; } = [];

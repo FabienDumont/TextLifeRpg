@@ -11,7 +11,8 @@ public class DialogueOptionSpokenTextRepository(ApplicationContext context)
 {
   #region Implementation of IDialogueOptionSpokenTextRepository
 
-  public async Task<string> GetByDialogueOptionIdAsync(
+  /// <inheritdoc />
+  public async Task<string?> GetByDialogueOptionIdAsync(
     Guid dialogueOptionId, GameContext gameContext, CancellationToken cancellationToken
   )
   {
@@ -35,9 +36,7 @@ public class DialogueOptionSpokenTextRepository(ApplicationContext context)
       }
     }
 
-    throw new InvalidOperationException(
-      $"No appropriate dialogue option spoken text found for dialogue option {dialogueOptionId}."
-    );
+    return null;
   }
 
   #endregion
