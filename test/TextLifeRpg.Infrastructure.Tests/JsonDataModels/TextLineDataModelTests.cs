@@ -36,7 +36,7 @@ public class TextLineDataModelTests
     Assert.Equal(CharacterColor.Blue, model.TextParts[0].Color);
     Assert.Equal("Daniel:", model.TextParts[0].Text);
 
-    Assert.Equal(null, model.TextParts[1].Color);
+    Assert.Null(model.TextParts[1].Color);
     Assert.Equal("Hello, how are you?", model.TextParts[1].Text);
   }
 

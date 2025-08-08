@@ -15,7 +15,8 @@
   {
     @foreach (var dialogueOption in _availableDialogueOptions)
     {
-      <button class="trpg-btn inline-block" @onclick="() => ExecuteDialogueOption(dialogueOption)">
+      <button class="trpg-btn inline-block"
+              @onclick="async () => await OnDialogueOptionClickedInternal(dialogueOption)">
         @(dialogueOption.Label)
       </button>
     }
@@ -25,6 +26,12 @@
 @code {
 
   private IReadOnlyCollection<DialogueOption>? _availableDialogueOptions;
+
+  /// <summary>
+  /// Callback invoked when the user clicks on a dialogue option.
+  /// </summary>
+  [Parameter, EditorRequired]
+  public EventCallback<DialogueOption> OnDialogueOptionClicked { get; set; }
 
   /// <summary>
   /// Loads available dialogue options on component initialization.
@@ -58,23 +65,16 @@
   }
 
   /// <summary>
-  /// Executes the selected dialogue option.
+  /// Triggers the OnNpcClicked callback.
   /// </summary>
-  private async Task ExecuteDialogueOption(DialogueOption dialogueOption)
+  private async Task OnDialogueOptionClickedInternal(DialogueOption dialogueOption)
   {
-    var save = GameSaveStore.CurrentSave!;
-    var steps = await DialogueService.BuildDialogueOptionStepsAsync(dialogueOption, save, CancellationToken.None);
-
-    foreach (var step in steps)
-    {
-      await step.ExecuteAsync(save);
-      await GameSaveStore.NotifyStateChangedAsync();
-      await Task.Delay(500);
-    }
+    await OnDialogueOptionClicked.InvokeAsync(dialogueOption);
   }
 
   public void Dispose()
   {
     GameSaveStore.OnAsyncChange -= HandleGameSaveChangedAsync;
   }
+
 }

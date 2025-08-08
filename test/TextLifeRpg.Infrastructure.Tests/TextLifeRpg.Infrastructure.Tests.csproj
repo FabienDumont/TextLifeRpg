@@ -14,4 +14,11 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.7" />
 
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\src\TextLifeRpg.Infrastructure\Data\DialogueOptions.json">
+      <Link>Data\dialogue-options.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

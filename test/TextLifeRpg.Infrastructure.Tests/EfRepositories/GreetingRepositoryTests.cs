@@ -68,5 +68,49 @@ public class GreetingRepositoryTests
     Assert.NotEmpty(greetings);
   }
 
+  [Fact]
+  public async Task GetAsync_ShouldNotReturnGreeting_WhenConditionsNotSatisfied()
+  {
+    // Arrange
+    var character = new CharacterBuilder().Build();
+    var world = World.Create(DateTime.Now, [character]);
+
+    var gameContext = new GameContext
+    {
+      Actor = character,
+      World = world
+    };
+
+    var greetingId = Guid.NewGuid();
+
+    _greetingData.Clear();
+    _greetingData.Add(
+      new GreetingDataModel
+      {
+        Id = greetingId,
+        SpokenText = "Hey there!"
+      }
+    );
+
+    _conditionData.Clear();
+    _conditionData.Add(
+      new ConditionDataModel
+      {
+        Id = Guid.NewGuid(),
+        ContextId = greetingId,
+        ContextType = ContextType.Greeting,
+        ConditionType = ConditionType.ActorHasTrait,
+        OperandLeft = "NonExistentTrait", // Name of trait
+        Operator = "==" // Assuming your ConditionEvaluator checks for string equality
+      }
+    );
+
+    // Act
+    var greetings = await _repository.GetAsync(gameContext, CancellationToken.None);
+
+    // Assert
+    Assert.Empty(greetings);
+  }
+
   #endregion
 }

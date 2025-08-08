@@ -24,7 +24,7 @@ public class TextLineMapperTests
     Assert.Equal(2, dataModel.TextParts.Count);
     Assert.Equal(CharacterColor.Blue, dataModel.TextParts[0].Color);
     Assert.Equal("Daniel: ", dataModel.TextParts[0].Text);
-    Assert.Equal(null, dataModel.TextParts[1].Color);
+    Assert.Null(dataModel.TextParts[1].Color);
     Assert.Equal("Hello!", dataModel.TextParts[1].Text);
   }
 
@@ -47,7 +47,7 @@ public class TextLineMapperTests
     Assert.Equal(2, domain.TextParts.Count);
     Assert.Equal(CharacterColor.Blue, domain.TextParts[0].Color);
     Assert.Equal("Daniel: ", domain.TextParts[0].Text);
-    Assert.Equal(null, domain.TextParts[1].Color);
+    Assert.Null(domain.TextParts[1].Color);
     Assert.Equal("Hello!", domain.TextParts[1].Text);
   }
 

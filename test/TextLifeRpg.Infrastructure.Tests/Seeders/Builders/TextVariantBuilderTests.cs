@@ -28,7 +28,7 @@ public class TextVariantBuilderTests
     var contextId = Guid.NewGuid();
 
     // Act
-    var builder = new TextVariantBuilder(contextType, contextId, "test").WithEnergyCondition(">", "50");
+    var builder = new TextVariantBuilder(contextType, contextId, "test").WithActorEnergyCondition(">", "50");
 
     var condition = builder.Conditions.Single();
 

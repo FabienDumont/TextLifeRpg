@@ -30,7 +30,7 @@
       </p>
     }
 
-    @if (_npcsInLocation.Count > 0)
+    @if (GameSaveStore.CurrentSave!.NpcInteractionType is null && _npcsInLocation.Count > 0)
     {
       <div class="flex flex-col mt-4 w-full overflow-y-auto pt-2 px-2">
         @foreach (var npc in _npcsInLocation.OrderBy(n => n.Name))
@@ -47,6 +47,18 @@
         }
       </div>
     }
+    else if (GameSaveStore.CurrentSave!.NpcInteractionType is not null && _interactingNpc is not null)
+    {
+      var color = CharacterColorHelper.GetColorKey(_interactingNpc, GameSaveStore.CurrentSave!.PlayerCharacterId).ToTailwindClass();
+      <div class="flex mt-4 pt-2 px-2">
+        <span>Interacting with&nbsp;</span>
+        <span
+          class="cursor-pointer @color"
+          @onclick="async () => await OnNpcClickedInternal(_interactingNpc)">
+          @_interactingNpc.Name
+        </span>
+      </div>
+    }
   </div>
   <div class="flex-grow"></div>
 </div>
@@ -56,6 +68,7 @@
   private string? _roomName;
 
   private readonly List<Character> _npcsInLocation = [];
+  private Character? _interactingNpc;
 
   /// <summary>
   /// Callback invoked when the user clicks on a NPC's name.
@@ -101,6 +114,8 @@
     }
 
     await UpdateNamesAsync();
+
+    _interactingNpc = save.InteractingNpc;
 
     _npcsInLocation.Clear();
     _npcsInLocation.AddRange(save.World.Characters.Where(c => c.Id != player.Id && c.LocationId == player.LocationId));

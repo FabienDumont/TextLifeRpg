@@ -79,7 +79,7 @@ public class GameSaveTests
     Assert.Equal(2, line.TextParts.Count);
     Assert.Equal(CharacterColor.Blue, line.TextParts[0].Color);
     Assert.Equal("Daniel: ", line.TextParts[0].Text);
-    Assert.Equal(null, line.TextParts[1].Color);
+    Assert.Null(line.TextParts[1].Color);
     Assert.Equal("Hello!", line.TextParts[1].Text);
   }
 

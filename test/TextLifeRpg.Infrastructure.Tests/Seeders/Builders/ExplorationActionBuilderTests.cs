@@ -26,7 +26,7 @@ public class ExplorationActionBuilderTests
     await context.SaveChangesAsync();
 
     var builder = new ExplorationActionBuilder(context, "Nap", 60, locationId, roomId).WithEnergyChange(10)
-      .AddNarration("You nap lightly.", c => c.WithEnergyCondition("<", "60"));
+      .AddNarration("You nap lightly.", c => c.WithActorEnergyCondition("<", "60"));
 
     // Act
     await builder.BuildAsync();

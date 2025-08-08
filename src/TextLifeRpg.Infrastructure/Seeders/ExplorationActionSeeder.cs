@@ -19,23 +19,23 @@ public class ExplorationActionSeeder : IDataSeeder
     await new ExplorationActionBuilder(context, "Sleep (10 hours)", 480, home.Id, bedroom.Id).WithEnergyChange(100)
       .AddNarration(
         "You collapse into bed, too tired to even pull the sheets over yourself.",
-        b => b.WithEnergyCondition("<=", "25")
+        b => b.WithActorEnergyCondition("<=", "25")
       ).AddNarration(
         "You ease into bed, your body grateful for the rest.",
-        b => b.WithEnergyCondition(">", "25").WithEnergyCondition("<=", "50")
+        b => b.WithActorEnergyCondition(">", "25").WithActorEnergyCondition("<=", "50")
       ).AddNarration(
-        "You're not very tired, but you lay down anyway, hoping to fall asleep.", b => b.WithEnergyCondition(">", "50")
+        "You're not very tired, but you lay down anyway, hoping to fall asleep.", b => b.WithActorEnergyCondition(">", "50")
       ).BuildAsync();
 
     await new ExplorationActionBuilder(context, "Nap (1 hour)", 60, home.Id, bedroom.Id).WithEnergyChange(10)
       .AddNarration(
-        "You sink into the mattress and quickly doze off, too drained to think.", b => b.WithEnergyCondition("<=", "25")
+        "You sink into the mattress and quickly doze off, too drained to think.", b => b.WithActorEnergyCondition("<=", "25")
       ).AddNarration(
         "You rest your head and fall asleep faster than expected. It's brief but helpful.",
-        b => b.WithEnergyCondition(">", "25").WithEnergyCondition("<=", "50")
+        b => b.WithActorEnergyCondition(">", "25").WithActorEnergyCondition("<=", "50")
       ).AddNarration(
         "You lie back and close your eyes, but your thoughts keep drifting. You barely nap at all.",
-        b => b.WithEnergyCondition(">", "50")
+        b => b.WithActorEnergyCondition(">", "50")
       ).BuildAsync();
   }
 

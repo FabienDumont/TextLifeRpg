@@ -65,6 +65,7 @@ public class DialogueOptionBuilder
     foreach (var builder in _spokenTextVariants)
     {
       var textId = Guid.NewGuid();
+
       await _context.DialogueOptionSpokenTexts.AddAsync(
         new DialogueOptionSpokenTextDataModel
         {
@@ -74,18 +75,18 @@ public class DialogueOptionBuilder
         }
       );
 
-      var conditions = builder.Conditions.Select(c =>
-        {
-          c.ContextId = textId;
-          return c;
-        }
-      );
-      await _context.Conditions.AddRangeAsync(conditions);
+      if (builder.Conditions.Any())
+      {
+        foreach (var c in builder.Conditions) c.ContextId = textId;
+
+        await _context.Conditions.AddRangeAsync(builder.Conditions);
+      }
     }
 
     foreach (var builder in _resultSpokenTextVariants)
     {
       var textId = Guid.NewGuid();
+
       await _context.DialogueOptionResultSpokenTexts.AddAsync(
         new DialogueOptionResultSpokenTextDataModel
         {
@@ -95,18 +96,18 @@ public class DialogueOptionBuilder
         }
       );
 
-      var conditions = builder.Conditions.Select(c =>
-        {
-          c.ContextId = textId;
-          return c;
-        }
-      );
-      await _context.Conditions.AddRangeAsync(conditions);
+      if (builder.Conditions.Any())
+      {
+        foreach (var c in builder.Conditions) c.ContextId = textId;
+
+        await _context.Conditions.AddRangeAsync(builder.Conditions);
+      }
     }
 
     foreach (var builder in _resultNarrationBuilders)
     {
       var narrationId = Guid.NewGuid();
+
       await _context.DialogueOptionResultNarrations.AddAsync(
         new DialogueOptionResultNarrationDataModel
         {
@@ -116,15 +117,14 @@ public class DialogueOptionBuilder
         }
       );
 
-      var conditionModels = builder.Conditions.Select(c =>
-        {
-          c.ContextId = narrationId;
-          return c;
-        }
-      );
-      await _context.Conditions.AddRangeAsync(conditionModels);
+      if (builder.Conditions.Any())
+      {
+        foreach (var c in builder.Conditions) c.ContextId = narrationId;
 
-      await _context.SaveChangesAsync();
+        await _context.Conditions.AddRangeAsync(builder.Conditions);
+      }
     }
+
+    await _context.SaveChangesAsync();
   }
 }

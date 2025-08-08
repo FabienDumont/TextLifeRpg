@@ -66,7 +66,7 @@ public class DialogueOptionRepositoryTests
 
     // Assert
     Assert.NotNull(result);
-    Assert.Equal(1, result.Count);
+    Assert.Single(result);
   }
 
   [Fact]

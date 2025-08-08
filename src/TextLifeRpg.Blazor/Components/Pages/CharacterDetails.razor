@@ -98,7 +98,8 @@ else
 
           <div class="flex">
             <span>
-              <NavLink class=@($"font-bold {relationshipCharacterColorKey.ToTailwindClass()}") href="@($"/characterdetails/{rel.TargetCharacter.Id}")">
+              <NavLink class=@($"font-bold {relationshipCharacterColorKey.ToTailwindClass()}")
+                       href="@($"/characterdetails/{rel.TargetCharacter.Id}")">
                 @rel.TargetCharacter.Name
               </NavLink>
             </span>
@@ -153,14 +154,10 @@ else
     var allTraits = await TraitService.GetAllTraitsAsync(CancellationToken.None);
     _traits = allTraits.Where(t => _character.TraitsId.Contains(t.Id)).ToList();
 
-    _relationships = world.Relationships.Where(r => r.SourceCharacterId == _character.Id || r.TargetCharacterId == _character.Id).GroupBy(r => GetPairKey(r.SourceCharacterId, r.TargetCharacterId)).SelectMany(g =>
+    _relationships = world.Relationships.Where(r => r.SourceCharacterId == _character.Id).SelectMany(r =>
       {
-        var rel = g.First();
-        var isSource = rel.SourceCharacterId == _character.Id;
-        var otherId = isSource ? rel.TargetCharacterId : rel.SourceCharacterId;
-        var otherCharacter = world.Characters.FirstOrDefault(c => c.Id == otherId);
-
-        return otherCharacter is null ? Enumerable.Empty<RelationshipDisplay>() : [new RelationshipDisplay(otherCharacter, GetRelationshipLabel(rel.Type, isSource))];
+        var otherCharacter = world.Characters.FirstOrDefault(c => c.Id == r.TargetCharacterId);
+        return otherCharacter is null ? Enumerable.Empty<RelationshipDisplay>() : [new RelationshipDisplay(otherCharacter, GetRelationshipLabel(r.Type, true))];
       }
     ).ToList();
 

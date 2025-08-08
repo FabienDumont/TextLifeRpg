@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using TextLifeRpg.Infrastructure.JsonDefinitions;
 using TextLifeRpg.Infrastructure.Seeders.Builders;
 
 namespace TextLifeRpg.Infrastructure.Seeders;
@@ -13,108 +15,72 @@ public class DialogueOptionSeeder : IDataSeeder
   /// <inheritdoc />
   public async Task SeedAsync(ApplicationContext context)
   {
-    var traitMap = await context.Traits.ToDictionaryAsync(t => t.Name).ConfigureAwait(false);
+    var traitMap = await context.Traits.ToDictionaryAsync(t => t.Name, t => t.Id).ConfigureAwait(false);
+    var baseDir = AppContext.BaseDirectory;
+    var fullPath = Path.Combine(baseDir, "Data/DialogueOptions.json");
 
-    await new DialogueOptionBuilder(context, "Say goodbye").EndDialogue().AddSpokenText("Goodbye.", _ => { })
-      .AddResultSpokenText(
-        "Yeah fuck off, I hate you.",
-        b => b.WithActorTraitCondition(traitMap["Blunt"].Id).WithActorRelationshipValueCondition("<", "-50")
-      )
-      .AddResultSpokenText(
-        "Don't bother next time.",
-        b => b.WithActorTraitCondition(traitMap["Blunt"].Id).WithActorRelationshipValueCondition("<", "0")
-      )
-      .AddResultSpokenText(
-        "Bye.", b => b.WithActorTraitCondition(traitMap["Blunt"].Id).WithActorRelationshipValueCondition("<", "50")
-      )
-      .AddResultSpokenText(
-        "It was nice talking to you. Bye.",
-        b => b.WithActorTraitCondition(traitMap["Blunt"].Id).WithActorRelationshipValueCondition(">=", "50")
-      )
-      .AddResultSpokenText(
-        "Take care... I guess everyone deserves a bit of kindness.",
-        b => b.WithActorTraitCondition(traitMap["Kind"].Id).WithActorRelationshipValueCondition("<", "-50")
-      )
-      .AddResultSpokenText(
-        "I hope your day improves, truly.",
-        b => b.WithActorTraitCondition(traitMap["Kind"].Id).WithActorRelationshipValueCondition("<", "0")
-      )
-      .AddResultSpokenText(
-        "Stay safe, okay?",
-        b => b.WithActorTraitCondition(traitMap["Kind"].Id).WithActorRelationshipValueCondition("<", "50")
-      )
-      .AddResultSpokenText(
-        "I'll miss you, I care so much about you!",
-        b => b.WithActorTraitCondition(traitMap["Kind"].Id).WithActorRelationshipValueCondition(">=", "50")
-      )
-      .AddResultSpokenText(
-        "Get lost, you parasite.",
-        b => b.WithActorTraitCondition(traitMap["Mean"].Id).WithActorRelationshipValueCondition("<", "-50")
-      )
-      .AddResultSpokenText(
-        "Bye. Don't come back.",
-        b => b.WithActorTraitCondition(traitMap["Mean"].Id).WithActorRelationshipValueCondition("<", "0")
-      )
-      .AddResultSpokenText(
-        "Whatever. Later.",
-        b => b.WithActorTraitCondition(traitMap["Mean"].Id).WithActorRelationshipValueCondition("<", "50")
-      )
-      .AddResultSpokenText(
-        "I tolerate you. That's rare. Goodbye.",
-        b => b.WithActorTraitCondition(traitMap["Mean"].Id).WithActorRelationshipValueCondition(">=", "50")
-      )
-      .AddResultSpokenText(
-        "Finally, we’re done. What a buzzkill.",
-        b => b.WithActorTraitCondition(traitMap["Outgoing"].Id).WithActorRelationshipValueCondition("<", "-50")
-      )
-      .AddResultSpokenText(
-        "Alright, I’m off! Try smiling sometime!",
-        b => b.WithActorTraitCondition(traitMap["Outgoing"].Id).WithActorRelationshipValueCondition("<", "0")
-      )
-      .AddResultSpokenText(
-        "Catch you later, maybe?",
-        b => b.WithActorTraitCondition(traitMap["Outgoing"].Id).WithActorRelationshipValueCondition("<", "50")
-      )
-      .AddResultSpokenText(
-        "Let’s hang again soon! You’re fun!",
-        b => b.WithActorTraitCondition(traitMap["Outgoing"].Id).WithActorRelationshipValueCondition(">=", "50")
-      ).AddResultSpokenText(
-        "Farewell. I hope we never cross paths again.",
-        b => b.WithActorTraitCondition(traitMap["Polite"].Id).WithActorRelationshipValueCondition("<", "-50")
-      ).AddResultSpokenText(
-        "Goodbye. I trust you’ll find your way.",
-        b => b.WithActorTraitCondition(traitMap["Polite"].Id).WithActorRelationshipValueCondition("<", "0")
-      ).AddResultSpokenText(
-        "Take care. It was... fine.",
-        b => b.WithActorTraitCondition(traitMap["Polite"].Id).WithActorRelationshipValueCondition("<", "50")
-      ).AddResultSpokenText(
-        "Wishing you the best. Until next time!",
-        b => b.WithActorTraitCondition(traitMap["Polite"].Id).WithActorRelationshipValueCondition(">=", "50")
-      ).AddResultSpokenText(
-        "Don’t talk to me again.",
-        b => b.WithActorTraitCondition(traitMap["Rude"].Id).WithActorRelationshipValueCondition("<", "-50")
-      ).AddResultSpokenText(
-        "Yeah, yeah, get outta here.",
-        b => b.WithActorTraitCondition(traitMap["Rude"].Id).WithActorRelationshipValueCondition("<", "0")
-      ).AddResultSpokenText(
-        "Bye or whatever.",
-        b => b.WithActorTraitCondition(traitMap["Rude"].Id).WithActorRelationshipValueCondition("<", "50")
-      ).AddResultSpokenText(
-        "You’re lucky I like you. Bye.",
-        b => b.WithActorTraitCondition(traitMap["Rude"].Id).WithActorRelationshipValueCondition(">=", "50")
-      ).AddResultSpokenText(
-        "...Okay, I’m going now.",
-        b => b.WithActorTraitCondition(traitMap["Shy"].Id).WithActorRelationshipValueCondition("<", "-50")
-      ).AddResultSpokenText(
-        "Bye...", b => b.WithActorTraitCondition(traitMap["Shy"].Id).WithActorRelationshipValueCondition("<", "0")
-      ).AddResultSpokenText(
-        "Bye. It was... um, nice.",
-        b => b.WithActorTraitCondition(traitMap["Shy"].Id).WithActorRelationshipValueCondition("<", "50")
-      ).AddResultSpokenText(
-        "Thanks for today. I really enjoyed it.",
-        b => b.WithActorTraitCondition(traitMap["Shy"].Id).WithActorRelationshipValueCondition(">=", "50")
-      ).AddResultSpokenText("Alright, goodbye.", _ => { })
-      .AddResultNarration("You walk away from [TARGETNAME].", _ => { }).BuildAsync();
+    await using var stream = File.OpenRead(fullPath);
+    var definitions = await JsonSerializer.DeserializeAsync<List<DialogueOptionDefinition>>(stream) ??
+                      throw new InvalidOperationException("Failed to parse dialogue definition file.");
+
+    foreach (var def in definitions)
+    {
+      var builder = new DialogueOptionBuilder(context, def.Label);
+
+      foreach (var spokenText in def.SpokenTexts)
+      {
+        builder.AddSpokenText(spokenText.Text, b => { ApplyConditions(b, spokenText.Conditions, traitMap); });
+      }
+
+      foreach (var result in def.Results)
+      {
+        if (result.EndsDialogue)
+        {
+          builder.EndDialogue();
+        }
+
+        foreach (var spoken in result.ResultSpokenTexts)
+        {
+          builder.AddResultSpokenText(spoken.Text, b => { ApplyConditions(b, spoken.Conditions, traitMap); });
+        }
+
+        foreach (var narration in result.ResultNarrations)
+        {
+          builder.AddResultNarration(narration.Text, b => { ApplyConditions(b, narration.Conditions, traitMap); });
+        }
+      }
+
+      await builder.BuildAsync();
+    }
+  }
+
+  #endregion
+
+  #region Methods
+
+  private static void ApplyConditions(
+    TextVariantBuilder b, List<DialogueConditionDefinition> conditions, Dictionary<string, Guid> traitMap
+  )
+  {
+    foreach (var condition in conditions)
+    {
+      if (condition.Trait != null && traitMap.TryGetValue(condition.Trait, out var traitId))
+      {
+        b.WithActorTraitCondition(traitId);
+      }
+
+      if (condition.ActorRelationshipValue is not null)
+      {
+        b.WithActorRelationshipValueCondition(
+          condition.ActorRelationshipValue.Operator, condition.ActorRelationshipValue.Value.ToString()
+        );
+      }
+
+      if (condition.ActorEnergy is not null)
+      {
+        b.WithActorEnergyCondition(condition.ActorEnergy.Operator, condition.ActorEnergy.Value.ToString());
+      }
+    }
   }
 
   #endregion

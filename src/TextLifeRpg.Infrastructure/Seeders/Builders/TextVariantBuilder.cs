@@ -29,7 +29,7 @@ public class TextVariantBuilder(ContextType contextType, Guid contextId, string 
   /// Returns the current instance of <c>TextVariantBuilder</c>, enabling method chaining for further
   /// configuration of text variants.
   /// </returns>
-  public TextVariantBuilder WithEnergyCondition(string op, string value)
+  public TextVariantBuilder WithActorEnergyCondition(string op, string value)
   {
     _conditions.Add(ConditionBuilder.BuildEnergyConditions(contextType, contextId, [(op, value)]).Single());
     return this;
