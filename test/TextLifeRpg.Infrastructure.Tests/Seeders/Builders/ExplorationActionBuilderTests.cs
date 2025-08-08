@@ -25,8 +25,10 @@ public class ExplorationActionBuilderTests
     context.Rooms.Add(new RoomDataModel {Id = roomId, Name = "Test Room", LocationId = locationId});
     await context.SaveChangesAsync();
 
-    var builder = new ExplorationActionBuilder(context, "Nap", 60, locationId, roomId).WithEnergyChange(10)
-      .AddNarration("You nap lightly.", c => c.WithActorEnergyCondition("<", "60"));
+    var builder = new ExplorationActionBuilder(context, "Nap", 60, locationId, roomId).WithAddMinutes()
+      .WithEnergyChange(10).WithMoneyChange(10).AddResultNarration(
+        "You nap lightly.", c => c.WithActorEnergyCondition("<", "60")
+      );
 
     // Act
     await builder.BuildAsync();
@@ -42,6 +44,7 @@ public class ExplorationActionBuilderTests
     Assert.NotNull(result);
     Assert.Equal(action.Id, result.ExplorationActionId);
     Assert.Equal(10, result.EnergyChange);
+    Assert.Equal(10, result.MoneyChange);
     Assert.True(result.AddMinutes);
 
     // Assert: Narration

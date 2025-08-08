@@ -7,9 +7,27 @@
     @{
       var colorKey = CharacterColorHelper.GetColorKey(GameSaveStore.CurrentSave!.PlayerCharacter, GameSaveStore.CurrentSave!.PlayerCharacterId);
     }
-    <span class="cursor-pointer text-xl font-bold @colorKey.ToTailwindClass()" @onclick="OnPlayerCharacterClickedInternal">
+    <span class="cursor-pointer text-xl font-bold @colorKey.ToTailwindClass()"
+          @onclick="OnPlayerCharacterClickedInternal">
       @GameSaveStore.CurrentSave!.PlayerCharacter.Name
     </span>
+
+    <div class="flex mt-4">
+      <span>
+        Energy :&nbsp;
+      </span>
+      <span>
+        @GameSaveStore.CurrentSave!.PlayerCharacter.Energy / 100
+      </span>
+    </div>
+    <div class="flex mt-4">
+      <span>
+        Money :&nbsp;
+      </span>
+      <span>
+        @GameSaveStore.CurrentSave!.PlayerCharacter.Money $
+      </span>
+    </div>
   </div>
   <div class="flex-grow"></div>
   <div class="flex flex-col items-center gap-4">

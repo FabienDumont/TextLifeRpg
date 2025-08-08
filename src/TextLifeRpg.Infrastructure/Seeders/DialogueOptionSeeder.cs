@@ -59,7 +59,7 @@ public class DialogueOptionSeeder : IDataSeeder
   #region Methods
 
   private static void ApplyConditions(
-    TextVariantBuilder b, List<DialogueConditionDefinition> conditions, Dictionary<string, Guid> traitMap
+    TextVariantBuilder b, List<DialogueOptionConditionDefinition> conditions, Dictionary<string, Guid> traitMap
   )
   {
     foreach (var condition in conditions)

@@ -26,9 +26,14 @@ public class ExplorationActionBuilder
     _result = new ExplorationActionResultDataModel
     {
       Id = Guid.NewGuid(),
-      ExplorationActionId = _action.Id,
-      AddMinutes = true
+      ExplorationActionId = _action.Id
     };
+  }
+
+  public ExplorationActionBuilder WithAddMinutes()
+  {
+    _result.AddMinutes = true;
+    return this;
   }
 
   public ExplorationActionBuilder WithEnergyChange(int energy)
@@ -37,7 +42,13 @@ public class ExplorationActionBuilder
     return this;
   }
 
-  public ExplorationActionBuilder AddNarration(string text, Action<TextVariantBuilder> buildConditions)
+  public ExplorationActionBuilder WithMoneyChange(int money)
+  {
+    _result.MoneyChange = money;
+    return this;
+  }
+
+  public ExplorationActionBuilder AddResultNarration(string text, Action<TextVariantBuilder> buildConditions)
   {
     var builder = new TextVariantBuilder(ContextType.ExplorationActionResultNarration, _result.Id, text);
     buildConditions(builder);

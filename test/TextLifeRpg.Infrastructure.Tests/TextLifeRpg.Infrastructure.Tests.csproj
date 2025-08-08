@@ -17,7 +17,11 @@
 
   <ItemGroup>
     <None Include="..\..\src\TextLifeRpg.Infrastructure\Data\DialogueOptions.json">
-      <Link>Data\dialogue-options.json</Link>
+      <Link>Data\DialogueOptions.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\src\TextLifeRpg.Infrastructure\Data\ExplorationActions.json">
+      <Link>Data\ExplorationActions.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
