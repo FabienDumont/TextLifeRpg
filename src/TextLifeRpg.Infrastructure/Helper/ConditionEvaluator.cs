@@ -14,17 +14,42 @@ public static class ConditionEvaluator
   /// Evaluates a single condition using the provided game state.
   /// </summary>
   /// <param name="condition">The condition to evaluate.</param>
-  /// <param name="gameContext">The game context.</param>
+  /// <param name="context">The game context.</param>
   /// <returns>True if the condition is met; otherwise, false.</returns>
-  public static bool EvaluateCondition(ConditionDataModel condition, GameContext gameContext)
+  public static bool EvaluateCondition(ConditionDataModel condition, GameContext context)
   {
+    var actor = context.Actor;
+    var target = context.Target;
+    var operandRight = condition.OperandRight;
+    var actorRelationship = context.World.Relationships.FirstOrDefault(r =>
+      r.SourceCharacterId == actor.Id && r.TargetCharacterId == target?.Id
+    );
+
     return condition.ConditionType switch
     {
-      ConditionType.ActorEnergy => CompareInt(
-        gameContext.Actor.Energy, condition.Operator, int.Parse(condition.OperandRight!), condition.Negate
+      ConditionType.ActorEnergy when operandRight is null => throw new InvalidOperationException(
+        "ActorEnergy condition requires OperandRight."
       ),
-      ConditionType.ActorHasTrait => EvaluateHasTrait(condition, gameContext.Actor.TraitsId),
-      _ => true
+      ConditionType.ActorEnergy => CompareInt(
+        actor.Energy, condition.Operator, int.Parse(operandRight), condition.Negate
+      ),
+
+      ConditionType.ActorMoney when operandRight is null => throw new InvalidOperationException(
+        "ActorMoney condition requires OperandRight."
+      ),
+      ConditionType.ActorMoney => CompareInt(
+        actor.Money, condition.Operator, int.Parse(operandRight), condition.Negate
+      ),
+
+      ConditionType.ActorHasTrait => EvaluateHasTrait(condition, actor.TraitsId),
+
+      ConditionType.ActorRelationship when operandRight is null => throw new InvalidOperationException(
+        "ActorRelationship condition requires OperandRight."
+      ),
+      ConditionType.ActorRelationship => CompareInt(
+        actorRelationship?.Value ?? 0, condition.Operator, int.Parse(operandRight), condition.Negate
+      ),
+      _ => throw new InvalidOperationException("Invalid ConditionType.")
     };
   }
 
@@ -58,7 +83,7 @@ public static class ConditionEvaluator
       "<" => left < right,
       ">=" => left >= right,
       "<=" => left <= right,
-      _ => false
+      _ => throw new InvalidOperationException("Unknown operator.")
     };
 
     return negate ? !result : result;

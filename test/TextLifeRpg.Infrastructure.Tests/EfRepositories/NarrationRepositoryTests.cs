@@ -1,7 +1,6 @@
 ﻿using MockQueryable.FakeItEasy;
 using TextLifeRpg.Domain;
 using TextLifeRpg.Domain.Tests.Helpers;
-using TextLifeRpg.Infrastructure;
 using TextLifeRpg.Infrastructure.EfDataModels;
 using TextLifeRpg.Infrastructure.EfRepositories;
 
@@ -11,7 +10,7 @@ public class NarrationRepositoryTests
 {
   #region Fields
 
-  private const string _expectedKey = "intro_scene";
+  private const string _key = "intro_scene";
   private const string _expectedText = "You step into the dark forest.";
   private readonly NarrationRepository _repository;
 
@@ -26,17 +25,17 @@ public class NarrationRepositoryTests
       new()
       {
         Id = Guid.NewGuid(),
-        Key = _expectedKey,
+        Key = _key,
         Text = _expectedText
       }
     };
 
     var context = A.Fake<ApplicationContext>();
 
-    var narrationDbSet = narrationDataModels.AsQueryable().BuildMockDbSet();
+    var narrationDbSet = narrationDataModels.BuildMockDbSet();
     A.CallTo(() => context.Narrations).Returns(narrationDbSet);
 
-    var conditionDbSet = new List<ConditionDataModel>().AsQueryable().BuildMockDbSet();
+    var conditionDbSet = new List<ConditionDataModel>().BuildMockDbSet();
     A.CallTo(() => context.Conditions).Returns(conditionDbSet);
 
     A.CallTo(() => context.SaveChangesAsync(A<CancellationToken>._)).Returns(Task.FromResult(1));
@@ -62,12 +61,11 @@ public class NarrationRepositoryTests
     };
 
     // Act
-    var result = await _repository.GetNarrationByKeyAsync(_expectedKey, gameContext, CancellationToken.None);
+    var result = await _repository.GetNarrationByKeyAsync(_key, gameContext, CancellationToken.None);
 
     // Assert
     Assert.NotNull(result);
-    Assert.Equal(_expectedKey, result.Key);
-    Assert.Equal(_expectedText, result.Text);
+    Assert.Equal(_expectedText, result);
   }
 
   [Fact]
@@ -100,7 +98,7 @@ public class NarrationRepositoryTests
     var narration = new NarrationDataModel
     {
       Id = narrationId,
-      Key = _expectedKey,
+      Key = _key,
       Text = _expectedText
     };
 
@@ -120,8 +118,8 @@ public class NarrationRepositoryTests
     var world = World.Create(DateTime.Now, [character]);
 
     var context = A.Fake<ApplicationContext>();
-    var narrationDbSet = new List<NarrationDataModel> {narration}.AsQueryable().BuildMockDbSet();
-    var conditionDbSet = new List<ConditionDataModel> {failingCondition}.AsQueryable().BuildMockDbSet();
+    var narrationDbSet = new List<NarrationDataModel> {narration}.BuildMockDbSet();
+    var conditionDbSet = new List<ConditionDataModel> {failingCondition}.BuildMockDbSet();
 
     A.CallTo(() => context.Narrations).Returns(narrationDbSet);
     A.CallTo(() => context.Conditions).Returns(conditionDbSet);
@@ -132,10 +130,10 @@ public class NarrationRepositoryTests
 
     // Act & Assert
     var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-      repository.GetNarrationByKeyAsync(_expectedKey, gameContext, CancellationToken.None)
+      repository.GetNarrationByKeyAsync(_key, gameContext, CancellationToken.None)
     );
 
-    Assert.Equal($"No narration found for key {_expectedKey}.", exception.Message);
+    Assert.Equal($"No narration found for key {_key}.", exception.Message);
   }
 
   #endregion

@@ -1,5 +1,4 @@
-﻿using TextLifeRpg.Infrastructure;
-using TextLifeRpg.Infrastructure.EfRepositories;
+﻿using TextLifeRpg.Infrastructure.EfRepositories;
 
 namespace TextLifeRpg.Infrastructure.Tests.EfRepositories;
 

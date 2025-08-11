@@ -1,5 +1,4 @@
 ﻿using TextLifeRpg.Domain.Tests.Helpers;
-using TextLifeRpg.Domain;
 
 namespace TextLifeRpg.Domain.Tests;
 
@@ -17,7 +16,8 @@ public class CharacterTests
     const int height = 180;
     const int weight = 70;
     const int muscleMass = 5;
-    var character = Character.Create(name, birthDate, biologicalSex, height, weight, muscleMass);
+    var attributes = CharacterAttributes.Create(5, 5, 5);
+    var character = Character.Create(name, birthDate, biologicalSex, height, weight, muscleMass, attributes);
 
     // Assert
     Assert.NotNull(character);
@@ -27,6 +27,7 @@ public class CharacterTests
     Assert.Equal(height, character.Height);
     Assert.Equal(weight, character.Weight);
     Assert.Equal(muscleMass, character.MuscleMass);
+    Assert.Equal(attributes, character.Attributes);
     Assert.Null(character.LocationId);
     Assert.Null(character.RoomId);
   }
@@ -38,13 +39,14 @@ public class CharacterTests
     var id = Guid.NewGuid();
     const string name = "Player";
     var birthDate = new DateOnly(1990, 1, 1);
+    const BiologicalSex biologicalSex = BiologicalSex.Male;
     const int height = 180;
     const int weight = 70;
     const int muscleMass = 5;
-    const BiologicalSex biologicalSex = BiologicalSex.Male;
+    var attributes = CharacterAttributes.Create(5, 5, 5);
 
     // Act
-    var character = Character.Load(id, name, birthDate, biologicalSex, height, weight, muscleMass);
+    var character = Character.Load(id, name, birthDate, biologicalSex, height, weight, muscleMass, attributes);
 
     // Assert
     Assert.Equal(id, character.Id);
@@ -53,6 +55,7 @@ public class CharacterTests
     Assert.Equal(height, character.Height);
     Assert.Equal(weight, character.Weight);
     Assert.Equal(muscleMass, character.MuscleMass);
+    Assert.Equal(attributes, character.Attributes);
     Assert.Null(character.LocationId);
     Assert.Null(character.RoomId);
   }
@@ -110,6 +113,86 @@ public class CharacterTests
 
     // Assert
     Assert.Equal(expectedAge, age);
+  }
+
+  [Fact]
+  public void AddItemToInventory_ShouldAddNewEntry_WhenItemNotPresent()
+  {
+    // Arrange
+    var character = new CharacterBuilder().Build();
+    var itemId = Guid.NewGuid();
+
+    // Act
+    character.AddItemToInventory(itemId, 3);
+
+    // Assert
+    var entry = character.InventoryEntries.FirstOrDefault(i => i.ItemId == itemId);
+    Assert.NotNull(entry);
+    Assert.Equal(3, entry.Quantity);
+  }
+
+  [Fact]
+  public void AddItemToInventory_ShouldIncreaseQuantity_WhenItemAlreadyExists()
+  {
+    // Arrange
+    var character = new CharacterBuilder().Build();
+    var itemId = Guid.NewGuid();
+    character.AddItemToInventory(itemId, 2);
+
+    // Act
+    character.AddItemToInventory(itemId, 5);
+
+    // Assert
+    var entry = character.InventoryEntries.FirstOrDefault(i => i.ItemId == itemId);
+    Assert.NotNull(entry);
+    Assert.Equal(7, entry.Quantity);
+  }
+
+  [Fact]
+  public void RemoveItemFromInventory_ShouldDecreaseQuantity_WhenItemExists()
+  {
+    // Arrange
+    var character = new CharacterBuilder().Build();
+    var itemId = Guid.NewGuid();
+    character.AddItemToInventory(itemId, 5);
+
+    // Act
+    character.RemoveItemFromInventory(itemId, 3);
+
+    // Assert
+    var entry = character.InventoryEntries.FirstOrDefault(i => i.ItemId == itemId);
+    Assert.NotNull(entry);
+    Assert.Equal(2, entry.Quantity);
+  }
+
+  [Fact]
+  public void RemoveItemFromInventory_ShouldRemoveEntry_WhenQuantityReachesZero()
+  {
+    // Arrange
+    var character = new CharacterBuilder().Build();
+    var itemId = Guid.NewGuid();
+    character.AddItemToInventory(itemId, 3);
+
+    // Act
+    character.RemoveItemFromInventory(itemId, 3);
+
+    // Assert
+    var entry = character.InventoryEntries.FirstOrDefault(i => i.ItemId == itemId);
+    Assert.Null(entry); // Should be removed
+  }
+
+  [Fact]
+  public void RemoveItemFromInventory_ShouldDoNothing_WhenItemDoesNotExist()
+  {
+    // Arrange
+    var character = new CharacterBuilder().Build();
+    var itemId = Guid.NewGuid();
+
+    // Act
+    character.RemoveItemFromInventory(itemId, 3);
+
+    // Assert
+    Assert.Empty(character.InventoryEntries);
   }
 
   #endregion

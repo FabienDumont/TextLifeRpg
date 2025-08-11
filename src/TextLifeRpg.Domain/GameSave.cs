@@ -33,6 +33,21 @@ public class GameSave
   public Character PlayerCharacter => World.Characters.First(c => c.Id == PlayerCharacterId);
 
   /// <summary>
+  /// Identifier for the NPC currently interacting with the player.
+  /// </summary>
+  public Guid? InteractingNpcId { get; private set; }
+
+  /// <summary>
+  /// Indicates the type of interaction with a NPC.
+  /// </summary>
+  public NpcInteractionType? NpcInteractionType { get; private set; }
+
+  /// <summary>
+  /// The NPC currently being interacted with in the game.
+  /// </summary>
+  public Character? InteractingNpc => World.Characters.FirstOrDefault(c => c.Id == InteractingNpcId);
+
+  /// <summary>
   /// Timestamp of when the save was created.
   /// </summary>
   public DateTime SavedAt { get; } = DateTime.UtcNow;
@@ -40,7 +55,7 @@ public class GameSave
   /// <summary>
   /// List of text lines displayed to the user (with color formatting).
   /// </summary>
-  public List<TextLine> TextLines { get; private set; } = [];
+  public List<TextLine> TextLines { get; private init; } = [];
 
   #endregion
 
@@ -115,5 +130,29 @@ public class GameSave
     TextLines.Clear();
   }
 
+  /// <summary>
+  /// Initiates a dialogue interaction with a specified NPC.
+  /// </summary>
+  /// <param name="npcId">The unique identifier of the NPC to start a dialogue with.</param>
+  public void StartDialogue(Guid npcId)
+  {
+    InteractingNpcId = npcId;
+    NpcInteractionType = Domain.NpcInteractionType.Dialogue;
+  }
+
+  /// <summary>
+  /// Ends the current interaction, resetting the interacting NPC and interaction type.
+  /// </summary>
+  public void EndInteraction()
+  {
+    InteractingNpcId = null;
+    NpcInteractionType = null;
+  }
+
   #endregion
+}
+
+public enum NpcInteractionType
+{
+  Dialogue
 }

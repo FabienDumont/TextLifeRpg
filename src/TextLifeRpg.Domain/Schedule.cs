@@ -5,6 +5,8 @@
 /// </summary>
 public class Schedule
 {
+  #region Properties
+
   /// <summary>
   /// The character linked to the schedule.
   /// </summary>
@@ -15,6 +17,10 @@ public class Schedule
   /// </summary>
   public List<ScheduleEntry> Entries { get; }
 
+  #endregion
+
+  #region Ctors
+
   /// <summary>
   /// Private constructor used internally.
   /// </summary>
@@ -23,6 +29,10 @@ public class Schedule
     CharacterId = characterId;
     Entries = entries.OrderBy(e => e.StartHour).ToList();
   }
+
+  #endregion
+
+  #region Methods
 
   /// <summary>
   /// Factory method to create a new instance.
@@ -37,6 +47,8 @@ public class Schedule
   {
     return Entries.LastOrDefault(e => e.Day == currentDay && e.StartHour <= currentTime);
   }
+
+  #endregion
 }
 
 public record ScheduleEntry(DayOfWeek Day, TimeSpan StartHour, TimeSpan EndHour, Guid? LocationId, Guid? RoomId);

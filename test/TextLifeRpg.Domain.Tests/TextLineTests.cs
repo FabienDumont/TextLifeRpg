@@ -1,6 +1,4 @@
-﻿using TextLifeRpg.Domain;
-
-namespace TextLifeRpg.Domain.Tests;
+﻿namespace TextLifeRpg.Domain.Tests;
 
 public class TextLineTests
 {
@@ -12,8 +10,8 @@ public class TextLineTests
     // Arrange
     var initialParts = new List<TextPart>
     {
-      new("red", "Hello"),
-      new("green", " world")
+      new(CharacterColor.Yellow, "Hello"),
+      new(CharacterColor.Blue, " world")
     };
 
     // Act
@@ -35,12 +33,12 @@ public class TextLineTests
     var textLine = new TextLine(new List<TextPart>());
 
     // Act
-    textLine.AddTextPart("Hello", "blue");
+    textLine.AddTextPart("Hello", CharacterColor.Blue);
 
     // Assert
     Assert.Single(textLine.TextParts);
     Assert.Equal("Hello", textLine.TextParts[0].Text);
-    Assert.Equal("blue", textLine.TextParts[0].Color);
+    Assert.Equal(CharacterColor.Blue, textLine.TextParts[0].Color);
   }
 
   [Fact]

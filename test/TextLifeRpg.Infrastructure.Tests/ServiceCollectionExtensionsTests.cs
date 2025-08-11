@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TextLifeRpg.Application.Abstraction.Repositories;
-using TextLifeRpg.Infrastructure;
 using TextLifeRpg.Infrastructure.EfRepositories;
 using TextLifeRpg.Infrastructure.JsonRepositories;
 
@@ -64,6 +63,16 @@ public class ServiceCollectionExtensionsTests
     var nameRepo = provider.GetService<INameRepository>();
     Assert.NotNull(nameRepo);
     Assert.IsType<NameJsonRepository>(nameRepo);
+
+    // JobRepository
+    var jobRepo = provider.GetService<IJobRepository>();
+    Assert.NotNull(jobRepo);
+    Assert.IsType<JobRepository>(jobRepo);
+
+    // JobRepository
+    var itemRepo = provider.GetService<IItemRepository>();
+    Assert.NotNull(itemRepo);
+    Assert.IsType<ItemRepository>(itemRepo);
   }
 
   #endregion

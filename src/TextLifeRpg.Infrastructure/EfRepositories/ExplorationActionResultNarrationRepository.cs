@@ -3,7 +3,6 @@ using TextLifeRpg.Application.Abstraction.Repositories;
 using TextLifeRpg.Domain;
 using TextLifeRpg.Infrastructure.EfDataModels;
 using TextLifeRpg.Infrastructure.Helper;
-using TextLifeRpg.Infrastructure.Mappers;
 
 namespace TextLifeRpg.Infrastructure.EfRepositories;
 
@@ -16,7 +15,7 @@ public class ExplorationActionResultNarrationRepository(ApplicationContext conte
   #region Implementation of IExplorationActionResultNarrationRepository
 
   /// <inheritdoc />
-  public async Task<ExplorationActionResultNarration> GetByExplorationActionResultIdAsync(
+  public async Task<string> GetByExplorationActionResultIdAsync(
     Guid explorationActionResultId, GameContext gameContext, CancellationToken cancellationToken
   )
   {
@@ -36,7 +35,7 @@ public class ExplorationActionResultNarrationRepository(ApplicationContext conte
 
       if (allSatisfied)
       {
-        return explorationActionResultNarration.ToDomain();
+        return explorationActionResultNarration.Text;
       }
     }
 

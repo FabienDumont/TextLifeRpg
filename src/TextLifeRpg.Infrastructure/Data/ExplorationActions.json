@@ -1,0 +1,108 @@
+﻿[
+  {
+    "Label": "Sleep (10 hours)",
+    "LocationName": "Home",
+    "RoomName": "Bedroom",
+    "NeededMinutes": 480,
+    "Results": [
+      {
+        "AddMinutes": true,
+        "EnergyChange": 100,
+        "ResultNarrations": [
+          {
+            "Text": "You collapse into bed, too tired to even pull the sheets over yourself.",
+            "Conditions": [
+              {
+                "ActorEnergy": {
+                  "Operator": "<=",
+                  "Value": 25
+                }
+              }
+            ]
+          },
+          {
+            "Text": "You ease into bed, your body grateful for the rest.",
+            "Conditions": [
+              {
+                "ActorEnergy": {
+                  "Operator": ">",
+                  "Value": 25
+                }
+              },
+              {
+                "ActorEnergy": {
+                  "Operator": "<=",
+                  "Value": 50
+                }
+              }
+            ]
+          },
+          {
+            "Text": "You're not very tired, but you lay down anyway, hoping to fall asleep.",
+            "Conditions": [
+              {
+                "ActorEnergy": {
+                  "Operator": ">",
+                  "Value": 50
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Label": "Nap (1 hour)",
+    "LocationName": "Home",
+    "RoomName": "Bedroom",
+    "NeededMinutes": 60,
+    "Results": [
+      {
+        "AddMinutes": true,
+        "EnergyChange": 10,
+        "ResultNarrations": [
+          {
+            "Text": "You sink into the mattress and quickly doze off, too drained to think.",
+            "Conditions": [
+              {
+                "ActorEnergy": {
+                  "Operator": "<=",
+                  "Value": 25
+                }
+              }
+            ]
+          },
+          {
+            "Text": "You rest your head and fall asleep faster than expected. It's brief but helpful.",
+            "Conditions": [
+              {
+                "ActorEnergy": {
+                  "Operator": ">",
+                  "Value": 25
+                }
+              },
+              {
+                "ActorEnergy": {
+                  "Operator": "<=",
+                  "Value": 50
+                }
+              }
+            ]
+          },
+          {
+            "Text": "You lie back and close your eyes, but your thoughts keep drifting. You barely nap at all.",
+            "Conditions": [
+              {
+                "ActorEnergy": {
+                  "Operator": ">",
+                  "Value": 50
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

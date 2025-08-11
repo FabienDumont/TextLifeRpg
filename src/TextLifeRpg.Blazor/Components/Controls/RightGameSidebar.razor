@@ -30,16 +30,47 @@
       </p>
     }
 
-    @if (_npcsInLocation.Count > 0)
+    @if (GameSaveStore.CurrentSave!.NpcInteractionType is null && _npcsInLocation.Count > 0)
     {
-      <div class="mt-4 w-full overflow-y-auto pt-2 px-2">
+      <div class="flex flex-col mt-4 w-full overflow-y-auto pt-2 px-2">
         @foreach (var npc in _npcsInLocation.OrderBy(n => n.Name))
         {
-          var color = CharacterColorHelper.GetCharacterColor(npc, GameSaveStore.CurrentSave!.PlayerCharacter.Id);
-          <p class="cursor-pointer" style="color:@color" @onclick="async () => await OnNpcClickedInternal(npc)">
+          var color = CharacterColorHelper.GetColorKey(npc, GameSaveStore.CurrentSave!.PlayerCharacterId).ToTailwindClass();
+
+          <span
+            class="cursor-pointer @color"
+            @onclick="async () => await OnNpcClickedInternal(npc)"
+            @oncontextmenu:preventDefault="true"
+            @oncontextmenu="@(async () => await OnNpcRightClickedInternal(npc))">
             @npc.Name
-          </p>
+          </span>
         }
+      </div>
+    }
+    else if (GameSaveStore.CurrentSave!.NpcInteractionType is not null && _interactingNpc is not null)
+    {
+      var color = CharacterColorHelper.GetColorKey(_interactingNpc, GameSaveStore.CurrentSave!.PlayerCharacterId).ToTailwindClass();
+      <div class="flex mt-4 pt-2 px-2">
+        <span>Interacting with&nbsp;</span>
+        <span
+          class="cursor-pointer @color"
+          @onclick="async () => await OnNpcClickedInternal(_interactingNpc)">
+          @_interactingNpc.Name
+        </span>
+      </div>
+      <div class="flex mt-4">
+        <span>
+          Relationship :&nbsp;
+        </span>
+        <span>
+          @{
+            var playerId = GameSaveStore.CurrentSave!.PlayerCharacterId;
+            var relationship = GameSaveStore.CurrentSave!.World.Relationships.FirstOrDefault(r => r.SourceCharacterId == _interactingNpc.Id && r.TargetCharacterId == playerId);
+
+            var relationshipValue = relationship?.Value ?? 0;
+          }
+          @relationshipValue
+        </span>
       </div>
     }
   </div>
@@ -51,12 +82,19 @@
   private string? _roomName;
 
   private readonly List<Character> _npcsInLocation = [];
+  private Character? _interactingNpc;
 
   /// <summary>
   /// Callback invoked when the user clicks on a NPC's name.
   /// </summary>
   [Parameter, EditorRequired]
   public EventCallback<Character> OnNpcClicked { get; set; }
+
+  /// <summary>
+  /// Callback invoked when the user right clicks on a NPC's name.
+  /// </summary>
+  [Parameter, EditorRequired]
+  public EventCallback<Character> OnNpcRightClicked { get; set; }
 
   /// <summary>
   /// Registers for game state changes and initializes location display.
@@ -91,11 +129,10 @@
 
     await UpdateNamesAsync();
 
+    _interactingNpc = save.InteractingNpc;
+
     _npcsInLocation.Clear();
-    _npcsInLocation.AddRange(
-      save.World.Characters
-        .Where(c => c.Id != player.Id && c.LocationId == player.LocationId)
-    );
+    _npcsInLocation.AddRange(save.World.Characters.Where(c => c.Id != player.Id && c.LocationId == player.LocationId));
 
     StateHasChanged();
   }
@@ -148,6 +185,14 @@
   private async Task OnNpcClickedInternal(Character npc)
   {
     await OnNpcClicked.InvokeAsync(npc);
+  }
+
+  /// <summary>
+  /// Triggers the OnNpcRightClicked callback.
+  /// </summary>
+  private async Task OnNpcRightClickedInternal(Character npc)
+  {
+    await OnNpcRightClicked.InvokeAsync(npc);
   }
 
   /// <summary>

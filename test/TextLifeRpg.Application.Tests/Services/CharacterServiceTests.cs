@@ -2,6 +2,7 @@
 using TextLifeRpg.Application.Abstraction.Repositories;
 using TextLifeRpg.Application.Services;
 using TextLifeRpg.Domain;
+using TextLifeRpg.Domain.Constants;
 using TextLifeRpg.Domain.Tests.Helpers;
 
 namespace TextLifeRpg.Application.Tests.Services;
@@ -13,6 +14,7 @@ public class CharacterServiceTests
   private readonly CharacterService _characterService;
   private readonly INameRepository _nameRepository = A.Fake<INameRepository>();
   private readonly ITraitService _traitService = A.Fake<ITraitService>();
+  private readonly IJobService _jobService = A.Fake<IJobService>();
   private readonly IRandomProvider _randomProvider = A.Fake<IRandomProvider>();
 
   #endregion
@@ -21,7 +23,7 @@ public class CharacterServiceTests
 
   public CharacterServiceTests()
   {
-    _characterService = new CharacterService(_nameRepository, _traitService, _randomProvider);
+    _characterService = new CharacterService(_nameRepository, _traitService, _jobService, _randomProvider);
   }
 
   #endregion
@@ -32,24 +34,33 @@ public class CharacterServiceTests
   public async Task CreateRandomCharacter_ShouldReturnValidCharacter()
   {
     // Arrange
+    var world = World.Create(new DateTime(2025, 1, 1), []);
     A.CallTo(() => _nameRepository.GetFemaleNamesAsync(A<CancellationToken>._)).Returns(new List<string> {"Alice"});
     A.CallTo(() => _nameRepository.GetMaleNamesAsync(A<CancellationToken>._)).Returns(new List<string> {"Bob"});
 
+    var job = Job.Load(Guid.NewGuid(), JobNames.Janitor, 13, 5);
+    A.CallTo(() => _jobService.GetAllJobsAsync(A<CancellationToken>._)).Returns(new List<Job> {job});
+
     // Act
-    var character = await _characterService.CreateRandomCharacterAsync(new DateOnly(2025, 1, 1));
+    var character = await _characterService.CreateRandomCharacterAsync(world, CancellationToken.None);
 
     // Assert
     Assert.NotNull(character);
     Assert.False(string.IsNullOrWhiteSpace(character.Name));
-    Assert.True(character.BiologicalSex == BiologicalSex.Male || character.BiologicalSex == BiologicalSex.Female);
+    Assert.True(character.BiologicalSex is BiologicalSex.Male or BiologicalSex.Female);
+    Assert.Equal(job.Id, character.JobId);
   }
 
   [Fact]
   public async Task CreateChildAsync_ShouldReturnChildWithValidProperties()
   {
     // Arrange
-    var mother = new CharacterBuilder().WithName("Mom").WithBirthDate(new DateOnly(1980, 1, 1)).WithSex(BiologicalSex.Female).Build();
-    var father = new CharacterBuilder().WithName("Dad").WithBirthDate(new DateOnly(1978, 1, 1)).WithSex(BiologicalSex.Male).Build();
+
+    var mother = new CharacterBuilder().WithName("Mom").WithBirthDate(new DateOnly(1980, 1, 1))
+      .WithSex(BiologicalSex.Female).Build();
+    var father = new CharacterBuilder().WithName("Dad").WithBirthDate(new DateOnly(1978, 1, 1))
+      .WithSex(BiologicalSex.Male).Build();
+    var world = World.Create(new DateTime(2025, 1, 1), [mother, father]);
 
     const BiologicalSex expectedSex = BiologicalSex.Female;
     const string expectedName = "Chloe";
@@ -63,7 +74,7 @@ public class CharacterServiceTests
     A.CallTo(() => _randomProvider.Next(0, 1)).Returns(0); // Pick first name
 
     // Act
-    var child = await _characterService.CreateChildAsync(mother, father, new DateOnly(2025, 1, 1));
+    var child = await _characterService.CreateChildAsync(mother, father, world, CancellationToken.None);
 
     // Assert
     Assert.NotNull(child);
@@ -91,8 +102,10 @@ public class CharacterServiceTests
   public void GetAttractionValue_ShouldCalculate_ForOppositeSex()
   {
     // Arrange
-    var source = new CharacterBuilder().WithName("John").WithBirthDate(new DateOnly(1978, 1, 1)).WithSex(BiologicalSex.Male).Build();
-    var target = new CharacterBuilder().WithName("Jane").WithBirthDate(new DateOnly(1978, 1, 1)).WithSex(BiologicalSex.Female).Build();
+    var source = new CharacterBuilder().WithName("John").WithBirthDate(new DateOnly(1978, 1, 1))
+      .WithSex(BiologicalSex.Male).Build();
+    var target = new CharacterBuilder().WithName("Jane").WithBirthDate(new DateOnly(1978, 1, 1))
+      .WithSex(BiologicalSex.Female).Build();
 
     // First Next(0,100)  → base attraction = 80
     // Second Next(-60,0) → biological sex bonus/penalty = -10
@@ -195,8 +208,11 @@ public class CharacterServiceTests
     var trait1 = Guid.NewGuid();
     var trait2 = Guid.NewGuid();
     var trait3 = Guid.NewGuid();
-    var mother = new CharacterBuilder().WithName("Mom").WithBirthDate(new DateOnly(1980, 1, 1)).WithSex(BiologicalSex.Female).Build();
-    var father = new CharacterBuilder().WithName("Dad").WithBirthDate(new DateOnly(1980, 1, 1)).WithSex(BiologicalSex.Male).Build();
+    var mother = new CharacterBuilder().WithName("Mom").WithBirthDate(new DateOnly(1980, 1, 1))
+      .WithSex(BiologicalSex.Female).Build();
+    var father = new CharacterBuilder().WithName("Dad").WithBirthDate(new DateOnly(1980, 1, 1))
+      .WithSex(BiologicalSex.Male).Build();
+    var world = World.Create(new DateTime(2025, 1, 1), [mother, father]);
 
     mother.AddTraits(new[] {trait1, trait2});
     father.AddTraits(new[] {trait3});
@@ -218,7 +234,7 @@ public class CharacterServiceTests
     A.CallTo(() => _randomProvider.Next(1, 4)).Returns(3);
 
     // Act
-    var child = await _characterService.CreateChildAsync(mother, father, new DateOnly(2025, 1, 1));
+    var child = await _characterService.CreateChildAsync(mother, father, world, CancellationToken.None);
 
     // Assert
     Assert.Equal(childName, child.Name);
@@ -239,16 +255,10 @@ public class CharacterServiceTests
 
     var preferred = new List<Guid> {id1, id2}; // id1 gets added, id2 should be skipped (incompatible with id1)
 
-    var randomProvider = A.Fake<IRandomProvider>();
-    var nameRepo = A.Fake<INameRepository>();
-    var traitService = A.Fake<ITraitService>();
-
-    A.CallTo(() => randomProvider.Next(0, A<int>._)).Returns(0); // Always pick the first trait from pool
-
-    var service = new CharacterService(nameRepo, traitService, randomProvider);
+    A.CallTo(() => _randomProvider.Next(0, A<int>._)).Returns(0); // Always pick the first trait from pool
 
     // Act
-    var result = service.GenerateTraits(allTraits, incompatiblePairs, 3, preferred);
+    var result = _characterService.GenerateTraits(allTraits, incompatiblePairs, 3, preferred);
 
     // Assert
     Assert.Contains(id1, result); // was compatible, got added
@@ -274,6 +284,31 @@ public class CharacterServiceTests
     Assert.Contains(id1, result);
     Assert.Contains(id2, result);
   }
+
+  [Fact]
+  public async Task CreateRandomCharacter_ShouldNotAssignJob_WhenMaxWorkersReached()
+  {
+    // Arrange
+    var job = Job.Load(Guid.NewGuid(), JobNames.Janitor, 13, 1);
+    A.CallTo(() => _jobService.GetAllJobsAsync(A<CancellationToken>._)).Returns(new List<Job> { job });
+
+    var existing = new CharacterBuilder().WithJob(job.Id).Build();
+    var world = World.Create(new DateTime(2025, 1, 1), [existing]);
+
+    A.CallTo(() => _nameRepository.GetMaleNamesAsync(A<CancellationToken>._)).Returns(new List<string> { "Bob" });
+    A.CallTo(() => _randomProvider.Next(0, 2)).Returns(0);
+    A.CallTo(() => _randomProvider.Next(1, 4)).Returns(1);
+    A.CallTo(() => _randomProvider.Next(0, 1)).Returns(0);
+    A.CallTo(() => _traitService.GetAllTraitsAsync(A<CancellationToken>._)).Returns(new List<Trait>());
+    A.CallTo(() => _traitService.GetIncompatibleTraitsAsync(A<CancellationToken>._)).Returns(new List<(Trait, Trait)>());
+
+    // Act
+    var character = await _characterService.CreateRandomCharacterAsync(world, CancellationToken.None);
+
+    // Assert
+    Assert.Null(character.JobId); // No job assigned due to max workers
+  }
+
 
   #endregion
 }

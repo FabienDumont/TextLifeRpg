@@ -8,47 +8,30 @@ namespace TextLifeRpg.Application.Services;
 /// Service for managing characters.
 /// </summary>
 public class CharacterService(
-  INameRepository nameRepository, ITraitService traitService, IRandomProvider randomProvider
+  INameRepository nameRepository, ITraitService traitService, IJobService jobService, IRandomProvider randomProvider
 ) : ICharacterService
 {
   #region Fields
 
   private IReadOnlyCollection<Trait>? _cachedTraits;
   private IReadOnlyList<(Guid A, Guid B)>? _cachedIncompatibleTraits;
+  private IReadOnlyCollection<Job>? _cachedJobs;
 
   #endregion
 
   #region Implementation of ICharacterService
 
   /// <inheritdoc />
-  public async Task<Character> CreateRandomCharacterAsync(DateOnly date)
+  public async Task<Character> CreateRandomCharacterAsync(World world, CancellationToken cancellationToken)
   {
-    const int minAge = 18;
-    const int maxAge = 69;
+    const int minAge = 18, maxAge = 69;
     var age = randomProvider.Next(minAge, maxAge + 1);
-    var birthDate = date.AddYears(-age).AddDays(randomProvider.Next(0, 365));
-
+    var birthDate = DateOnly.FromDateTime(world.CurrentDate.AddYears(-age).AddDays(randomProvider.Next(0, 365)));
     var sex = randomProvider.Next(0, 2) == 0 ? BiologicalSex.Male : BiologicalSex.Female;
 
-    var names = sex == BiologicalSex.Female
-      ? await nameRepository.GetFemaleNamesAsync()
-      : await nameRepository.GetMaleNamesAsync();
-
-    var name = names[randomProvider.Next(0, names.Count)];
-
-    var height = randomProvider.NextClampedHeight(sex);
-
-    var weight = randomProvider.NextClampedWeight(sex, height);
-
-    var muscleMass = randomProvider.NextClampedMuscleMass(sex, height);
-
-    var character = Character.Create(name, birthDate, sex, height, weight, muscleMass);
-
-    var traitCount = randomProvider.Next(1, 4);
-    var traitIds = await GenerateTraitIdsAsync(traitCount);
-    character.AddTraits(traitIds);
-
-    return character;
+    return await CreateCharacterAsync(
+      world, birthDate, sex, randomProvider.Next(1, 4), cancellationToken: cancellationToken
+    );
   }
 
   /// <inheritdoc />
@@ -76,37 +59,18 @@ public class CharacterService(
   }
 
   /// <inheritdoc />
-  public async Task<Character> CreateChildAsync(Character mother, Character father, DateOnly currentDate)
+  public async Task<Character> CreateChildAsync(
+    Character mother, Character father, World world, CancellationToken cancellationToken
+  )
   {
     const int motherMinAge = 18;
-    var motherMaxAge = Math.Min(39, currentDate.Year - mother.BirthDate.Year);
-
+    var motherMaxAge = Math.Min(39, DateOnly.FromDateTime(world.CurrentDate).Year - mother.BirthDate.Year);
     var motherAgeAtBirth = randomProvider.Next(motherMinAge, motherMaxAge + 1);
     var birthDate = mother.BirthDate.AddYears(motherAgeAtBirth);
-
     var sex = randomProvider.Next(0, 2) == 0 ? BiologicalSex.Male : BiologicalSex.Female;
+    var inherited = mother.TraitsId.Concat(father.TraitsId).OrderBy(_ => randomProvider.NextDouble()).Take(2);
 
-    var names = sex == BiologicalSex.Female
-      ? await nameRepository.GetFemaleNamesAsync()
-      : await nameRepository.GetMaleNamesAsync();
-
-    var name = names[randomProvider.Next(0, names.Count)];
-
-    var height = randomProvider.NextClampedHeight(sex);
-
-    var weight = randomProvider.NextClampedWeight(sex, height);
-
-    var muscleMass = randomProvider.NextClampedMuscleMass(sex, height);
-
-    var child = Character.Create(name, birthDate, sex, height, weight, muscleMass);
-
-    var traitCount = randomProvider.Next(1, 4);
-    var inherited = mother.TraitsId.Concat(father.TraitsId).OrderBy(_ => randomProvider.NextDouble()).Take(2).ToList();
-
-    var traitIds = await GenerateTraitIdsAsync(traitCount, inherited);
-    child.AddTraits(traitIds);
-
-    return child;
+    return await CreateCharacterAsync(world, birthDate, sex, randomProvider.Next(1, 4), inherited, cancellationToken);
   }
 
   #endregion
@@ -165,17 +129,75 @@ public class CharacterService(
   /// <param name="preferred">
   /// An optional collection of preferred trait IDs that can be selected.
   /// </param>
-  /// <param name="ct">A cancellation token used to cancel the operation.</param>
+  /// <param name="cancellationToken">A cancellation token used to cancel the operation.</param>
   /// <returns>A task that represents the asynchronous operation. The task result contains the generated list of trait IDs.</returns>
   public async Task<List<Guid>> GenerateTraitIdsAsync(
-    int targetCount, IReadOnlyCollection<Guid>? preferred = null, CancellationToken ct = default
+    int targetCount, IReadOnlyCollection<Guid>? preferred = null, CancellationToken cancellationToken = default
   )
   {
-    _cachedTraits ??= await traitService.GetAllTraitsAsync(ct);
-    _cachedIncompatibleTraits ??= (await traitService.GetIncompatibleTraitsAsync(ct))
+    _cachedTraits ??= await traitService.GetAllTraitsAsync(cancellationToken);
+    _cachedIncompatibleTraits ??= (await traitService.GetIncompatibleTraitsAsync(cancellationToken))
       .Select(p => (p.Item1.Id, p.Item2.Id)).ToList();
 
     return GenerateTraits(_cachedTraits.Select(t => t.Id).ToList(), _cachedIncompatibleTraits, targetCount, preferred);
+  }
+
+  /// <summary>
+  /// Creates a new character with specified attributes and traits.
+  /// </summary>
+  /// <param name="world">The world.</param>
+  /// <param name="birthDate">The birth date of the character.</param>
+  /// <param name="sex">The biological sex of the character (Male or Female).</param>
+  /// <param name="traitCount">The number of traits to be assigned to the character.</param>
+  /// <param name="preferredTraits">An optional collection of preferred trait IDs.</param>
+  /// <param name="cancellationToken">A cancellation token used to cancel the operation.</param>
+  /// <returns>A newly created <see cref="Character"/> instance populated with the provided parameters and randomly generated values.</returns>
+  private async Task<Character> CreateCharacterAsync(
+    World world, DateOnly birthDate, BiologicalSex sex, int traitCount, IEnumerable<Guid>? preferredTraits = null,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var names = sex == BiologicalSex.Female
+      ? await nameRepository.GetFemaleNamesAsync(cancellationToken)
+      : await nameRepository.GetMaleNamesAsync(cancellationToken);
+
+    var name = names[randomProvider.Next(0, names.Count)];
+    var height = randomProvider.NextClampedHeight(sex);
+    var weight = randomProvider.NextClampedWeight(sex, height);
+    var muscleMass = randomProvider.NextClampedMuscleMass(sex, height);
+
+    var intelligence = randomProvider.Next(1, 11);
+    var charisma = randomProvider.Next(1, 11);
+
+    // Strength based on muscle mass (normalize 15–40kg to 1–10 scale)
+    var normalized = (muscleMass - 15) / 25.0; // 0.0 to 1.0
+    var baseStrength = (int) (normalized * 9) + 1;
+
+    // Add slight randomness ±1
+    var strength = Math.Clamp(baseStrength + randomProvider.Next(-1, 2), 1, 10);
+
+    var attributes = CharacterAttributes.Create(intelligence, strength, charisma);
+
+    var character = Character.Create(name, birthDate, sex, height, weight, muscleMass, attributes);
+
+    var traitIds = await GenerateTraitIdsAsync(traitCount, preferredTraits?.ToList(), cancellationToken);
+    character.AddTraits(traitIds);
+
+    var jobs = await GetJobsAsync(cancellationToken);
+    var availableJob = jobs.OrderBy(_ => randomProvider.NextDouble())
+      .FirstOrDefault(j => world.Characters.Count(c => c.JobId == j.Id) < j.MaxWorkers);
+
+    if (availableJob is not null)
+    {
+      character.JobId = availableJob.Id;
+    }
+
+    return character;
+  }
+
+  private async Task<IReadOnlyCollection<Job>> GetJobsAsync(CancellationToken ct = default)
+  {
+    return _cachedJobs ??= await jobService.GetAllJobsAsync(ct);
   }
 
   #endregion

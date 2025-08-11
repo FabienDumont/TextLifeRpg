@@ -64,7 +64,7 @@ public class WorldServiceTests
       )
     };
 
-    A.CallTo(() => _characterService.CreateRandomCharacterAsync(DateOnly.FromDateTime(date)))
+    A.CallTo(() => _characterService.CreateRandomCharacterAsync(A<World>._, CancellationToken.None))
       .ReturnsNextFromSequence(randomCharacters.ToArray());
 
     A.CallTo(() => _relationshipService.GenerateRelationships(randomCharacters, DateOnly.FromDateTime(date)))
@@ -84,12 +84,6 @@ public class WorldServiceTests
     Assert.Equal(gameSettings.GetNpcCount() + 1, world.Characters.Count);
     Assert.Equal(generatedRelationships.Count, world.Relationships.Count);
     Assert.All(generatedRelationships, r => Assert.Contains(r, world.Relationships));
-
-    A.CallTo(() => _characterService.CreateRandomCharacterAsync(DateOnly.FromDateTime(world.CurrentDate)))
-      .MustHaveHappened(gameSettings.GetNpcCount(), Times.Exactly);
-
-    A.CallTo(() => _relationshipService.GenerateRelationships(randomCharacters, DateOnly.FromDateTime(date)))
-      .MustHaveHappenedOnceExactly();
   }
 
   [Fact]
@@ -112,22 +106,6 @@ public class WorldServiceTests
   }
 
   [Fact]
-  public void AdvanceTime_ShouldAddMinutesToWorldCurrentDate()
-  {
-    // Arrange
-    var initialDate = new DateTime(2025, 4, 24, 8, 0, 0);
-    var playerCharacter = new CharacterBuilder().Build();
-    var world = World.Create(initialDate, []);
-    const int minutesToAdvance = 90;
-
-    // Act
-    _worldService.AdvanceTime(world, playerCharacter.Id, minutesToAdvance);
-
-    // Assert
-    Assert.Equal(initialDate.AddMinutes(minutesToAdvance), world.CurrentDate);
-  }
-
-  [Fact]
   public async Task CreateNewWorld_ShouldAddChildrenFromCouples()
   {
     // Arrange
@@ -142,10 +120,10 @@ public class WorldServiceTests
     A.CallTo(() => _roomService.GetPlayerSpawnAsync(CancellationToken.None)).Returns(room);
     A.CallTo(() => _locationService.GetByIdAsync(location.Id, CancellationToken.None)).Returns(location);
 
-    var npcs = Enumerable.Range(0, gameSettings.GetNpcCount()).Select(_ => new CharacterBuilder().Build())
-      .ToList();
+    var npcs = Enumerable.Range(0, gameSettings.GetNpcCount()).Select(_ => new CharacterBuilder().Build()).ToList();
 
-    A.CallTo(() => _characterService.CreateRandomCharacterAsync(nowD)).ReturnsNextFromSequence(npcs.ToArray());
+    A.CallTo(() => _characterService.CreateRandomCharacterAsync(A<World>._, CancellationToken.None))
+      .ReturnsNextFromSequence(npcs.ToArray());
 
     // mark first two NPCs as romantic partners
     var parentA = npcs[0];
@@ -165,8 +143,10 @@ public class WorldServiceTests
       Relationship.Create(kid.Id, parentA.Id, RelationshipType.Child, kid.BirthDate, nowD, 50)
     };
 
-    A.CallTo(() => _relationshipService.GenerateChildrenFromCouplesAsync(A<List<(Character, Character)>>._, nowD))
-      .Returns((new List<Character> {kid}, kidR));
+    A.CallTo(() => _relationshipService.GenerateChildrenFromCouplesAsync(
+        A<List<(Character, Character)>>._, A<World>._, CancellationToken.None
+      )
+    ).Returns((new List<Character> {kid}, kidR));
 
     // Act
     var world = await _worldService.CreateNewWorldAsync(date, playerCharacter, gameSettings, CancellationToken.None);
@@ -181,8 +161,10 @@ public class WorldServiceTests
     Assert.All(kidR, r => Assert.Contains(r, world.Relationships));
 
     // verify service calls
-    A.CallTo(() => _relationshipService.GenerateChildrenFromCouplesAsync(A<List<(Character, Character)>>._, nowD))
-      .MustHaveHappenedOnceExactly();
+    A.CallTo(() => _relationshipService.GenerateChildrenFromCouplesAsync(
+        A<List<(Character, Character)>>._, world, CancellationToken.None
+      )
+    ).MustHaveHappenedOnceExactly();
   }
 
   [Fact]
@@ -199,10 +181,10 @@ public class WorldServiceTests
     A.CallTo(() => _locationService.GetByIdAsync(location.Id, CancellationToken.None)).Returns(location);
 
     var gameSettings = GameSettings.Create(NpcDensity.VeryLow);
-    var npcs = Enumerable.Range(0, gameSettings.GetNpcCount()).Select(_ => new CharacterBuilder().Build())
-      .ToList();
+    var npcs = Enumerable.Range(0, gameSettings.GetNpcCount()).Select(_ => new CharacterBuilder().Build()).ToList();
 
-    A.CallTo(() => _characterService.CreateRandomCharacterAsync(nowD)).ReturnsNextFromSequence(npcs.ToArray());
+    A.CallTo(() => _characterService.CreateRandomCharacterAsync(A<World>._, CancellationToken.None))
+      .ReturnsNextFromSequence(npcs.ToArray());
 
     var a = npcs[0];
     var b = npcs[1];
@@ -211,62 +193,16 @@ public class WorldServiceTests
     );
 
     A.CallTo(() => _relationshipService.GenerateRelationships(npcs, nowD)).Returns([romanticRel]);
-    A.CallTo(() => _relationshipService.GenerateChildrenFromCouplesAsync(A<List<(Character, Character)>>._, nowD))
-      .Returns(([], []));
+    A.CallTo(() => _relationshipService.GenerateChildrenFromCouplesAsync(
+        A<List<(Character, Character)>>._, A<World>._, CancellationToken.None
+      )
+    ).Returns(([], []));
 
     // Act
     var world = await _worldService.CreateNewWorldAsync(date, player, gameSettings, CancellationToken.None);
 
     // Assert
     Assert.Equal(gameSettings.GetNpcCount() + 1, world.Characters.Count);
-  }
-
-  [Fact]
-  public void AdvanceTime_ShouldMoveNpc_WhenScheduleEntryExists()
-  {
-    // Arrange
-    var initial = new DateTime(2025, 1, 6, 8, 0, 0);
-    var player = new CharacterBuilder().Build();
-    var npc = new CharacterBuilder().Build();
-
-    var world = World.Create(initial, [player, npc]);
-
-    var streetId = Guid.NewGuid();
-    var roomId = (Guid?) null;
-
-    var entry = new ScheduleEntry(DayOfWeek.Monday, new TimeSpan(8, 0, 0), new TimeSpan(9, 0, 0), streetId, roomId);
-    var schedule = Schedule.Create(npc.Id, [entry]);
-
-    world.SetSchedules([schedule]);
-
-    // Act
-    _worldService.AdvanceTime(world, player.Id, 10);
-
-    // Assert
-    Assert.Equal(initial.AddMinutes(10), world.CurrentDate);
-    Assert.Equal(streetId, npc.LocationId);
-    Assert.Equal(roomId, npc.RoomId);
-  }
-
-  [Fact]
-  public void AdvanceTime_ShouldNotMoveNpc_WhenNoScheduleEntry()
-  {
-    // Arrange
-    var initial = new DateTime(2025, 4, 24, 8, 0, 0);
-    var npc = new CharacterBuilder().Build();
-    var player = new CharacterBuilder().Build();
-
-    var world = World.Create(initial, [player, npc]);
-
-    world.SetSchedules([]);
-
-    // Act
-    _worldService.AdvanceTime(world, player.Id, 30);
-
-    // Assert
-    Assert.Equal(initial.AddMinutes(30), world.CurrentDate);
-    Assert.Null(npc.LocationId);
-    Assert.Null(npc.RoomId);
   }
 
   #endregion

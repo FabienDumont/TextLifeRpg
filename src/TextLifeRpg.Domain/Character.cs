@@ -69,6 +69,21 @@ public class Character
   /// </summary>
   public int Money { get; set; }
 
+  /// <summary>
+  /// Represents the character's attributes such as intelligence, strength, and charisma.
+  /// </summary>
+  public CharacterAttributes Attributes { get; private set; }
+
+  /// <summary>
+  /// Represents the character's job.
+  /// </summary>
+  public Guid? JobId { get; set; }
+
+  /// <summary>
+  /// The character's inventory entries.
+  /// </summary>
+  public List<InventoryEntry> InventoryEntries { get; } = [];
+
   #endregion
 
   #region Ctors
@@ -77,7 +92,8 @@ public class Character
   /// Private constructor used internally.
   /// </summary>
   private Character(
-    Guid id, string name, DateOnly birthDate, BiologicalSex biologicalSex, int height, int weight, int muscleMass
+    Guid id, string name, DateOnly birthDate, BiologicalSex biologicalSex, int height, int weight, int muscleMass,
+    CharacterAttributes attributes
   )
   {
     Id = id;
@@ -87,6 +103,7 @@ public class Character
     Height = height;
     Weight = weight;
     MuscleMass = muscleMass;
+    Attributes = attributes;
   }
 
   #endregion
@@ -97,20 +114,22 @@ public class Character
   /// Factory method to create a new instance.
   /// </summary>
   public static Character Create(
-    string name, DateOnly birthDate, BiologicalSex biologicalSex, int height, int weight, int muscleMass
+    string name, DateOnly birthDate, BiologicalSex biologicalSex, int height, int weight, int muscleMass,
+    CharacterAttributes attributes
   )
   {
-    return new Character(Guid.NewGuid(), name, birthDate, biologicalSex, height, weight, muscleMass);
+    return new Character(Guid.NewGuid(), name, birthDate, biologicalSex, height, weight, muscleMass, attributes);
   }
 
   /// <summary>
   /// Factory method to load an existing instance from persistence.
   /// </summary>
   public static Character Load(
-    Guid id, string name, DateOnly birthDate, BiologicalSex biologicalSex, int height, int weight, int muscleMass
+    Guid id, string name, DateOnly birthDate, BiologicalSex biologicalSex, int height, int weight, int muscleMass,
+    CharacterAttributes attributes
   )
   {
-    return new Character(id, name, birthDate, biologicalSex, height, weight, muscleMass);
+    return new Character(id, name, birthDate, biologicalSex, height, weight, muscleMass, attributes);
   }
 
   /// <summary>
@@ -130,6 +149,11 @@ public class Character
     RoomId = roomId;
   }
 
+  /// <summary>
+  /// Calculates the age of the character based on the specified game date and the character's birth date.
+  /// </summary>
+  /// <param name="gameDate">The date in the game on which the age is to be calculated.</param>
+  /// <returns>The age of the character on the specified game date.</returns>
   public int GetAge(DateOnly gameDate)
   {
     var age = gameDate.Year - BirthDate.Year;
@@ -139,6 +163,62 @@ public class Character
     }
 
     return age;
+  }
+
+  /// <summary>
+  /// Assigns a job to the character by setting the job ID.
+  /// </summary>
+  /// <param name="jobId">The unique identifier of the job to assign to the character.</param>
+  public void SetJob(Guid jobId)
+  {
+    JobId = jobId;
+  }
+
+  /// <summary>
+  /// Adds inventory entries to the character's inventory.
+  /// </summary>
+  public void AddInventoryEntries(IEnumerable<InventoryEntry> inventoryEntries)
+  {
+    InventoryEntries.AddRange(inventoryEntries);
+  }
+
+  /// <summary>
+  /// Adds an item to the character's inventory or updates the quantity if the item already exists in the inventory.
+  /// </summary>
+  /// <param name="itemId">The unique identifier of the item to be added to the inventory.</param>
+  /// <param name="quantity">The quantity of the item to be added.</param>
+  public void AddItemToInventory(Guid itemId, int quantity)
+  {
+    var entry = InventoryEntries.FirstOrDefault(i => i.ItemId == itemId);
+    if (entry != null)
+    {
+      entry.Add(quantity);
+    }
+    else
+    {
+      InventoryEntries.Add(InventoryEntry.Create(itemId, quantity));
+    }
+  }
+
+  /// <summary>
+  /// Removes a specified quantity of an item from the character's inventory.
+  /// If the item's quantity reaches zero, the item is removed from the inventory.
+  /// </summary>
+  /// <param name="itemId">The unique identifier of the item to be removed.</param>
+  /// <param name="quantity">The amount of the item to be removed from the inventory.</param>
+  public void RemoveItemFromInventory(Guid itemId, int quantity)
+  {
+    var entry = InventoryEntries.FirstOrDefault(i => i.ItemId == itemId);
+    if (entry == null)
+    {
+      return;
+    }
+
+    entry.Remove(quantity);
+    if (entry.Quantity == 0)
+    {
+      InventoryEntries.Remove(entry);
+    }
   }
 
   #endregion
@@ -172,4 +252,12 @@ public enum MuscleMassOption
 
   [Display(Name = "Very high")]
   VeryHigh
+}
+
+public enum CharacterColor
+{
+  Yellow,
+  Blue,
+  Pink,
+  Purple
 }

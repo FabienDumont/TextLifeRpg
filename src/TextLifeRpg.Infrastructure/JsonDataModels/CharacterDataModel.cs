@@ -69,5 +69,20 @@ public class CharacterDataModel
   /// </summary>
   public int Money { get; init; }
 
+  /// <summary>
+  /// Represents the attributes of a character, encapsulating various properties that define the character's capabilities.
+  /// </summary>
+  public CharacterAttributesDataModel Attributes { get; init; } = new();
+
+  /// <summary>
+  /// Identifier of the character's job.
+  /// </summary>
+  public Guid? JobId { get; set; }
+
+  /// <summary>
+  /// Represents the character's inventory entries.
+  /// </summary>
+  public List<InventoryEntryDataModel> InventoryEntries { get; init; } = [];
+
   #endregion
 }

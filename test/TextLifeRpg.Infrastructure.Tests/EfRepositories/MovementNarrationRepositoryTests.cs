@@ -1,5 +1,4 @@
 ﻿using MockQueryable.FakeItEasy;
-using TextLifeRpg.Infrastructure;
 using TextLifeRpg.Infrastructure.EfDataModels;
 using TextLifeRpg.Infrastructure.EfRepositories;
 
@@ -33,7 +32,7 @@ public class MovementNarrationRepositoryTests
 
     var context = A.Fake<ApplicationContext>();
 
-    var narrationDbSet = narrationDataModels.AsQueryable().BuildMockDbSet();
+    var narrationDbSet = narrationDataModels.BuildMockDbSet();
 
     A.CallTo(() => context.MovementNarrations).Returns(narrationDbSet);
     A.CallTo(() => context.SaveChangesAsync(A<CancellationToken>._)).Returns(Task.FromResult(1));
@@ -51,12 +50,11 @@ public class MovementNarrationRepositoryTests
   public async Task GetMovementNarrationFromMovementIdAsync_ShouldReturnNarration_WhenExists()
   {
     // Act
-    var result = await _repository.GetMovementNarrationFromMovementIdAsync(_movementId, CancellationToken.None);
+    var narration = await _repository.GetMovementNarrationFromMovementIdAsync(_movementId, CancellationToken.None);
 
     // Assert
-    Assert.NotNull(result);
-    Assert.Equal(_movementId, result.MovementId);
-    Assert.Equal(_expectedNarration, result.Text);
+    Assert.NotNull(narration);
+    Assert.Equal(_expectedNarration, narration);
   }
 
   [Fact]

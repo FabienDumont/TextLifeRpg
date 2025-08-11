@@ -80,14 +80,16 @@ public class RelationshipServiceTests
 
     var child = new CharacterBuilder().WithBirthDate(new DateOnly(2010, 1, 1)).Build();
 
-    var currentDate = new DateOnly(2025, 6, 1);
+    var world = World.Create(new DateTime(2025, 1, 1), []);
 
     A.CallTo(() => _randomProvider.Next(0, 3)).Returns(1); // one child
-    A.CallTo(() => _characterService.CreateChildAsync(A<Character>._, A<Character>._, currentDate)).Returns(child);
+    A.CallTo(() => _characterService.CreateChildAsync(A<Character>._, A<Character>._, world, CancellationToken.None))
+      .Returns(child);
 
     // Act
-    var (children, relationships) =
-      await _relationshipService.GenerateChildrenFromCouplesAsync([(parentA, parentB)], currentDate);
+    var (children, relationships) = await _relationshipService.GenerateChildrenFromCouplesAsync(
+      [(parentA, parentB)], world, CancellationToken.None
+    );
 
     // Assert
     Assert.Single(children);
@@ -105,20 +107,22 @@ public class RelationshipServiceTests
   public async Task GenerateChildrenFromCouplesAsync_ShouldCreateSiblingRelationships_WhenMultipleChildren()
   {
     // Arrange
-    var now = new DateOnly(2025, 6, 1);
     var mother = new CharacterBuilder().WithBirthDate(new DateOnly(1980, 1, 1)).WithSex(BiologicalSex.Female).Build();
     var father = new CharacterBuilder().WithBirthDate(new DateOnly(1982, 1, 1)).WithSex(BiologicalSex.Male).Build();
     var couples = new List<(Character, Character)> {(mother, father)};
+
+    var world = World.Create(new DateTime(2025, 1, 1), [father, mother]);
 
     var child1 = new CharacterBuilder().WithBirthDate(new DateOnly(2015, 1, 1)).Build();
     var child2 = new CharacterBuilder().WithBirthDate(new DateOnly(2017, 1, 1)).Build();
 
     A.CallTo(() => _randomProvider.Next(0, 3)).Returns(2);
-    A.CallTo(() => _characterService.CreateChildAsync(mother, father, now)).ReturnsNextFromSequence(child1, child2);
+    A.CallTo(() => _characterService.CreateChildAsync(mother, father, world, CancellationToken.None))
+      .ReturnsNextFromSequence(child1, child2);
 
     // Act
     var (children, relationships) =
-      await _relationshipService.GenerateChildrenFromCouplesAsync(couples, now);
+      await _relationshipService.GenerateChildrenFromCouplesAsync(couples, world, CancellationToken.None);
 
     // Assert
     Assert.Equal(2, children.Count);

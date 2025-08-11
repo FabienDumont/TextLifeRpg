@@ -1,11 +1,19 @@
 ﻿@page "/game"
+@using TextLifeRpg.Application.Abstraction
 @inject GameSaveStore GameSaveStore
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
+@inject IDialogueService DialogueService
 
 @rendermode InteractiveServer
 
-@if (GameSaveStore.CurrentSave is null)
+@if (_isLoading)
+{
+  <div class="trpg-layout-page">
+    <p class="animate-pulse text-gray-500">Loading game...</p>
+  </div>
+}
+else if (GameSaveStore.CurrentSave is null)
 {
   <div class="trpg-layout-page">
     <p>No game loaded. Go to main menu.</p>
@@ -14,64 +22,87 @@
 }
 else
 {
-  <div class="grid min-h-screen grid-cols-12">
+  <div class="relative">
+    <div class="grid min-h-screen grid-cols-12">
 
-    @if (_showSaveToast)
-    {
-      <ToastNotification Message="Game saved!"/>
-    }
+      @if (_showSaveToast)
+      {
+        <ToastNotification Message="Game saved!"/>
+      }
 
-    <div class="col-span-2 bg-slate-200">
-      <LeftGameSidebar OnSaveLoaded="OnSaveLoaded" OnPlayerCharacterClicked="OpenCharacterDetails"
-                       OnSaveCompleted="ShowSaveToastAsync"/>
-    </div>
+      <div class="col-span-2 bg-slate-200">
+        <LeftGameSidebar OnSaveLoaded="OnSaveLoaded" OnPlayerCharacterClicked="OpenCharacterDetails"
+                         OnSaveCompleted="ShowSaveToastAsync"/>
+      </div>
 
-    <div class="col-span-8">
-      <div class="flex h-screen flex-col">
-        <div class="flex flex-grow flex-col gap-4 overflow-auto p-6" @ref="_textZoneRef">
-          @foreach (var textLine in GameSaveStore.CurrentSave.TextLines)
+      <div class="col-span-8">
+        <div class="flex h-screen flex-col">
+          <div class="flex flex-grow flex-col gap-4 overflow-auto p-6" @ref="_textZoneRef">
+            @foreach (var textLine in GameSaveStore.CurrentSave.TextLines)
+            {
+              <p>
+                @foreach (var part in textLine.TextParts)
+                {
+                  <span class="@(part.Color.HasValue ? part.Color.Value.ToTailwindClass() : "")">
+                    @part.Text
+                  </span>
+                }
+              </p>
+            }
+          </div>
+
+          @if (!_isUiLocked)
           {
-            <p>
-              @foreach (var part in textLine.TextParts)
-              {
-                <span style="color: @(part.Color ?? "inherit")">
-                  @part.Text
-                </span>
-              }
-            </p>
+            @if (GameSaveStore.CurrentSave.NpcInteractionType == NpcInteractionType.Dialogue)
+            {
+              <div class="bg-slate-100">
+                <DialogueOptionsPanel OnDialogueOptionClicked="ExecuteDialogueOption"/>
+              </div>
+            }
+            else
+            {
+              <div class="bg-slate-100">
+                <ExplorationActionsPanel/>
+              </div>
+              <div class="bg-slate-100">
+                <MovementPanel/>
+              </div>
+            }
           }
         </div>
 
-        <div class="bg-slate-100">
-          <ExplorationActionsPanel/>
-        </div>
-        <div class="bg-slate-100">
-          <MovementPanel/>
-        </div>
+      </div>
+
+      <div class="col-span-2 bg-slate-200">
+        <RightGameSidebar OnNpcClicked="OpenCharacterDetails" OnNpcRightClicked="StartDialogueAsync"/>
       </div>
 
     </div>
 
-    <div class="col-span-2 bg-slate-200">
-      <RightGameSidebar OnNpcClicked="OpenCharacterDetails"/>
-    </div>
-
+    @if (_isUiLocked)
+    {
+      <div class="absolute inset-0 z-50 pointer-events-auto cursor-wait"></div>
+    }
   </div>
 }
 
 @code {
+  private bool _isLoading = true;
+  private bool _isUiLocked;
   private ElementReference _textZoneRef;
-
   private bool _showSaveToast;
 
   /// <summary>
   /// Registers for game state changes and initializes location display.
   /// </summary>
-  protected override Task OnInitializedAsync()
+  protected override async Task OnInitializedAsync()
   {
     GameSaveStore.OnAsyncChange += HandleGameSaveChanged;
 
-    return Task.CompletedTask;
+    await Task.Delay(10);
+
+    _isLoading = false;
+    StateHasChanged();
   }
 
   private Task HandleGameSaveChanged()
@@ -96,6 +127,51 @@ else
   {
     Navigation.NavigateTo($"/characterdetails/{character.Id}");
     StateHasChanged();
+  }
+
+  private async Task StartDialogueAsync(Character character)
+  {
+    var gameSave = GameSaveStore.CurrentSave!;
+    gameSave.StartDialogue(character.Id);
+    try
+    {
+      await DialogueService.ExecuteGreetingAsync(gameSave, CancellationToken.None);
+      await GameSaveStore.NotifyStateChangedAsync();
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"Failed to start dialogue: {ex.Message}");
+    }
+  }
+
+  /// <summary>
+  /// Executes the selected dialogue option.
+  /// </summary>
+  private async Task ExecuteDialogueOption(DialogueOption dialogueOption)
+  {
+    _isUiLocked = true;
+    StateHasChanged();
+
+    try
+    {
+      var save = GameSaveStore.CurrentSave!;
+      var steps = await DialogueService.BuildDialogueOptionStepsAsync(dialogueOption, save, CancellationToken.None);
+
+      foreach (var step in steps)
+      {
+        await step.ExecuteAsync(save);
+        await GameSaveStore.NotifyStateChangedAsync();
+        if (step.Delay)
+        {
+          await Task.Delay(500);
+        }
+      }
+    }
+    finally
+    {
+      _isUiLocked = false;
+      StateHasChanged();
+    }
   }
 
   /// <summary>

@@ -13,7 +13,7 @@ public interface ICharacterService
   /// Creates a new character with randomized attributes.
   /// </summary>
   /// <returns>A randomly generated character.</returns>
-  Task<Character> CreateRandomCharacterAsync(DateOnly date);
+  Task<Character> CreateRandomCharacterAsync(World world, CancellationToken cancellationToken);
 
   /// <summary>
   /// Gets the attraction value of a character towards another.
@@ -23,7 +23,9 @@ public interface ICharacterService
   /// <summary>
   /// Creates a child from two characters.
   /// </summary>
-  Task<Character> CreateChildAsync(Character mother, Character father, DateOnly currentDate);
+  Task<Character> CreateChildAsync(
+    Character mother, Character father, World world, CancellationToken cancellationToken
+  );
 
   #endregion
 }

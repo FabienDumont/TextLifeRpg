@@ -1,5 +1,4 @@
 ﻿using MockQueryable.FakeItEasy;
-using TextLifeRpg.Infrastructure;
 using TextLifeRpg.Infrastructure.EfDataModels;
 using TextLifeRpg.Infrastructure.EfRepositories;
 
@@ -28,7 +27,7 @@ public class RoomRepositoryTests
       new RoomDataModel {Id = Guid.NewGuid(), LocationId = _locationId, Name = "Living room", IsPlayerSpawn = true}
     ];
 
-    var roomDbSet = _roomDataModels.AsQueryable().BuildMockDbSet();
+    var roomDbSet = _roomDataModels.BuildMockDbSet();
 
     A.CallTo(() => _context.Rooms).Returns(roomDbSet);
     A.CallTo(() => _context.SaveChangesAsync(A<CancellationToken>._)).Returns(Task.FromResult(1));

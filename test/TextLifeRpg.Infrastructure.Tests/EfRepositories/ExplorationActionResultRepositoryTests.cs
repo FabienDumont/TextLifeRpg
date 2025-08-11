@@ -1,7 +1,6 @@
 ﻿using MockQueryable.FakeItEasy;
 using TextLifeRpg.Domain;
 using TextLifeRpg.Domain.Tests.Helpers;
-using TextLifeRpg.Infrastructure;
 using TextLifeRpg.Infrastructure.EfDataModels;
 using TextLifeRpg.Infrastructure.EfRepositories;
 
@@ -73,8 +72,8 @@ public class ExplorationActionResultRepositoryTests
       }
     };
 
-    var resultDbSet = results.AsQueryable().BuildMockDbSet();
-    var conditionDbSet = conditions.AsQueryable().BuildMockDbSet();
+    var resultDbSet = results.BuildMockDbSet();
+    var conditionDbSet = conditions.BuildMockDbSet();
 
     var context = A.Fake<ApplicationContext>();
     A.CallTo(() => context.ExplorationActionResults).Returns(resultDbSet);
@@ -134,8 +133,8 @@ public class ExplorationActionResultRepositoryTests
       }
     };
 
-    var resultDbSet = results.AsQueryable().BuildMockDbSet();
-    var conditionDbSet = conditions.AsQueryable().BuildMockDbSet();
+    var resultDbSet = results.BuildMockDbSet();
+    var conditionDbSet = conditions.BuildMockDbSet();
 
     var context = A.Fake<ApplicationContext>();
     A.CallTo(() => context.ExplorationActionResults).Returns(resultDbSet);

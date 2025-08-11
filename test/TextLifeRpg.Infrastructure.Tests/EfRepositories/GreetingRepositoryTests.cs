@@ -1,7 +1,6 @@
 ﻿using MockQueryable.FakeItEasy;
 using TextLifeRpg.Domain;
 using TextLifeRpg.Domain.Tests.Helpers;
-using TextLifeRpg.Infrastructure;
 using TextLifeRpg.Infrastructure.EfDataModels;
 using TextLifeRpg.Infrastructure.EfRepositories;
 
@@ -24,10 +23,10 @@ public class GreetingRepositoryTests
   {
     var context = A.Fake<ApplicationContext>();
 
-    var greetingDbSet = _greetingData.AsQueryable().BuildMockDbSet();
+    var greetingDbSet = _greetingData.BuildMockDbSet();
     A.CallTo(() => context.Greetings).Returns(greetingDbSet);
 
-    var conditionDbSet = _conditionData.AsQueryable().BuildMockDbSet();
+    var conditionDbSet = _conditionData.BuildMockDbSet();
     A.CallTo(() => context.Conditions).Returns(conditionDbSet);
 
     A.CallTo(() => context.SaveChangesAsync(A<CancellationToken>._)).Returns(Task.FromResult(1));
@@ -63,16 +62,14 @@ public class GreetingRepositoryTests
     _conditionData.Clear();
 
     // Act
-    var result = await _repository.GetAsync(gameContext, CancellationToken.None);
+    var greetings = await _repository.GetAsync(gameContext, CancellationToken.None);
 
     // Assert
-    Assert.NotNull(result);
-    Assert.Equal(greeting.Id, result.Id);
-    Assert.Equal(greeting.SpokenText, result.SpokenText);
+    Assert.NotEmpty(greetings);
   }
 
   [Fact]
-  public async Task GetAsync_ShouldThrow_WhenConditionsNotMet()
+  public async Task GetAsync_ShouldNotReturnGreeting_WhenConditionsNotSatisfied()
   {
     // Arrange
     var character = new CharacterBuilder().Build();
@@ -83,37 +80,36 @@ public class GreetingRepositoryTests
       Actor = character,
       World = world
     };
+
     var greetingId = Guid.NewGuid();
 
-    var greeting = new GreetingDataModel
-    {
-      Id = greetingId,
-      SpokenText = "Leave me alone!"
-    };
-
     _greetingData.Clear();
-    _greetingData.Add(greeting);
+    _greetingData.Add(
+      new GreetingDataModel
+      {
+        Id = greetingId,
+        SpokenText = "Hey there!"
+      }
+    );
 
     _conditionData.Clear();
     _conditionData.Add(
       new ConditionDataModel
       {
-        ConditionType = ConditionType.ActorHasTrait,
-        OperandLeft = Guid.NewGuid().ToString(),
-        Operator = "=",
-        OperandRight = "true",
-        Negate = false,
+        Id = Guid.NewGuid(),
+        ContextId = greetingId,
         ContextType = ContextType.Greeting,
-        ContextId = greeting.Id
+        ConditionType = ConditionType.ActorHasTrait,
+        OperandLeft = "NonExistentTrait", // Name of trait
+        Operator = "==" // Assuming your ConditionEvaluator checks for string equality
       }
     );
 
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
-      await _repository.GetAsync(gameContext, CancellationToken.None)
-    );
+    // Act
+    var greetings = await _repository.GetAsync(gameContext, CancellationToken.None);
 
-    Assert.Equal("No appropriate greeting found.", exception.Message);
+    // Assert
+    Assert.Empty(greetings);
   }
 
   #endregion

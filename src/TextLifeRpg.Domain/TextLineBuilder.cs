@@ -19,28 +19,33 @@ public static partial class TextLineBuilder
   #region Methods
 
   /// <summary>
-  /// Builds a <see cref="TextLine" /> from a template string by replacing tokens with character-specific data.
+  /// Builds a narration line for storytelling purposes, associates it with the acting character and optional target,
+  /// and updates the game save with the resulting narration text.
   /// </summary>
-  /// <param name="template">The text containing tokens like [CHARACTERNAME].</param>
-  /// <param name="character">The character to use for token replacement.</param>
-  /// <param name="playerCharacterId">The identifier of the player character.</param>
-  /// <returns>A constructed <see cref="TextLine" /> with formatted parts.</returns>
-  public static TextLine BuildNarrationLine(string template, Character character, Guid playerCharacterId)
+  /// <param name="narration">The narration text to process and build into structured text parts.</param>
+  /// <param name="actor">The main character associated with the narration.</param>
+  /// <param name="target">The optional target character referenced in the narration.</param>
+  /// <param name="gameSave">The game save instance where the built narration will be stored.</param>
+  public static void BuildNarrationLine(string narration, Character actor, Character? target, GameSave gameSave)
   {
     var parts = new List<TextPart>();
     var lastIndex = 0;
 
-    foreach (Match match in TokenRegex.Matches(template))
+    foreach (Match match in TokenRegex.Matches(narration))
     {
       if (match.Index > lastIndex)
       {
-        parts.Add(new TextPart(null, template.Substring(lastIndex, match.Index - lastIndex)));
+        parts.Add(new TextPart(null, narration.Substring(lastIndex, match.Index - lastIndex)));
       }
 
       parts.Add(
         match.Value switch
         {
-          "[CHARACTERNAME]" => new TextPart(CharacterColorHelper.GetCharacterColor(character, playerCharacterId), character.Name),
+          "[TARGETNAME]" => new TextPart(
+            CharacterColorHelper.GetColorKey(
+              target ?? throw new ArgumentNullException(nameof(target)), gameSave.PlayerCharacterId
+            ), target.Name
+          ),
           _ => new TextPart(null, match.Value)
         }
       );
@@ -48,12 +53,31 @@ public static partial class TextLineBuilder
       lastIndex = match.Index + match.Length;
     }
 
-    if (lastIndex < template.Length)
+    if (lastIndex < narration.Length)
     {
-      parts.Add(new TextPart(null, template[lastIndex..]));
+      parts.Add(new TextPart(null, narration[lastIndex..]));
     }
 
-    return new TextLine(parts);
+    gameSave.AddText(parts);
+  }
+
+  /// <summary>
+  /// Builds a spoken text line for dialogue purposes, associates it with the acting character, and updates the game save with the resulting text.
+  /// </summary>
+  /// <param name="spokenText">The text that is being spoken by the actor.</param>
+  /// <param name="actor">The character who performs the spoken text.</param>
+  /// <param name="target">The character to whom the spoken text is directed.</param>
+  /// <param name="gameSave">The current game save where the spoken text will be stored.</param>
+  public static void BuildSpokenText(string spokenText, Character actor, Character target, GameSave gameSave)
+  {
+    var textPartsResultSpokenText = new List<TextPart>(
+      [
+        new TextPart(CharacterColorHelper.GetColorKey(actor, gameSave.PlayerCharacterId), $"{actor.Name}"),
+        new TextPart(null, $" : {spokenText}")
+      ]
+    );
+
+    gameSave.AddText(textPartsResultSpokenText);
   }
 
   /// <summary>

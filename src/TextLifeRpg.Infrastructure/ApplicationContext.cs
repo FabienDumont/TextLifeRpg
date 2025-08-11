@@ -24,6 +24,31 @@ public class ApplicationContext : DbContext
   public virtual DbSet<GreetingDataModel> Greetings { get; init; }
 
   /// <summary>
+  /// Represents all dialogue options used in NPC interactions.
+  /// </summary>
+  public virtual DbSet<DialogueOptionDataModel> DialogueOptions { get; init; }
+
+  /// <summary>
+  /// Represents all dialogue option spoken texts.
+  /// </summary>
+  public virtual DbSet<DialogueOptionSpokenTextDataModel> DialogueOptionSpokenTexts { get; init; }
+
+  /// <summary>
+  /// Represents all dialogue option results.
+  /// </summary>
+  public virtual DbSet<DialogueOptionResultDataModel> DialogueOptionResults { get; init; }
+
+  /// <summary>
+  /// Represents dialogue option results' narrations.
+  /// </summary>
+  public virtual DbSet<DialogueOptionResultNarrationDataModel> DialogueOptionResultNarrations { get; init; }
+
+  /// <summary>
+  /// Represents dialogue option results' spoken texts.
+  /// </summary>
+  public virtual DbSet<DialogueOptionResultSpokenTextDataModel> DialogueOptionResultSpokenTexts { get; init; }
+
+  /// <summary>
   /// Represents all conditions used in NPC interactions.
   /// </summary>
   public virtual DbSet<ConditionDataModel> Conditions { get; init; }
@@ -73,6 +98,16 @@ public class ApplicationContext : DbContext
   /// </summary>
   public virtual DbSet<ExplorationActionResultNarrationDataModel> ExplorationActionResultNarrations { get; init; }
 
+  /// <summary>
+  /// Represents all jobs in the database.
+  /// </summary>
+  public virtual DbSet<JobDataModel> Jobs { get; init; }
+
+  /// <summary>
+  /// Represents all items in the database.
+  /// </summary>
+  public virtual DbSet<ItemDataModel> Items { get; init; }
+
   #endregion
 
   #region Ctors
@@ -109,9 +144,12 @@ public class ApplicationContext : DbContext
     {
       new TraitSeeder(),
       new GreetingSeeder(),
+      new DialogueOptionSeeder(),
       new LocationSeeder(),
       new ExplorationActionSeeder(),
-      new NarrationSeeder()
+      new NarrationSeeder(),
+      new JobSeeder(),
+      new ItemSeeder()
     };
 
     foreach (var seeder in seeders)
@@ -141,6 +179,18 @@ public class ApplicationContext : DbContext
 
     modelBuilder.Entity<TraitIncompatibilityDataModel>().HasOne(t => t.Trait2).WithMany().HasForeignKey(t => t.Trait2Id)
       .OnDelete(DeleteBehavior.Cascade);
+
+    modelBuilder.Entity<DialogueOptionSpokenTextDataModel>().HasOne(n => n.DialogueOption).WithMany()
+      .HasForeignKey(n => n.DialogueOptionId).OnDelete(DeleteBehavior.Cascade);
+
+    modelBuilder.Entity<DialogueOptionResultDataModel>().HasOne(r => r.DialogueOption).WithMany()
+      .HasForeignKey(r => r.DialogueOptionId).OnDelete(DeleteBehavior.Cascade);
+
+    modelBuilder.Entity<DialogueOptionResultNarrationDataModel>().HasOne(n => n.DialogueOptionResult).WithMany()
+      .HasForeignKey(n => n.DialogueOptionResultId).OnDelete(DeleteBehavior.Cascade);
+
+    modelBuilder.Entity<DialogueOptionResultSpokenTextDataModel>().HasOne(n => n.DialogueOptionResult).WithMany()
+      .HasForeignKey(n => n.DialogueOptionResultId).OnDelete(DeleteBehavior.Cascade);
 
     modelBuilder.Entity<ExplorationActionDataModel>().HasOne(e => e.Location).WithMany()
       .HasForeignKey(e => e.LocationId).OnDelete(DeleteBehavior.Cascade);

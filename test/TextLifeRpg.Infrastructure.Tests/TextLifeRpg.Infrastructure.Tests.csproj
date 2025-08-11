@@ -9,9 +9,20 @@
     <ProjectReference Include="..\TextLifeRpg.Domain.Tests\TextLifeRpg.Domain.Tests.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3"/>
-    <PackageReference Include="MockQueryable.FakeItEasy" Version="7.0.3"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.*"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />
+    <PackageReference Include="MockQueryable.FakeItEasy" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.7" />
 
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\src\TextLifeRpg.Infrastructure\Data\DialogueOptions\**\*.json">
+      <Link>Data\DialogueOptions\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\src\TextLifeRpg.Infrastructure\Data\ExplorationActions.json">
+      <Link>Data\ExplorationActions.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

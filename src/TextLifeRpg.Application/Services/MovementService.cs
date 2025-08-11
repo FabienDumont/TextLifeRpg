@@ -7,8 +7,10 @@ namespace TextLifeRpg.Application.Services;
 /// <summary>
 /// Service for movements.
 /// </summary>
-public class MovementService(IMovementRepository movementRepository, ILocationService locationService)
-  : IMovementService
+public class MovementService(
+  IMovementRepository movementRepository, IMovementNarrationRepository movementNarrationRepository,
+  ILocationService locationService
+) : IMovementService
 {
   #region Implementation of IMovementService
 
@@ -32,6 +34,24 @@ public class MovementService(IMovementRepository movementRepository, ILocationSe
     }
 
     return availableMovements;
+  }
+
+  /// <inheritdoc />
+  public async Task ExecuteAsync(Movement movement, GameSave save, CancellationToken cancellationToken)
+  {
+    save.ResetText();
+
+    var player = save.PlayerCharacter;
+    var world = save.World;
+
+    player.MoveTo(movement.ToLocationId, movement.ToRoomId);
+
+    world.AdvanceTime(1, player.Id);
+
+    var narration =
+      await movementNarrationRepository.GetMovementNarrationFromMovementIdAsync(movement.Id, cancellationToken);
+
+    TextLineBuilder.BuildNarrationLine(narration, player, null, save);
   }
 
   #endregion

@@ -31,12 +31,11 @@ public class NarrationServiceTests
     // Arrange
     const string key = "intro_scene";
     const string expectedText = "You enter the ancient ruins.";
-    var narration = Narration.Load(Guid.NewGuid(), key, expectedText);
     var character = new CharacterBuilder().Build();
     var world = World.Create(DateTime.Now, [character]);
 
     A.CallTo(() => _repository.GetNarrationByKeyAsync(key, A<GameContext>._, A<CancellationToken>._))
-      .Returns(Task.FromResult(narration));
+      .Returns(Task.FromResult(expectedText));
 
     // Act
     var result = await _service.GetNarrationTextByKeyAsync(key, character, world, CancellationToken.None);

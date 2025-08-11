@@ -1,5 +1,4 @@
 ﻿using TextLifeRpg.Domain.Tests.Helpers;
-using TextLifeRpg.Domain;
 
 namespace TextLifeRpg.Domain.Tests;
 
@@ -68,10 +67,56 @@ public class WorldTests
     const int minutes = 120;
 
     // Act
-    world.AdvanceTime(minutes);
+    world.AdvanceTime(minutes, Guid.NewGuid());
 
     // Assert
     Assert.Equal(initialDate.AddMinutes(minutes), world.CurrentDate);
+  }
+
+  [Fact]
+  public void RefreshCharactersLocation_ShouldUpdateLocationBasedOnSchedule()
+  {
+    // Arrange
+    var npc = new CharacterBuilder().Build();
+    var player = new CharacterBuilder().Build();
+
+    var currentDate = new DateTime(2025, 4, 24, 8, 30, 0); // Thursday 08:30
+    var world = World.Create(currentDate, [player, npc]);
+
+    var locationId = Guid.NewGuid();
+    var roomId = Guid.NewGuid();
+
+    var entry = new ScheduleEntry(DayOfWeek.Thursday, new TimeSpan(8, 0, 0), new TimeSpan(9, 0, 0), locationId, roomId);
+
+    var schedule = Schedule.Create(npc.Id, [entry]);
+    world.SetSchedules([schedule]);
+
+    // Act
+    world.RefreshCharactersLocation(player.Id);
+
+    // Assert
+    Assert.Equal(locationId, npc.LocationId);
+    Assert.Equal(roomId, npc.RoomId);
+  }
+
+  [Fact]
+  public void RefreshCharactersLocation_ShouldClearLocation_WhenNoScheduleExists()
+  {
+    // Arrange
+    var npc = new CharacterBuilder().Build();
+    var player = new CharacterBuilder().Build();
+
+    var currentDate = new DateTime(2025, 4, 24, 8, 30, 0);
+    var world = World.Create(currentDate, [player, npc]);
+
+    // No schedules set
+
+    // Act
+    world.RefreshCharactersLocation(player.Id);
+
+    // Assert
+    Assert.Null(npc.LocationId);
+    Assert.Null(npc.RoomId);
   }
 
   #endregion

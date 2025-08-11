@@ -1,5 +1,4 @@
 ﻿using TextLifeRpg.Domain.Tests.Helpers;
-using TextLifeRpg.Domain;
 
 namespace TextLifeRpg.Domain.Tests;
 
@@ -70,17 +69,17 @@ public class GameSaveTests
 
     save.AddText(
       [
-        new TextPart("blue", "Daniel: "),
-        new TextPart("white", "Hello!")
+        new TextPart(CharacterColor.Blue, "Daniel: "),
+        new TextPart(null, "Hello!")
       ]
     );
 
     Assert.Single(save.TextLines);
     var line = save.TextLines.First();
     Assert.Equal(2, line.TextParts.Count);
-    Assert.Equal("blue", line.TextParts[0].Color);
+    Assert.Equal(CharacterColor.Blue, line.TextParts[0].Color);
     Assert.Equal("Daniel: ", line.TextParts[0].Text);
-    Assert.Equal("white", line.TextParts[1].Color);
+    Assert.Null(line.TextParts[1].Color);
     Assert.Equal("Hello!", line.TextParts[1].Text);
   }
 
@@ -94,14 +93,51 @@ public class GameSaveTests
 
     save.AddText(
       [
-        new TextPart("blue", "Daniel: "),
-        new TextPart("white", "Hello!")
+        new TextPart(CharacterColor.Blue, "Daniel: "),
+        new TextPart(null, "Hello!")
       ]
     );
 
     save.ResetText();
 
     Assert.Empty(save.TextLines);
+  }
+
+  [Fact]
+  public void StartDialogue_ShouldSetInteractingNpcIdAndType()
+  {
+    // Arrange
+    var player = new CharacterBuilder().Build();
+    var npc = new CharacterBuilder().Build();
+    var world = World.Create(DateTime.Now, [player, npc]);
+    var save = GameSave.Create(player, world);
+
+    // Act
+    save.StartDialogue(npc.Id);
+
+    // Assert
+    Assert.Equal(npc.Id, save.InteractingNpcId);
+    Assert.Equal(npc, save.InteractingNpc);
+    Assert.Equal(NpcInteractionType.Dialogue, save.NpcInteractionType);
+  }
+
+  [Fact]
+  public void EndInteraction_ShouldClearInteractingNpcAndType()
+  {
+    // Arrange
+    var player = new CharacterBuilder().Build();
+    var npc = new CharacterBuilder().Build();
+    var world = World.Create(DateTime.Now, [player, npc]);
+    var save = GameSave.Create(player, world);
+    save.StartDialogue(npc.Id); // simulate active interaction
+
+    // Act
+    save.EndInteraction();
+
+    // Assert
+    Assert.Null(save.InteractingNpcId);
+    Assert.Null(save.InteractingNpc);
+    Assert.Null(save.NpcInteractionType);
   }
 
   #endregion

@@ -1,6 +1,4 @@
-﻿using TextLifeRpg.Domain;
-
-namespace TextLifeRpg.Domain.Tests.Helpers;
+﻿namespace TextLifeRpg.Domain.Tests.Helpers;
 
 public class CharacterBuilder
 {
@@ -10,6 +8,8 @@ public class CharacterBuilder
   private int _height = 170;
   private int _weight = 70;
   private int _muscleMass = 5;
+  private CharacterAttributes _characterAttributes = CharacterAttributes.Create(5, 5, 5);
+  private Guid? _jobId;
 
   public CharacterBuilder WithName(string name)
   {
@@ -29,14 +29,19 @@ public class CharacterBuilder
     return this;
   }
 
-  public CharacterBuilder WithHeight(int height)
+  public CharacterBuilder WithJob(Guid jobId)
   {
-    _height = height;
+    _jobId = jobId;
     return this;
   }
 
   public Character Build()
   {
-    return Character.Create(_name, _birthDate, _sex, _height, _weight, _muscleMass);
+    var character = Character.Create(_name, _birthDate, _sex, _height, _weight, _muscleMass, _characterAttributes);
+    if (_jobId is not null)
+    {
+      character.SetJob(_jobId.Value);
+    }
+    return character;
   }
 }

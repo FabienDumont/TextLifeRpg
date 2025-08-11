@@ -1,4 +1,6 @@
-﻿namespace TextLifeRpg.Infrastructure.JsonDataModels;
+﻿using TextLifeRpg.Domain;
+
+namespace TextLifeRpg.Infrastructure.JsonDataModels;
 
 /// <summary>
 /// Data model for a single part of text with its associated color.
@@ -10,7 +12,7 @@ public class TextPartDataModel
   /// <summary>
   /// The color of the text. (null means no color specified)
   /// </summary>
-  public string? Color { get; set; }
+  public CharacterColor? Color { get; set; }
 
   /// <summary>
   /// The actual text content.

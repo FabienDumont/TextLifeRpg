@@ -38,9 +38,7 @@ public class SaveService(
       "GameIntro", playerCharacter, world, cancellationToken
     );
 
-    var line = TextLineBuilder.BuildNarrationLine(narrationText, save.PlayerCharacter, save.PlayerCharacterId);
-
-    save.AddText(line.TextParts);
+    TextLineBuilder.BuildNarrationLine(narrationText, save.PlayerCharacter, null, save);
 
     return save;
   }

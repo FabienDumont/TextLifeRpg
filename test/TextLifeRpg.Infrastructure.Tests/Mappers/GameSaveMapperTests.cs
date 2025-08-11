@@ -17,6 +17,8 @@ public class GameSaveMapperTests
     playerCharacter.AddTraits(new List<Guid> {Guid.NewGuid(), Guid.NewGuid()});
     var world = World.Create(DateTime.Now, [playerCharacter]);
     var save = GameSave.Create(playerCharacter, world);
+    var npc = new CharacterBuilder().Build();
+    save.StartDialogue(npc.Id);
 
     // Act
     var dataModel = save.ToDataModel();
@@ -25,6 +27,8 @@ public class GameSaveMapperTests
     Assert.Equal(save.Id, dataModel.Id);
     Assert.Equal(save.Name, dataModel.Name);
     Assert.Equal(save.PlayerCharacterId, dataModel.PlayerCharacterId);
+    Assert.Equal(save.InteractingNpcId, dataModel.InteractingNpcId);
+    Assert.Equal(save.NpcInteractionType, dataModel.NpcInteractionType);
     Assert.NotNull(dataModel.World);
   }
 
@@ -50,12 +54,16 @@ public class GameSaveMapperTests
       ]
     };
 
+    var npcId = Guid.NewGuid();
+
     var dataModel = new GameSaveDataModel
     {
       Id = Guid.NewGuid(),
       Name = $"Player_{worldDataModel.CurrentDate:yyyyMMdd_HHmmss}",
       World = worldDataModel,
       PlayerCharacterId = characterId,
+      InteractingNpcId = npcId,
+      NpcInteractionType = NpcInteractionType.Dialogue,
       SavedAt = DateTime.UtcNow
     };
 
@@ -66,6 +74,8 @@ public class GameSaveMapperTests
     Assert.Equal(dataModel.Id, domain.Id);
     Assert.Equal(dataModel.Name, domain.Name);
     Assert.Equal(dataModel.PlayerCharacterId, domain.PlayerCharacterId);
+    Assert.Equal(dataModel.InteractingNpcId, domain.InteractingNpcId);
+    Assert.Equal(dataModel.NpcInteractionType, domain.NpcInteractionType);
     Assert.NotNull(domain.World);
     Assert.Equal(characterId, domain.PlayerCharacter.Id);
   }

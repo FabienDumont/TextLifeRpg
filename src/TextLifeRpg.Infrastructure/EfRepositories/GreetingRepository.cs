@@ -3,7 +3,6 @@ using TextLifeRpg.Application.Abstraction.Repositories;
 using TextLifeRpg.Domain;
 using TextLifeRpg.Infrastructure.EfDataModels;
 using TextLifeRpg.Infrastructure.Helper;
-using TextLifeRpg.Infrastructure.Mappers;
 
 namespace TextLifeRpg.Infrastructure.EfRepositories;
 
@@ -15,12 +14,14 @@ public class GreetingRepository(ApplicationContext context) : RepositoryBase(con
   #region Implementation of IGreetingRepository
 
   /// <inheritdoc />
-  public async Task<Greeting> GetAsync(GameContext gameContext, CancellationToken cancellationToken)
+  public async Task<IReadOnlyList<string>> GetAsync(GameContext gameContext, CancellationToken cancellationToken)
   {
     var allGreetings = await Context.Greetings.ToListAsync(cancellationToken);
 
     var allConditions = await Context.Conditions.Where(c => c.ContextType == ContextType.Greeting)
       .ToListAsync(cancellationToken);
+
+    var validGreetings = new List<string>();
 
     foreach (var greeting in allGreetings)
     {
@@ -30,11 +31,11 @@ public class GreetingRepository(ApplicationContext context) : RepositoryBase(con
 
       if (allSatisfied)
       {
-        return greeting.ToDomain();
+        validGreetings.Add(greeting.SpokenText);
       }
     }
 
-    throw new InvalidOperationException("No appropriate greeting found.");
+    return validGreetings;
   }
 
   #endregion

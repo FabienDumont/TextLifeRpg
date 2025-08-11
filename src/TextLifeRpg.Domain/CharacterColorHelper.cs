@@ -8,23 +8,23 @@ public static class CharacterColorHelper
   #region Methods
 
   /// <summary>
-  /// Gets the display color for the character name based on biological sex.
+  /// Determines the display color for a character based on their biological sex and player relationship.
   /// </summary>
-  /// <param name="character">The character whose name color is determined.</param>
-  /// <param name="playerCharacterId">The identifier of the player character.</param>
-  /// <returns>A color string used in the UI (e.g. "blue", "pink").</returns>
-  public static string GetCharacterColor(Character character, Guid playerCharacterId)
+  /// <param name="character">The character for whom the color key is being determined.</param>
+  /// <param name="playerId">The unique identifier of the player character.</param>
+  /// <returns>
+  /// A <see cref="CharacterColor"/> representing the appropriate color
+  /// based on the character's biological sex and whether the character matches the player.
+  /// </returns>
+  public static CharacterColor GetColorKey(Character character, Guid playerId)
   {
-    if (character.Id == playerCharacterId)
-    {
-      return "yellow";
-    }
+    if (character.Id == playerId) return CharacterColor.Yellow;
 
     return character.BiologicalSex switch
     {
-      BiologicalSex.Male => "blue",
-      BiologicalSex.Female => "pink",
-      _ => "purple"
+      BiologicalSex.Male => CharacterColor.Blue,
+      BiologicalSex.Female => CharacterColor.Pink,
+      _ => CharacterColor.Purple
     };
   }
 

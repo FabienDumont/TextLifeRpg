@@ -22,5 +22,14 @@ public interface IMovementService
     Guid currentLocationId, Guid? currentRoomId, DayOfWeek day, TimeSpan time, CancellationToken cancellationToken
   );
 
+  /// <summary>
+  /// Executes a movement operation for the specified game save.
+  /// </summary>
+  /// <param name="movement">The movement to be executed.</param>
+  /// <param name="save">The current game save state.</param>
+  /// <param name="cancellationToken">A cancellation token to signal the operation should be canceled.</param>
+  /// <returns>A task that represents the asynchronous execution of the movement.</returns>
+  public Task ExecuteAsync(Movement movement, GameSave save, CancellationToken cancellationToken);
+
   #endregion
 }

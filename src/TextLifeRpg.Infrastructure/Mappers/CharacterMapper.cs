@@ -19,7 +19,7 @@ public static class CharacterMapper
   {
     var character = Character.Load(
       dataModel.Id, dataModel.Name, dataModel.BirthDate, dataModel.BiologicalSex, dataModel.Height, dataModel.Weight,
-      dataModel.MuscleMass
+      dataModel.MuscleMass, dataModel.Attributes.ToDomain()
     );
     character.AddTraits(dataModel.TraitsId);
 
@@ -27,6 +27,13 @@ public static class CharacterMapper
 
     character.Energy = dataModel.Energy;
     character.Money = dataModel.Money;
+
+    if (dataModel.JobId is not null)
+    {
+      character.SetJob(dataModel.JobId.Value);
+    }
+
+    character.AddInventoryEntries(dataModel.InventoryEntries.ToDomainCollection());
 
     return character;
   }
@@ -57,7 +64,10 @@ public static class CharacterMapper
         LocationId = u.LocationId,
         RoomId = u.RoomId,
         Energy = u.Energy,
-        Money = u.Money
+        Money = u.Money,
+        Attributes = u.Attributes.ToDataModel(),
+        JobId = u.JobId,
+        InventoryEntries = u.InventoryEntries.ToDataModelCollection()
       }
     );
   }

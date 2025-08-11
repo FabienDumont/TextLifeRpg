@@ -45,10 +45,15 @@ public class ConditionDataModel
 /// </summary>
 public enum ContextType
 {
-  Greeting = 0,
-  ExplorationActionResult = 1,
-  ExplorationActionResultNarration = 2,
-  Narration = 3
+  ExplorationActionResult,
+  ExplorationActionResultNarration,
+  Greeting,
+  DialogueOption,
+  DialogueOptionSpokenText,
+  DialogueOptionResult,
+  DialogueOptionResultNarration,
+  DialogueOptionResultSpokenText,
+  Narration
 }
 
 /// <summary>
@@ -56,8 +61,8 @@ public enum ContextType
 /// </summary>
 public enum ConditionType
 {
-  ActorHasTrait = 0,
-  ActorEnergy = 1,
-  ActorRelationship = 2,
-  ActorMoney = 3
+  ActorHasTrait,
+  ActorEnergy,
+  ActorRelationship,
+  ActorMoney
 }

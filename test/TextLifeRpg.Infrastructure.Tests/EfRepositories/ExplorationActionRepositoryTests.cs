@@ -1,5 +1,4 @@
 ﻿using MockQueryable.FakeItEasy;
-using TextLifeRpg.Infrastructure;
 using TextLifeRpg.Infrastructure.EfDataModels;
 using TextLifeRpg.Infrastructure.EfRepositories;
 
@@ -48,7 +47,7 @@ public class ExplorationActionRepositoryTests
     };
 
     var context = A.Fake<ApplicationContext>();
-    var mockDbSet = data.AsQueryable().BuildMockDbSet();
+    var mockDbSet = data.BuildMockDbSet();
     A.CallTo(() => context.ExplorationActions).Returns(mockDbSet);
 
     _repository = new ExplorationActionRepository(context);

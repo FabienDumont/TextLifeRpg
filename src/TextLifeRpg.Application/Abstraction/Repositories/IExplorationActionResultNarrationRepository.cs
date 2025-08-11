@@ -12,7 +12,7 @@ public interface IExplorationActionResultNarrationRepository
   /// <summary>
   /// Retrieves exploration action result narration for given exploration action result identifier and game context.
   /// </summary>
-  Task<ExplorationActionResultNarration> GetByExplorationActionResultIdAsync(
+  Task<string> GetByExplorationActionResultIdAsync(
     Guid explorationActionResultId, GameContext gameContext, CancellationToken cancellationToken
   );
 

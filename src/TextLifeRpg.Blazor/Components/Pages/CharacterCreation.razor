@@ -1,7 +1,6 @@
 ﻿@page "/charactercreation"
 @using System.ComponentModel.DataAnnotations
 @using TextLifeRpg.Application.Abstraction
-@using TextLifeRpg.Blazor.InternalUtilities
 @using TextLifeRpg.Blazor.ViewModels
 @using TextLifeRpg.Domain.Extensions
 @using GameSettings = TextLifeRpg.Domain.GameSettings
@@ -39,23 +38,28 @@ else
       <EditForm EditContext="@_editContext" FormName="formCharacter" OnValidSubmit="CreateCharacter"
                 OnInvalidSubmit="HandleInvalidSubmitAsync"
                 class="trpg-card-form">
-        <div class="flex h-[36rem] flex-col justify-between">
+        <div class="flex flex-col flex-grow justify-between overflow-y-auto">
           <DataAnnotationsValidator/>
 
           <!-- Slide 1: Basic Info -->
           @if (_step == 1)
           {
-            <div class="h-[32rem] space-y-6">
+            <div class="flex-grow space-y-2">
+              <h3 class="text-2xl">Basic infos</h3>
               <div>
                 <label class="trpg-input-label">Name:</label>
                 <InputText class="trpg-input-field" @bind-Value="Model.Name"/>
-                <ValidationMessage class="trpg-validation-message" For="@(() => Model.Name)"/>
+                <div class="min-h-[1.25rem]">
+                  <ValidationMessage class="trpg-validation-message" For="@(() => Model.Name)"/>
+                </div>
               </div>
 
               <div>
                 <label class="trpg-input-label">Birth Date:</label>
                 <InputDate @bind-Value="Model.BirthDate" class="trpg-input-field"/>
-                <ValidationMessage class="trpg-validation-message" For="@(() => Model.BirthDate)"/>
+                <div class="min-h-[1.25rem]">
+                  <ValidationMessage class="trpg-validation-message" For="@(() => Model.BirthDate)"/>
+                </div>
               </div>
 
               <div>
@@ -67,19 +71,25 @@ else
                     <option value="@sex">@sex</option>
                   }
                 </InputSelect>
-                <ValidationMessage class="trpg-validation-message" For="@(() => Model.BiologicalSex)"/>
+                <div class="min-h-[1.25rem]">
+                  <ValidationMessage class="trpg-validation-message" For="@(() => Model.BiologicalSex)"/>
+                </div>
               </div>
 
               <div>
                 <label class="trpg-input-label">Height (cm):</label>
                 <InputNumber class="trpg-input-field" @bind-Value="Model.Height"/>
-                <ValidationMessage class="trpg-validation-message" For="@(() => Model.Height)"/>
+                <div class="min-h-[1.25rem]">
+                  <ValidationMessage class="trpg-validation-message" For="@(() => Model.Height)"/>
+                </div>
               </div>
 
               <div>
                 <label class="trpg-input-label">Weight (kg):</label>
                 <InputNumber class="trpg-input-field" @bind-Value="Model.Weight"/>
-                <ValidationMessage class="trpg-validation-message" For="@(() => Model.Weight)"/>
+                <div class="min-h-[1.25rem]">
+                  <ValidationMessage class="trpg-validation-message" For="@(() => Model.Weight)"/>
+                </div>
               </div>
 
               <div>
@@ -90,17 +100,49 @@ else
                     <option value="@option">@option.GetDisplayName()</option>
                   }
                 </InputSelect>
-                <ValidationMessage class="trpg-validation-message" For="@(() => Model.SelectedMuscleMass)"/>
+                <div class="min-h-[1.25rem]">
+                  <ValidationMessage class="trpg-validation-message" For="@(() => Model.SelectedMuscleMass)"/>
+                </div>
               </div>
             </div>
           }
 
-          <!-- Slide 2: Traits -->
           @if (_step == 2)
           {
-            <div class="h-[32rem] space-y-6">
+            <div class="flex-grow space-y-2">
+              <h3 class="text-2xl">Attributes</h3>
+              <div>
+                <label class="trpg-input-label">Intelligence:</label>
+                <InputNumber class="trpg-input-field" @bind-Value="Model.Intelligence" min="1" max="10"/>
+                <div class="min-h-[1.25rem]">
+                  <ValidationMessage class="trpg-validation-message" For="@(() => Model.Intelligence)"/>
+                </div>
+              </div>
+
+              <div>
+                <label class="trpg-input-label">Strength:</label>
+                <InputNumber class="trpg-input-field" @bind-Value="Model.Strength" min="1" max="10"/>
+                <div class="min-h-[1.25rem]">
+                  <ValidationMessage class="trpg-validation-message" For="@(() => Model.Strength)"/>
+                </div>
+              </div>
+
+              <div>
+                <label class="trpg-input-label">Charisma:</label>
+                <InputNumber class="trpg-input-field" @bind-Value="Model.Charisma" min="1" max="10"/>
+                <div class="min-h-[1.25rem]">
+                  <ValidationMessage class="trpg-validation-message" For="@(() => Model.Charisma)"/>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- Slide 3: Traits -->
+          @if (_step == 3)
+          {
+            <div class="flex-grow space-y-2">
+              <h3 class="text-2xl">Traits</h3>
               <fieldset class="space-y-2">
-                <legend class="mb-2 text-lg font-semibold">Traits</legend>
                 @foreach (var trait in _traitsViewModels)
                 {
                   <label class="trpg-checkbox-label">
@@ -175,7 +217,7 @@ else
   private readonly GameSettings _defaultSettings = GameSettings.Create(NpcDensity.Average);
 
   private int _step = 1;
-  private const int MaxStep = 2;
+  private const int MaxStep = 3;
 
   /// <summary>
   /// Initializes form state and loads available traits.
@@ -269,7 +311,9 @@ else
 
     var muscleMass = Model.SelectedMuscleMass.ToKg();
 
-    var character = Character.Create(Model.Name.Trim(), Model.BirthDate, Model.BiologicalSex, Model.Height, Model.Weight, muscleMass);
+    var attributes = CharacterAttributes.Create(Model.Intelligence, Model.Strength, Model.Charisma);
+
+    var character = Character.Create(Model.Name.Trim(), Model.BirthDate, Model.BiologicalSex, Model.Height, Model.Weight, muscleMass, attributes);
     character.AddTraits(_traitsViewModels.Where(t => t.IsSelected).Select(t => t.Id));
 
     var save = await SaveService.CreateNewSaveAsync(new DateTime(2025, 1, 1, 8, 0, 0), character, _gameSettings, CancellationToken.None);
@@ -283,7 +327,7 @@ else
   /// <summary>
   /// Backing model for character form input.
   /// </summary>
-  public class CharacterCreationModel
+  public class CharacterCreationModel : IValidatableObject
   {
     /// <summary>
     /// The name of the character.
@@ -320,6 +364,36 @@ else
 
     [Required]
     public MuscleMassOption SelectedMuscleMass { get; set; } = MuscleMassOption.Average;
+
+    [Required]
+    [Range(1, 10)]
+    public int Intelligence { get; set; } = 5;
+
+    [Required]
+    [Range(1, 10)]
+    public int Strength { get; set; } = 5;
+
+    [Required]
+    [Range(1, 10)]
+    public int Charisma { get; set; } = 5;
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+      var mismatch = SelectedMuscleMass switch
+      {
+        MuscleMassOption.VeryLow => Strength > 3,
+        MuscleMassOption.Low => Strength > 5,
+        MuscleMassOption.Average => Strength is < 4 or > 7,
+        MuscleMassOption.High => Strength < 6,
+        MuscleMassOption.VeryHigh => Strength < 8,
+        _ => false
+      };
+
+      if (mismatch)
+      {
+        yield return new ValidationResult($"Selected muscle mass '{SelectedMuscleMass.GetDisplayName()}' doesn't match strength value {Strength}.", [nameof(SelectedMuscleMass), nameof(Strength)]);
+      }
+    }
   }
 
 }
