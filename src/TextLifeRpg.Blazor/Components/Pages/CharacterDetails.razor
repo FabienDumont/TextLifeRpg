@@ -9,7 +9,7 @@
 
 @if (_hasError)
 {
-  <p class="text-red-400">Character not found or save not loaded.</p>
+  <p class="text-red-400">Characterwas not found or the save was not loaded.</p>
 }
 else if (_character is null)
 {
@@ -177,11 +177,6 @@ else
       RelationshipType.Grandchild => isSource ? "Grandparent" : "Grandchild",
       _ => type.GetDisplayName()
     };
-  }
-
-  static string GetPairKey(Guid a, Guid b)
-  {
-    return a.CompareTo(b) < 0 ? $"{a}_{b}" : $"{b}_{a}";
   }
 
   private record RelationshipDisplay(Character TargetCharacter, string Type);

@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace TextLifeRpg.Infrastructure.JsonDefinitions;
+﻿namespace TextLifeRpg.Infrastructure.JsonDefinitions;
 
 public class ExplorationActionDefinition
 {
@@ -8,7 +6,7 @@ public class ExplorationActionDefinition
   public required string LocationName { get; set; }
   public required string RoomName { get; set; }
   public required int NeededMinutes { get; set; }
-  public List<ExplorationActionResultDefinition> Results { get; set; }
+  public List<ExplorationActionResultDefinition> Results { get; set; } = [];
 }
 
 /// <summary>

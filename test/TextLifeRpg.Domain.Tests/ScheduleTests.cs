@@ -58,7 +58,7 @@ public class ScheduleTests
     else
     {
       Assert.NotNull(result);
-      Assert.Equal(TimeSpan.Parse(expectedStart), result!.StartHour);
+      Assert.Equal(TimeSpan.Parse(expectedStart), result.StartHour);
     }
   }
 
