@@ -12,7 +12,7 @@
       "EndsDialogue": true,
       "ResultSpokenTexts": [
         {
-          "Text": "Yeah fuck off, I hate you.",
+          "Text": "Get lost.",
           "Conditions": [
             {
               "Trait": "Blunt"
@@ -26,47 +26,7 @@
           ]
         },
         {
-          "Text": "Don't bother next time.",
-          "Conditions": [
-            {
-              "Trait": "Blunt"
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": "<",
-                "Value": 0
-              }
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": ">=",
-                "Value": -50
-              }
-            }
-          ]
-        },
-        {
-          "Text": "Bye.",
-          "Conditions": [
-            {
-              "Trait": "Blunt"
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": "<",
-                "Value": 50
-              }
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": ">=",
-                "Value": 0
-              }
-            }
-          ]
-        },
-        {
-          "Text": "It was nice talking to you. Bye.",
+          "Text": "Fine. Go.",
           "Conditions": [
             {
               "Trait": "Blunt"
@@ -74,13 +34,93 @@
             {
               "ActorRelationshipValue": {
                 "Operator": ">=",
+                "Value": -50
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 0
+              }
+            }
+          ]
+        },
+        {
+          "Text": "Alright.",
+          "Conditions": [
+            {
+              "Trait": "Blunt"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 0
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 25
+              }
+            }
+          ]
+        },
+        {
+          "Text": "See you around.",
+          "Conditions": [
+            {
+              "Trait": "Blunt"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 25
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
                 "Value": 50
               }
             }
           ]
         },
         {
-          "Text": "Take care... I guess everyone deserves a bit of kindness.",
+          "Text": "See you soon.",
+          "Conditions": [
+            {
+              "Trait": "Blunt"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 50
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 75
+              }
+            }
+          ]
+        },
+        {
+          "Text": "You need me, I’m there for you.",
+          "Conditions": [
+            {
+              "Trait": "Blunt"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 75
+              }
+            }
+          ]
+        },
+        {
+          "Text": "Go safely.",
           "Conditions": [
             {
               "Trait": "Kind"
@@ -94,47 +134,7 @@
           ]
         },
         {
-          "Text": "I hope your day improves, truly.",
-          "Conditions": [
-            {
-              "Trait": "Kind"
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": "<",
-                "Value": 0
-              }
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": ">=",
-                "Value": -50
-              }
-            }
-          ]
-        },
-        {
-          "Text": "Stay safe, okay?",
-          "Conditions": [
-            {
-              "Trait": "Kind"
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": "<",
-                "Value": 50
-              }
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": ">=",
-                "Value": 0
-              }
-            }
-          ]
-        },
-        {
-          "Text": "I'll miss you, I care so much about you!",
+          "Text": "Take care.",
           "Conditions": [
             {
               "Trait": "Kind"
@@ -142,81 +142,93 @@
             {
               "ActorRelationshipValue": {
                 "Operator": ">=",
-                "Value": 50
-              }
-            }
-          ]
-        },
-        {
-          "Text": "Get lost, you parasite.",
-          "Conditions": [
-            {
-              "Trait": "Mean"
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": "<",
                 "Value": -50
               }
-            }
-          ]
-        },
-        {
-          "Text": "Bye. Don't come back.",
-          "Conditions": [
-            {
-              "Trait": "Mean"
             },
             {
               "ActorRelationshipValue": {
                 "Operator": "<",
                 "Value": 0
               }
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": ">=",
-                "Value": -50
-              }
             }
           ]
         },
         {
-          "Text": "Whatever. Later.",
+          "Text": "Alright. Be well.",
           "Conditions": [
             {
-              "Trait": "Mean"
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": "<",
-                "Value": 50
-              }
+              "Trait": "Kind"
             },
             {
               "ActorRelationshipValue": {
                 "Operator": ">=",
                 "Value": 0
               }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 25
+              }
             }
           ]
         },
         {
-          "Text": "I tolerate you. That's rare. Goodbye.",
+          "Text": "See you around. Take care.",
           "Conditions": [
             {
-              "Trait": "Mean"
+              "Trait": "Kind"
             },
             {
               "ActorRelationshipValue": {
                 "Operator": ">=",
+                "Value": 25
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
                 "Value": 50
               }
             }
           ]
         },
         {
-          "Text": "Finally, we’re done. What a buzzkill.",
+          "Text": "See you soon. Take care of yourself.",
+          "Conditions": [
+            {
+              "Trait": "Kind"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 50
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 75
+              }
+            }
+          ]
+        },
+        {
+          "Text": "I'm here if you need me.",
+          "Conditions": [
+            {
+              "Trait": "Kind"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 75
+              }
+            }
+          ]
+        },
+        {
+          "Text": "Find someone else to talk to.",
           "Conditions": [
             {
               "Trait": "Outgoing"
@@ -230,47 +242,7 @@
           ]
         },
         {
-          "Text": "Alright, I’m off! Try smiling sometime!",
-          "Conditions": [
-            {
-              "Trait": "Outgoing"
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": "<",
-                "Value": 0
-              }
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": ">=",
-                "Value": -50
-              }
-            }
-          ]
-        },
-        {
-          "Text": "Catch you later, maybe?",
-          "Conditions": [
-            {
-              "Trait": "Outgoing"
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": "<",
-                "Value": 50
-              }
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": ">=",
-                "Value": 0
-              }
-            }
-          ]
-        },
-        {
-          "Text": "Let’s hang again soon! You’re fun!",
+          "Text": "Another time, maybe.",
           "Conditions": [
             {
               "Trait": "Outgoing"
@@ -278,13 +250,93 @@
             {
               "ActorRelationshipValue": {
                 "Operator": ">=",
+                "Value": -50
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 0
+              }
+            }
+          ]
+        },
+        {
+          "Text": "Catch you later.",
+          "Conditions": [
+            {
+              "Trait": "Outgoing"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 0
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 25
+              }
+            }
+          ]
+        },
+        {
+          "Text": "See you out there.",
+          "Conditions": [
+            {
+              "Trait": "Outgoing"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 25
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
                 "Value": 50
               }
             }
           ]
         },
         {
-          "Text": "Farewell. I hope we never cross paths again.",
+          "Text": "Let's hang again soon.",
+          "Conditions": [
+            {
+              "Trait": "Outgoing"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 50
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 75
+              }
+            }
+          ]
+        },
+        {
+          "Text": "Anytime—come find me.",
+          "Conditions": [
+            {
+              "Trait": "Outgoing"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 75
+              }
+            }
+          ]
+        },
+        {
+          "Text": "I will not detain you.",
           "Conditions": [
             {
               "Trait": "Polite"
@@ -298,47 +350,7 @@
           ]
         },
         {
-          "Text": "Goodbye. I trust you’ll find your way.",
-          "Conditions": [
-            {
-              "Trait": "Polite"
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": "<",
-                "Value": 0
-              }
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": ">=",
-                "Value": -50
-              }
-            }
-          ]
-        },
-        {
-          "Text": "Take care. It was... fine.",
-          "Conditions": [
-            {
-              "Trait": "Polite"
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": "<",
-                "Value": 50
-              }
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": ">=",
-                "Value": 0
-              }
-            }
-          ]
-        },
-        {
-          "Text": "Wishing you the best. Until next time!",
+          "Text": "Very well.",
           "Conditions": [
             {
               "Trait": "Polite"
@@ -346,13 +358,93 @@
             {
               "ActorRelationshipValue": {
                 "Operator": ">=",
+                "Value": -50
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 0
+              }
+            }
+          ]
+        },
+        {
+          "Text": "Farewell.",
+          "Conditions": [
+            {
+              "Trait": "Polite"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 0
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 25
+              }
+            }
+          ]
+        },
+        {
+          "Text": "Until next time.",
+          "Conditions": [
+            {
+              "Trait": "Polite"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 25
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
                 "Value": 50
               }
             }
           ]
         },
         {
-          "Text": "Don’t talk to me again.",
+          "Text": "Do keep in touch.",
+          "Conditions": [
+            {
+              "Trait": "Polite"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 50
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 75
+              }
+            }
+          ]
+        },
+        {
+          "Text": "Let's talk again soon, whenever you wish.",
+          "Conditions": [
+            {
+              "Trait": "Polite"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 75
+              }
+            }
+          ]
+        },
+        {
+          "Text": "Fuck off.",
           "Conditions": [
             {
               "Trait": "Rude"
@@ -366,47 +458,67 @@
           ]
         },
         {
-          "Text": "Yeah, yeah, get outta here.",
+          "Text": "Just go.",
           "Conditions": [
             {
               "Trait": "Rude"
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": "<",
-                "Value": 0
-              }
             },
             {
               "ActorRelationshipValue": {
                 "Operator": ">=",
                 "Value": -50
               }
-            }
-          ]
-        },
-        {
-          "Text": "Bye or whatever.",
-          "Conditions": [
-            {
-              "Trait": "Rude"
             },
             {
               "ActorRelationshipValue": {
                 "Operator": "<",
-                "Value": 50
-              }
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": ">=",
                 "Value": 0
               }
             }
           ]
         },
         {
-          "Text": "You’re lucky I like you. Bye.",
+          "Text": "Yeah, bye.",
+          "Conditions": [
+            {
+              "Trait": "Rude"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 0
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 25
+              }
+            }
+          ]
+        },
+        {
+          "Text": "Later. Don’t dawdle.",
+          "Conditions": [
+            {
+              "Trait": "Rude"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 25
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 50
+              }
+            }
+          ]
+        },
+        {
+          "Text": "You’d better come back.",
           "Conditions": [
             {
               "Trait": "Rude"
@@ -415,6 +527,26 @@
               "ActorRelationshipValue": {
                 "Operator": ">=",
                 "Value": 50
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 75
+              }
+            }
+          ]
+        },
+        {
+          "Text": "Don't go dark on me.",
+          "Conditions": [
+            {
+              "Trait": "Rude"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 75
               }
             }
           ]
@@ -434,47 +566,67 @@
           ]
         },
         {
-          "Text": "..Okay, I’m going now.",
+          "Text": "... Right.",
           "Conditions": [
             {
               "Trait": "Shy"
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": "<",
-                "Value": 0
-              }
             },
             {
               "ActorRelationshipValue": {
                 "Operator": ">=",
                 "Value": -50
               }
-            }
-          ]
-        },
-        {
-          "Text": "Bye. It was... um, nice.",
-          "Conditions": [
-            {
-              "Trait": "Shy"
             },
             {
               "ActorRelationshipValue": {
                 "Operator": "<",
-                "Value": 50
-              }
-            },
-            {
-              "ActorRelationshipValue": {
-                "Operator": ">=",
                 "Value": 0
               }
             }
           ]
         },
         {
-          "Text": "Bye. It was... um, really nice.",
+          "Text": "Okay... bye.",
+          "Conditions": [
+            {
+              "Trait": "Shy"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 0
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 25
+              }
+            }
+          ]
+        },
+        {
+          "Text": "Um, see you.",
+          "Conditions": [
+            {
+              "Trait": "Shy"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 25
+              }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 50
+              }
+            }
+          ]
+        },
+        {
+          "Text": "See you... soon.",
           "Conditions": [
             {
               "Trait": "Shy"
@@ -484,12 +636,28 @@
                 "Operator": ">=",
                 "Value": 50
               }
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": "<",
+                "Value": 75
+              }
             }
           ]
         },
         {
-          "Text": "Alright, goodbye.",
-          "Conditions": []
+          "Text": "I—I’ll be happy to talk again soon.",
+          "Conditions": [
+            {
+              "Trait": "Shy"
+            },
+            {
+              "ActorRelationshipValue": {
+                "Operator": ">=",
+                "Value": 75
+              }
+            }
+          ]
         }
       ],
       "ResultNarrations": [
