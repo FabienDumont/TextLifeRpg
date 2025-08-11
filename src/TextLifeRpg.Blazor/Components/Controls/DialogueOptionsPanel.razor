@@ -57,7 +57,13 @@
 
     if (gameSave.InteractingNpc is null || gameSave.NpcInteractionType != NpcInteractionType.Dialogue)
     {
-      _availableDialogueOptions = Array.Empty<DialogueOption>();
+      _availableDialogueOptions = [];
+      return;
+    }
+
+    if (gameSave.PendingDialogueOptions.Any())
+    {
+      _availableDialogueOptions = gameSave.PendingDialogueOptions.ToList();
       return;
     }
 

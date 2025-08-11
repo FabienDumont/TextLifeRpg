@@ -21,7 +21,7 @@ public class DialogueOptionResultDataModel
   public Guid Id { get; set; }
 
   /// <summary>
-  /// Identifier of the exploration action this entry belongs to.
+  /// Identifier of the dialogue option this entry belongs to.
   /// </summary>
   [Column("DialogueOptionId", Order = 2)]
   [Required]

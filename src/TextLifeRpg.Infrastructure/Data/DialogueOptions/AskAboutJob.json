@@ -1,0 +1,50 @@
+﻿{
+  "Name": "AskAboutJob",
+  "Label": "Ask about job",
+  "SpokenTexts": [
+    {
+      "Text": "Do you mind telling me what your job is?",
+      "Conditions": []
+    }
+  ],
+  "Results": [
+    {
+      "Conditions": [
+        {
+          "ActorRelationshipValue": {
+            "Operator": "<",
+            "Value": 0
+          }
+        }
+      ],
+      "ResultSpokenTexts": [
+        {
+          "Text": "It's none of your business.",
+          "Conditions": []
+        }
+      ]
+    },
+    {
+      "Conditions": [
+        {
+          "ActorRelationshipValue": {
+            "Operator": ">=",
+            "Value": 0
+          }
+        }
+      ],
+      "ResultSpokenTexts": [
+        {
+          "Text": "I'll tell you.",
+          "Conditions": []
+        }
+      ],
+      "ResultNarrations": [
+        {
+          "Text": "You learn about [TARGETNAME]'s employement situation.",
+          "Conditions": []
+        }
+      ]
+    }
+  ]
+}

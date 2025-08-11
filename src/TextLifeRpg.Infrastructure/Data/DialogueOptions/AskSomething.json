@@ -1,0 +1,48 @@
+﻿{
+  "Name": "AskSomething",
+  "Label": "Ask something",
+  "SpokenTexts": [
+    {
+      "Text": "Can I ask something ?",
+      "Conditions": []
+    }
+  ],
+  "Results": [
+    {
+      "Conditions": [
+        {
+          "ActorRelationshipValue": {
+            "Operator": ">=",
+            "Value": 0
+          }
+        }
+      ],
+      "NextDialogueOptionNames": [
+        "AskAboutJob",
+        "AskNevermind"
+      ],
+      "ResultSpokenTexts": [
+        {
+          "Text": "Yes.",
+          "Conditions": []
+        }
+      ]
+    },
+    {
+      "Conditions": [
+        {
+          "ActorRelationshipValue": {
+            "Operator": "<",
+            "Value": 0
+          }
+        }
+      ],
+      "ResultSpokenTexts": [
+        {
+          "Text": "No.",
+          "Conditions": []
+        }
+      ]
+    }
+  ]
+}

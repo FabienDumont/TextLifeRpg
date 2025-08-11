@@ -152,8 +152,9 @@ public class DialogueServiceTests
       DialogueOption.Create("Say goodbye")
     };
 
-    A.CallTo(() => _dialogueOptionRepository.GetPossibleDialogueOptionsAsync(A<GameContext>._, A<CancellationToken>._))
-      .Returns(expectedOptions);
+    A.CallTo(() =>
+      _dialogueOptionRepository.GetPossibleInitialDialogueOptionsAsync(A<GameContext>._, A<CancellationToken>._)
+    ).Returns(expectedOptions);
 
     // Act
     var result = await _dialogueService.GetPossibleDialogueOptionsAsync(save);
@@ -163,7 +164,7 @@ public class DialogueServiceTests
     Assert.Equal(expectedOptions.Length, result.Count);
     Assert.All(expectedOptions, option => Assert.Contains(result, r => r.Id == option.Id));
 
-    A.CallTo(() => _dialogueOptionRepository.GetPossibleDialogueOptionsAsync(
+    A.CallTo(() => _dialogueOptionRepository.GetPossibleInitialDialogueOptionsAsync(
         A<GameContext>.That.Matches(ctx => ctx.Actor == player && ctx.Target == npc && ctx.World == world),
         A<CancellationToken>._
       )
@@ -327,6 +328,76 @@ public class DialogueServiceTests
     // Assert
     Assert.Null(save.InteractingNpc);
     Assert.Null(save.NpcInteractionType);
+  }
+
+  [Fact]
+  public async Task BuildDialogueOptionStepsAsync_ShouldPopulatePendingFollowUps_WhenFollowUpsExist()
+  {
+    // Arrange
+    var player = new CharacterBuilder().WithName("Player").Build();
+    var npc = new CharacterBuilder().WithName("NPC").Build();
+    var world = World.Create(DateTime.Now, [player, npc]);
+    var save = GameSave.Create(player, world);
+    save.StartDialogue(npc.Id);
+
+    // Add stale pending options to ensure the service clears them first
+    save.PendingDialogueOptions.Add(DialogueOption.Create("stale"));
+
+    var dialogueOption = DialogueOption.Create("Ask something");
+    var result = DialogueOptionResult.Create(Guid.NewGuid(), null, endDialogue: false);
+
+    // No player spoken text / npc reply / narration needed for this test
+    A.CallTo(() => _dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(
+        dialogueOption.Id, A<GameContext>._, A<CancellationToken>._
+      )
+    ).Returns(null as string);
+
+    A.CallTo(() => _dialogueOptionResultRepository.GetByDialogueOptionIdAsync(
+        dialogueOption.Id, A<GameContext>._, A<CancellationToken>._
+      )
+    ).Returns(result);
+
+    A.CallTo(() => _dialogueOptionResultSpokenTextRepository.GetByDialogueOptionResultIdAsync(
+        result.Id, A<GameContext>._, A<CancellationToken>._
+      )
+    ).Returns(new List<string>());
+
+    A.CallTo(() => _dialogueOptionResultNarrationRepository.GetByDialogueOptionResultIdAsync(
+        result.Id, A<GameContext>._, A<CancellationToken>._
+      )
+    ).Returns(null as string);
+
+    var followUps = new[]
+    {
+      DialogueOption.Create("Ask about job"),
+      DialogueOption.Create("Nevermind")
+    };
+
+    A.CallTo(() => _dialogueOptionRepository.GetPossibleFollowUpsAsync(
+        A<GameContext>._, result.Id, A<CancellationToken>._
+      )
+    ).Returns(followUps);
+
+    // Act
+    var steps = await _dialogueService.BuildDialogueOptionStepsAsync(dialogueOption, save, CancellationToken.None);
+    foreach (var step in steps)
+    {
+      await step.ExecuteAsync(save);
+    }
+
+    // Assert: follow-ups were set, old ones cleared, interaction stays open
+    Assert.Equal(2, save.PendingDialogueOptions.Count);
+    Assert.Contains(save.PendingDialogueOptions, o => o.Label == "Ask about job");
+    Assert.Contains(save.PendingDialogueOptions, o => o.Label == "Nevermind");
+    Assert.NotNull(save.InteractingNpc);
+    Assert.Equal(NpcInteractionType.Dialogue, save.NpcInteractionType);
+
+    // Also verify correct context was used to fetch follow-ups
+    A.CallTo(() => _dialogueOptionRepository.GetPossibleFollowUpsAsync(
+        A<GameContext>.That.Matches(ctx => ctx.Actor == player && ctx.Target == npc && ctx.World == world), result.Id,
+        A<CancellationToken>._
+      )
+    ).MustHaveHappenedOnceExactly();
   }
 
   #endregion

@@ -47,6 +47,8 @@ public class GameSave
   /// </summary>
   public Character? InteractingNpc => World.Characters.FirstOrDefault(c => c.Id == InteractingNpcId);
 
+  public List<DialogueOption> PendingDialogueOptions { get; } = new();
+
   /// <summary>
   /// Timestamp of when the save was created.
   /// </summary>
@@ -147,6 +149,11 @@ public class GameSave
   {
     InteractingNpcId = null;
     NpcInteractionType = null;
+  }
+
+  public void ClearPendingDialogueOptions()
+  {
+    PendingDialogueOptions.Clear();
   }
 
   #endregion

@@ -16,14 +16,18 @@ public class DialogueOptionRepository(ApplicationContext context) : RepositoryBa
   #region Implementation of IDialogueOptionRepository
 
   /// <inheritdoc />
-  public async Task<IReadOnlyCollection<DialogueOption>> GetPossibleDialogueOptionsAsync(
+  public async Task<IReadOnlyCollection<DialogueOption>> GetPossibleInitialDialogueOptionsAsync(
     GameContext gameContext, CancellationToken cancellationToken
   )
   {
-    var allDialogueOptions = await Context.DialogueOptions.ToListAsync(cancellationToken);
-
-    var allConditions = await Context.Conditions.Where(c => c.ContextType == ContextType.DialogueOption)
+    var allDialogueOptions = await Context.DialogueOptions
+      .Where(o => !Context.DialogueOptionResultNextDialogueOptions.Any(l => l.NextDialogueOptionId == o.Id))
       .ToListAsync(cancellationToken);
+
+    var allConditions = await Context.Conditions
+      .Where(c => c.ContextType == ContextType.DialogueOption &&
+                  allDialogueOptions.Select(o => o.Id).ToHashSet().Contains(c.ContextId)
+      ).ToListAsync(cancellationToken);
 
     List<DialogueOption> list = [];
 
@@ -42,6 +46,35 @@ public class DialogueOptionRepository(ApplicationContext context) : RepositoryBa
     if (list.Count == 0)
     {
       throw new InvalidOperationException("No appropriate dialogue option found.");
+    }
+
+    return new ReadOnlyCollection<DialogueOption>(list);
+  }
+
+  /// <inheritdoc />
+  public async Task<IReadOnlyCollection<DialogueOption>> GetPossibleFollowUpsAsync(
+    GameContext gameContext, Guid dialogueOptionResultId, CancellationToken ct
+  )
+  {
+    var candidateIds = await Context.DialogueOptionResultNextDialogueOptions
+      .Where(l => l.DialogueOptionResultId == dialogueOptionResultId).OrderBy(l => l.Order)
+      .Select(l => l.NextDialogueOptionId).ToListAsync(ct);
+
+    if (candidateIds.Count == 0) return [];
+
+    var options = await Context.DialogueOptions.AsNoTracking().Where(o => candidateIds.Contains(o.Id)).ToListAsync(ct);
+
+    var conditions = await Context.Conditions.AsNoTracking()
+      .Where(c => c.ContextType == ContextType.DialogueOption && candidateIds.Contains(c.ContextId)).ToListAsync(ct);
+
+    var conds = conditions.ToLookup(c => c.ContextId);
+
+    var list = new List<DialogueOption>(options.Count);
+    foreach (var o in options.OrderBy(o => candidateIds.IndexOf(o.Id)))
+    {
+      var ok = conds[o.Id].All(c => ConditionEvaluator.EvaluateCondition(c, gameContext));
+
+      if (ok) list.Add(o.ToDomain());
     }
 
     return new ReadOnlyCollection<DialogueOption>(list);

@@ -21,7 +21,7 @@ public static class ServiceCollectionExtensions
   public static void AddInfrastructure(this IServiceCollection services, string databasePath)
   {
     var connectionString = $"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, databasePath)};";
-    services.AddDbContext<ApplicationContext>(options => options.UseSqlite(connectionString));
+    services.AddDbContext<ApplicationContext>(options => { ConfigureApplicationContext(options, connectionString); });
     services.AddScoped<ITraitRepository, TraitRepository>();
     services.AddScoped<IGreetingRepository, GreetingRepository>();
     services.AddScoped<IDialogueOptionRepository, DialogueOptionRepository>();
@@ -45,6 +45,12 @@ public static class ServiceCollectionExtensions
 
     var dataDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
     services.AddScoped<INameRepository>(_ => new NameJsonRepository(dataDir));
+  }
+
+  internal static void ConfigureApplicationContext(DbContextOptionsBuilder options, string connectionString)
+  {
+    options.UseSqlite(connectionString);
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
   }
 
   #endregion

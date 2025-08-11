@@ -1,4 +1,5 @@
 ﻿{
+  "Name": "SayGoodbye",
   "Label": "Say goodbye",
   "SpokenTexts": [
     {
@@ -419,7 +420,7 @@
           ]
         },
         {
-          "Text": "...Okay, I’m going now.",
+          "Text": "...",
           "Conditions": [
             {
               "Trait": "Shy"
@@ -433,7 +434,7 @@
           ]
         },
         {
-          "Text": "Bye...",
+          "Text": "..Okay, I’m going now.",
           "Conditions": [
             {
               "Trait": "Shy"
@@ -473,7 +474,7 @@
           ]
         },
         {
-          "Text": "Thanks for today. I really enjoyed it.",
+          "Text": "Bye. It was... um, really nice.",
           "Conditions": [
             {
               "Trait": "Shy"

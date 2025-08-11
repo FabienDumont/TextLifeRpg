@@ -6,7 +6,7 @@
     }
 
     .trpg-title-main {
-        @apply text-5xl font-extrabold tracking-wide;
+        @apply text-2xl font-extrabold tracking-wide;
     }
 
     .trpg-card-form {

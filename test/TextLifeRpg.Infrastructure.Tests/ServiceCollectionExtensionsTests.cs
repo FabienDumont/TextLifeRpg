@@ -11,27 +11,23 @@ public class ServiceCollectionExtensionsTests
   #region Methods
 
   [Fact]
-  public void AddInfrastructure_ShouldRegisterApplicationContext_WithSqliteProvider()
+  public async Task ConfigureApplicationContext_ShouldSetSqliteAndNoTracking()
   {
     // Arrange
-    var services = new ServiceCollection();
-    var dbFileName = "test.db";
+    var dbFile = $"{Path.GetRandomFileName()}.db";
+    var conn = $"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dbFile)};";
+    var builder = new DbContextOptionsBuilder<ApplicationContext>();
 
     // Act
-    services.AddInfrastructure(dbFileName);
-    var provider = services.BuildServiceProvider();
+    ServiceCollectionExtensions.ConfigureApplicationContext(builder, conn);
 
-    // Assert DbContext
-    var context = provider.GetRequiredService<ApplicationContext>();
-    Assert.NotNull(context);
-    Assert.Equal("Microsoft.EntityFrameworkCore.Sqlite", context.Database.ProviderName);
+    await using var ctx = new ApplicationContext(builder.Options);
+    await ctx.Database.EnsureCreatedAsync();
 
-    var options = provider.GetRequiredService<DbContextOptions<ApplicationContext>>();
-    var extension = options.Extensions.FirstOrDefault(e => e.GetType().Name.Contains(
-        "SqliteOptionsExtension", StringComparison.OrdinalIgnoreCase
-      )
-    );
-    Assert.NotNull(extension);
+    // Assert
+    Assert.Equal(conn, ctx.Database.GetDbConnection().ConnectionString);
+    Assert.Equal(QueryTrackingBehavior.NoTracking, ctx.ChangeTracker.QueryTrackingBehavior);
+    Assert.Equal("Microsoft.EntityFrameworkCore.Sqlite", ctx.Database.ProviderName);
   }
 
   [Fact]

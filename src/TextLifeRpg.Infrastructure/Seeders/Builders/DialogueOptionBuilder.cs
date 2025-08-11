@@ -2,135 +2,51 @@
 
 namespace TextLifeRpg.Infrastructure.Seeders.Builders;
 
-public class DialogueOptionBuilder
+public class DialogueOptionBuilder(ApplicationContext context, Guid id, string label)
 {
-  private readonly ApplicationContext _context;
-  private readonly DialogueOptionDataModel _option;
-  private readonly DialogueOptionResultDataModel _result;
+  private readonly DialogueOptionDataModel _option = new() {Id = id, Label = label};
   private readonly List<TextVariantBuilder> _spokenTextVariants = [];
-  private readonly List<TextVariantBuilder> _resultSpokenTextVariants = [];
-  private readonly List<TextVariantBuilder> _resultNarrationBuilders = [];
+  private readonly List<DialogueOptionResultBuilder> _results = [];
 
-  public DialogueOptionBuilder(ApplicationContext context, string label)
+  public DialogueOptionResultBuilder AddResult()
   {
-    _context = context;
-    _option = new DialogueOptionDataModel
-    {
-      Id = Guid.NewGuid(),
-      Label = label
-    };
-
-    _result = new DialogueOptionResultDataModel
-    {
-      Id = Guid.NewGuid(),
-      DialogueOptionId = _option.Id
-    };
+    var rb = new DialogueOptionResultBuilder(context, _option.Id);
+    _results.Add(rb);
+    return rb;
   }
 
-  public DialogueOptionBuilder EndDialogue()
+  public DialogueOptionBuilder AddSpokenText(string text, Action<TextVariantBuilder> build)
   {
-    _result.EndDialogue = true;
-    return this;
-  }
-
-  public DialogueOptionBuilder WithTargetRelationshipValueChange(int targetRelationshipValueChange)
-  {
-    _result.TargetRelationshipValueChange = targetRelationshipValueChange;
-    return this;
-  }
-
-  public DialogueOptionBuilder AddSpokenText(string text, Action<TextVariantBuilder> buildConditions)
-  {
-    var builder = new TextVariantBuilder(ContextType.DialogueOptionSpokenText, _option.Id, text);
-    buildConditions(builder);
-    _spokenTextVariants.Add(builder);
-    return this;
-  }
-
-  public DialogueOptionBuilder AddResultSpokenText(string text, Action<TextVariantBuilder> buildConditions)
-  {
-    var builder = new TextVariantBuilder(ContextType.DialogueOptionResultSpokenText, _result.Id, text);
-    buildConditions(builder);
-    _resultSpokenTextVariants.Add(builder);
-    return this;
-  }
-
-  public DialogueOptionBuilder AddResultNarration(string text, Action<TextVariantBuilder> buildConditions)
-  {
-    var builder = new TextVariantBuilder(ContextType.DialogueOptionResultNarration, _result.Id, text);
-    buildConditions(builder);
-    _resultNarrationBuilders.Add(builder);
+    var b = new TextVariantBuilder(ContextType.DialogueOptionSpokenText, _option.Id, text);
+    build(b);
+    _spokenTextVariants.Add(b);
     return this;
   }
 
   public async Task BuildAsync()
   {
-    await _context.DialogueOptions.AddAsync(_option);
-    await _context.DialogueOptionResults.AddAsync(_result);
+    await context.DialogueOptions.AddAsync(_option);
 
-    foreach (var builder in _spokenTextVariants)
+    foreach (var b in _spokenTextVariants)
     {
       var textId = Guid.NewGuid();
-
-      await _context.DialogueOptionSpokenTexts.AddAsync(
+      await context.DialogueOptionSpokenTexts.AddAsync(
         new DialogueOptionSpokenTextDataModel
         {
-          Id = textId,
-          DialogueOptionId = _option.Id,
-          Text = builder.Text
+          Id = textId, DialogueOptionId = _option.Id, Text = b.Text
         }
       );
-
-      if (builder.Conditions.Any())
+      if (!b.Conditions.Any())
       {
-        foreach (var c in builder.Conditions) c.ContextId = textId;
-
-        await _context.Conditions.AddRangeAsync(builder.Conditions);
+        continue;
       }
+
+      foreach (var c in b.Conditions) c.ContextId = textId;
+      await context.Conditions.AddRangeAsync(b.Conditions);
     }
 
-    foreach (var builder in _resultSpokenTextVariants)
-    {
-      var textId = Guid.NewGuid();
+    foreach (var r in _results) await r.BuildAsync();
 
-      await _context.DialogueOptionResultSpokenTexts.AddAsync(
-        new DialogueOptionResultSpokenTextDataModel
-        {
-          Id = textId,
-          DialogueOptionResultId = _result.Id,
-          Text = builder.Text
-        }
-      );
-
-      if (builder.Conditions.Any())
-      {
-        foreach (var c in builder.Conditions) c.ContextId = textId;
-
-        await _context.Conditions.AddRangeAsync(builder.Conditions);
-      }
-    }
-
-    foreach (var builder in _resultNarrationBuilders)
-    {
-      var narrationId = Guid.NewGuid();
-
-      await _context.DialogueOptionResultNarrations.AddAsync(
-        new DialogueOptionResultNarrationDataModel
-        {
-          Id = narrationId,
-          DialogueOptionResultId = _result.Id,
-          Text = builder.Text
-        }
-      );
-
-      if (builder.Conditions.Any())
-      {
-        foreach (var c in builder.Conditions) c.ContextId = narrationId;
-
-        await _context.Conditions.AddRangeAsync(builder.Conditions);
-      }
-    }
-
-    await _context.SaveChangesAsync();
+    await context.SaveChangesAsync();
   }
 }

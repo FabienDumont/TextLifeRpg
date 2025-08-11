@@ -49,6 +49,11 @@ public class ApplicationContext : DbContext
   public virtual DbSet<DialogueOptionResultSpokenTextDataModel> DialogueOptionResultSpokenTexts { get; init; }
 
   /// <summary>
+  /// Represents links between dialogue option results and follow up dialogue options.
+  /// </summary>
+  public virtual DbSet<DialogueOptionResultNextDialogueOption> DialogueOptionResultNextDialogueOptions { get; init; }
+
+  /// <summary>
   /// Represents all conditions used in NPC interactions.
   /// </summary>
   public virtual DbSet<ConditionDataModel> Conditions { get; init; }

@@ -14,11 +14,11 @@ public class DialogueOptionBuilderTests
     var options = new DbContextOptionsBuilder<ApplicationContext>()
       .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
     var context = new ApplicationContext(options);
-    var builder = new DialogueOptionBuilder(context, "Say goodbye").WithTargetRelationshipValueChange(5).EndDialogue()
-      .AddSpokenText("Goodbye", c => c.WithActorEnergyCondition(">", "50"))
-      .AddResultSpokenText("Alright, goodbye.", c => c.WithActorTraitCondition(Guid.NewGuid())).AddResultNarration(
-        "You walk away from [TARGETNAME].", c => c.WithActorEnergyCondition("<", "40")
-      );
+    var builder = new DialogueOptionBuilder(context, Guid.NewGuid(), "Say goodbye").AddSpokenText(
+      "Goodbye", c => c.WithActorEnergyCondition(">", "50")
+    );
+
+    builder.AddResult();
 
     // Act
     await builder.BuildAsync();
@@ -30,27 +30,15 @@ public class DialogueOptionBuilderTests
     // Assert: Result
     var result = await context.DialogueOptionResults.SingleAsync();
     Assert.Equal(option.Id, result.DialogueOptionId);
-    Assert.Equal(5, result.TargetRelationshipValueChange);
-    Assert.True(result.EndDialogue);
 
     // Assert: SpokenText
     var spokenText = await context.DialogueOptionSpokenTexts.SingleAsync();
     Assert.Equal(option.Id, spokenText.DialogueOptionId);
     Assert.Equal("Goodbye", spokenText.Text);
 
-    // Assert: ResultSpokenText
-    var resultSpokenText = await context.DialogueOptionResultSpokenTexts.SingleAsync();
-    Assert.Equal(result.Id, resultSpokenText.DialogueOptionResultId);
-    Assert.Equal("Alright, goodbye.", resultSpokenText.Text);
-
-    // Assert: ResultNarration
-    var narration = await context.DialogueOptionResultNarrations.SingleAsync();
-    Assert.Equal(result.Id, narration.DialogueOptionResultId);
-    Assert.Equal("You walk away from [TARGETNAME].", narration.Text);
-
     // Assert: Conditions
     var conditionCount = await context.Conditions.CountAsync();
-    Assert.Equal(3, conditionCount);
+    Assert.Equal(1, conditionCount);
   }
 
   #endregion

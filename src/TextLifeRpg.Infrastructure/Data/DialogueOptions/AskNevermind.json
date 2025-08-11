@@ -1,0 +1,20 @@
+﻿{
+  "Name": "AskNevermind",
+  "Label": "Nevermind",
+  "SpokenTexts": [
+    {
+      "Text": "Nevermind.",
+      "Conditions": []
+    }
+  ],
+  "Results": [
+    {
+      "ResultSpokenTexts": [
+        {
+          "Text": "Alright.",
+          "Conditions": []
+        }
+      ]
+    }
+  ]
+}

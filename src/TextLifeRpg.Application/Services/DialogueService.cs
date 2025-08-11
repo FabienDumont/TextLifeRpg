@@ -71,7 +71,7 @@ public class DialogueService(
       Target = npc
     };
 
-    return await dialogueOptionRepository.GetPossibleDialogueOptionsAsync(context, cancellationToken);
+    return await dialogueOptionRepository.GetPossibleInitialDialogueOptionsAsync(context, cancellationToken);
   }
 
   /// <inheritdoc />
@@ -90,6 +90,8 @@ public class DialogueService(
       World = gameSave.World,
       Target = npc
     };
+
+    gameSave.ClearPendingDialogueOptions();
 
     var spokenText =
       await dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(
@@ -191,11 +193,26 @@ public class DialogueService(
         {
           ExecuteAsync = async save =>
           {
+            save.ClearPendingDialogueOptions();
             save.EndInteraction();
             await Task.CompletedTask;
           }
         }
       );
+    }
+    else
+    {
+      var followUps = await dialogueOptionRepository.GetPossibleFollowUpsAsync(context, result.Id, cancellationToken);
+
+      if (followUps.Count != 0)
+      {
+        steps.Add(
+          new GameFlowStep
+          {
+            ExecuteAsync = async save => { save.PendingDialogueOptions.AddRange(followUps); await Task.CompletedTask; }
+          }
+        );
+      }
     }
 
     return steps;

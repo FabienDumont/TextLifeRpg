@@ -19,41 +19,44 @@ public class DialogueOptionSeeder : IDataSeeder
     var folderPath = Path.Combine(AppContext.BaseDirectory, "Data", "DialogueOptions");
     var files = Directory.GetFiles(folderPath, "*.json", SearchOption.AllDirectories);
 
+    var defs = new List<(DialogueOptionDefinition, Guid)>();
     foreach (var file in files)
     {
       var json = await File.ReadAllTextAsync(file);
-
       var def = JsonSerializer.Deserialize<DialogueOptionDefinition>(json) ??
-                throw new InvalidOperationException($"Failed to parse dialogue definition file: {file}");
+                throw new Exception($"Failed to parse {file}");
+      defs.Add((def, Guid.NewGuid()));
+    }
 
-      var builder = new DialogueOptionBuilder(context, def.Label);
+    foreach (var (def, optionId) in defs)
+    {
+      var builder = new DialogueOptionBuilder(context, optionId, def.Label);
 
-      foreach (var spokenText in def.SpokenTexts)
+      foreach (var s in def.SpokenTexts) builder.AddSpokenText(s.Text, b => ApplyConditions(b, s.Conditions, traitMap));
+
+      foreach (var res in def.Results)
       {
-        builder.AddSpokenText(spokenText.Text, b => { ApplyConditions(b, spokenText.Conditions, traitMap); });
-      }
+        var rb = builder.AddResult();
 
-      foreach (var result in def.Results)
-      {
-        if (result.TargetRelationshipValueChange is not null)
+        if (res.TargetRelationshipValueChange is not null)
+          rb.WithTargetRelationshipValueChange(res.TargetRelationshipValueChange.Value);
+
+        if (res.EndsDialogue) rb.EndDialogue();
+
+        if (res.NextDialogueOptionNames is not null)
         {
-          builder.WithTargetRelationshipValueChange(result.TargetRelationshipValueChange.Value);
+          var nextIds = res.NextDialogueOptionNames.Select(name => defs.First(d => d.Item1.Name == name).Item2)
+            .ToList();
+          rb.WithNextDialogueOptions(nextIds);
         }
 
-        if (result.EndsDialogue)
-        {
-          builder.EndDialogue();
-        }
+        ApplyResultConditions(rb, res.Conditions, traitMap);
 
-        foreach (var spoken in result.ResultSpokenTexts)
-        {
-          builder.AddResultSpokenText(spoken.Text, b => { ApplyConditions(b, spoken.Conditions, traitMap); });
-        }
+        foreach (var s in res.ResultSpokenTexts)
+          rb.AddResultSpokenText(s.Text, b => ApplyConditions(b, s.Conditions, traitMap));
 
-        foreach (var narration in result.ResultNarrations)
-        {
-          builder.AddResultNarration(narration.Text, b => { ApplyConditions(b, narration.Conditions, traitMap); });
-        }
+        foreach (var n in res.ResultNarrations)
+          rb.AddResultNarration(n.Text, b => ApplyConditions(b, n.Conditions, traitMap));
       }
 
       await builder.BuildAsync();
@@ -91,6 +94,32 @@ public class DialogueOptionSeeder : IDataSeeder
       if (condition.ActorEnergy is not null)
       {
         b.WithActorEnergyCondition(condition.ActorEnergy.Operator, condition.ActorEnergy.Value.ToString());
+      }
+    }
+  }
+
+  private static void ApplyResultConditions(
+    DialogueOptionResultBuilder rb, List<DialogueOptionConditionDefinition> conditions,
+    Dictionary<string, Guid> traitMap
+  )
+  {
+    foreach (var c in conditions)
+    {
+      if (c.Trait != null && traitMap.TryGetValue(c.Trait, out var traitId))
+      {
+        rb.WithActorTraitCondition(traitId);
+      }
+
+      if (c.ActorRelationshipValue is not null)
+      {
+        rb.WithActorRelationshipValueCondition(
+          c.ActorRelationshipValue.Operator, c.ActorRelationshipValue.Value.ToString()
+        );
+      }
+
+      if (c.ActorEnergy is not null)
+      {
+        rb.WithActorEnergyCondition(c.ActorEnergy.Operator, c.ActorEnergy.Value.ToString());
       }
     }
   }
