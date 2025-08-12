@@ -39,9 +39,10 @@ public class DialogueOptionResultMapperTests
     var id = Guid.NewGuid();
     var dialogueOptionId = Guid.NewGuid();
     const int targetRelationshipValueChange = 5;
+    const string learnFact = "Job";
     const bool endDialogue = false;
 
-    var domain = DialogueOptionResult.Load(id, dialogueOptionId, targetRelationshipValueChange, endDialogue);
+    var domain = DialogueOptionResult.Load(id, dialogueOptionId, targetRelationshipValueChange, learnFact, endDialogue);
 
     // Act
     var dataModel = domain.ToDataModel();
@@ -50,6 +51,7 @@ public class DialogueOptionResultMapperTests
     Assert.Equal(id, dataModel.Id);
     Assert.Equal(dialogueOptionId, dataModel.DialogueOptionId);
     Assert.Equal(targetRelationshipValueChange, dataModel.TargetRelationshipValueChange);
+    Assert.Equal(learnFact, dataModel.ActorLearnFact);
     Assert.Equal(endDialogue, dataModel.EndDialogue);
   }
 

@@ -1,6 +1,11 @@
 ﻿{
   "Name": "AskAboutJob",
   "Label": "Ask about job",
+  "Conditions": [
+    {
+      "ActorHasntLearnedFact": "Job"
+    }
+  ],
   "SpokenTexts": [
     {
       "Text": "Do you mind telling me what your job is?",
@@ -33,6 +38,7 @@
           }
         }
       ],
+      "ActorLearnFact": "Job",
       "ResultSpokenTexts": [
         {
           "Text": "I'll tell you.",

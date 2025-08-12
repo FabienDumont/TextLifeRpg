@@ -103,7 +103,7 @@ public class DialogueOptionRepositoryTests
       {
         ConditionType = ConditionType.ActorHasTrait,
         OperandLeft = Guid.NewGuid().ToString(),
-        Operator = "=",
+        Operator = "==",
         OperandRight = "true",
         Negate = false,
         ContextType = ContextType.DialogueOption,

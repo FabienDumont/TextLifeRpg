@@ -32,10 +32,11 @@ public class DialogueOptionResultBuilderTests
     const int delta = 5;
     const string spokenYes = "Yes.";
     const string narrText = "She smiles.";
+    const string fact = "Job";
     var traitId = Guid.NewGuid();
 
     var builder = new DialogueOptionResultBuilder(context, optionId).WithTargetRelationshipValueChange(delta)
-      .EndDialogue().WithNextDialogueOptions([next1, next2]).WithActorTraitCondition(traitId)
+      .WithActorLearnFact(fact).EndDialogue().WithNextDialogueOptions([next1, next2]).WithActorTraitCondition(traitId)
       .WithActorRelationshipValueCondition(">=", "0").WithActorEnergyCondition("<", "30")
       .AddResultSpokenText(spokenYes, b => b.WithActorEnergyCondition(">", "40")).AddResultNarration(
         narrText, b => b.WithActorRelationshipValueCondition(">=", "10")
@@ -49,6 +50,7 @@ public class DialogueOptionResultBuilderTests
     var result = await context.DialogueOptionResults.SingleAsync();
     Assert.Equal(optionId, result.DialogueOptionId);
     Assert.Equal(delta, result.TargetRelationshipValueChange);
+    Assert.Equal(fact, result.ActorLearnFact);
     Assert.True(result.EndDialogue);
 
     // Assert: follow-up links saved in order

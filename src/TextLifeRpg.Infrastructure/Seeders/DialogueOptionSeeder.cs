@@ -32,16 +32,37 @@ public class DialogueOptionSeeder : IDataSeeder
     {
       var builder = new DialogueOptionBuilder(context, optionId, def.Label);
 
-      foreach (var s in def.SpokenTexts) builder.AddSpokenText(s.Text, b => ApplyConditions(b, s.Conditions, traitMap));
+      foreach (var c in def.Conditions)
+      {
+        if (!string.IsNullOrWhiteSpace(c.ActorHasntLearnedFact))
+        {
+          builder.WithActorLearnedFactCondition(c.ActorHasntLearnedFact, true);
+        }
+      }
+
+      foreach (var s in def.SpokenTexts)
+      {
+        builder.AddSpokenText(s.Text, b => ApplyTextConditions(b, s.Conditions, traitMap));
+      }
 
       foreach (var res in def.Results)
       {
         var rb = builder.AddResult();
 
         if (res.TargetRelationshipValueChange is not null)
+        {
           rb.WithTargetRelationshipValueChange(res.TargetRelationshipValueChange.Value);
+        }
 
-        if (res.EndsDialogue) rb.EndDialogue();
+        if (res.ActorLearnFact is not null)
+        {
+          rb.WithActorLearnFact(res.ActorLearnFact);
+        }
+
+        if (res.EndsDialogue)
+        {
+          rb.EndDialogue();
+        }
 
         if (res.NextDialogueOptionNames is not null)
         {
@@ -53,10 +74,10 @@ public class DialogueOptionSeeder : IDataSeeder
         ApplyResultConditions(rb, res.Conditions, traitMap);
 
         foreach (var s in res.ResultSpokenTexts)
-          rb.AddResultSpokenText(s.Text, b => ApplyConditions(b, s.Conditions, traitMap));
+          rb.AddResultSpokenText(s.Text, b => ApplyTextConditions(b, s.Conditions, traitMap));
 
         foreach (var n in res.ResultNarrations)
-          rb.AddResultNarration(n.Text, b => ApplyConditions(b, n.Conditions, traitMap));
+          rb.AddResultNarration(n.Text, b => ApplyTextConditions(b, n.Conditions, traitMap));
       }
 
       await builder.BuildAsync();
@@ -73,13 +94,13 @@ public class DialogueOptionSeeder : IDataSeeder
   /// <param name="b">The <see cref="TextVariantBuilder"/> instance to which the conditions will be applied.</param>
   /// <param name="conditions">A list of <see cref="DialogueOptionConditionDefinition"/> representing the conditions to be applied.</param>
   /// <param name="traitMap">A dictionary mapping trait names to their corresponding GUIDs.</param>
-  private static void ApplyConditions(
+  private static void ApplyTextConditions(
     TextVariantBuilder b, List<DialogueOptionConditionDefinition> conditions, Dictionary<string, Guid> traitMap
   )
   {
     foreach (var condition in conditions)
     {
-      if (condition.Trait != null && traitMap.TryGetValue(condition.Trait, out var traitId))
+      if (condition.ActorHasTrait != null && traitMap.TryGetValue(condition.ActorHasTrait, out var traitId))
       {
         b.WithActorTraitCondition(traitId);
       }
@@ -105,7 +126,7 @@ public class DialogueOptionSeeder : IDataSeeder
   {
     foreach (var c in conditions)
     {
-      if (c.Trait != null && traitMap.TryGetValue(c.Trait, out var traitId))
+      if (c.ActorHasTrait != null && traitMap.TryGetValue(c.ActorHasTrait, out var traitId))
       {
         rb.WithActorTraitCondition(traitId);
       }

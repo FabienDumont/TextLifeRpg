@@ -27,12 +27,12 @@ public class Relationship
   /// <summary>
   /// Relationship intensity, from -100 (hatred) to +100 (deep affection).
   /// </summary>
-  public int Value { get; set; }
+  public int Value { get; private set; }
 
   /// <summary>
   /// Optional relationship type (friendship, rivalry, etc.).
   /// </summary>
-  public RelationshipType Type { get; set; }
+  public RelationshipType Type { get; private set; }
 
   /// <summary>
   /// Historical interaction log and metrics.

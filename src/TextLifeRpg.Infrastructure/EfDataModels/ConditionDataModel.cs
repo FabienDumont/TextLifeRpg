@@ -62,6 +62,7 @@ public enum ContextType
 public enum ConditionType
 {
   ActorHasTrait,
+  ActorLearnedFact,
   ActorEnergy,
   ActorRelationship,
   ActorMoney

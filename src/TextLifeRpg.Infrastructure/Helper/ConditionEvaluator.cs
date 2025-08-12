@@ -49,8 +49,19 @@ public static class ConditionEvaluator
       ConditionType.ActorRelationship => CompareInt(
         actorRelationship?.Value ?? 0, condition.Operator, int.Parse(operandRight), condition.Negate
       ),
+      ConditionType.ActorLearnedFact => actorRelationship is null ||
+                                        EvaluateActorLearnedTrait(condition, actorRelationship),
       _ => throw new InvalidOperationException("Invalid ConditionType.")
     };
+  }
+
+  private static bool EvaluateActorLearnedTrait(ConditionDataModel condition, Relationship actorRelationship)
+  {
+    var learnedFact = actorRelationship.History.HasLearnedFact(
+      condition.OperandLeft ??
+      throw new InvalidOperationException($"{nameof(condition.OperandLeft)} shouldn't be null.")
+    );
+    return learnedFact && !condition.Negate || !learnedFact && condition.Negate;
   }
 
   /// <summary>
@@ -77,7 +88,7 @@ public static class ConditionEvaluator
   {
     var result = op switch
     {
-      "=" => left == right,
+      "==" => left == right,
       "!=" => left != right,
       ">" => left > right,
       "<" => left < right,

@@ -34,9 +34,16 @@ public class DialogueOptionResultDataModel
   public int? TargetRelationshipValueChange { get; set; }
 
   /// <summary>
+  /// Represents a fact that can will be learned as a result of the dialogue option.
+  /// </summary>
+  [Column("LearnFact", Order = 4)]
+  [MaxLength(100)]
+  public string? ActorLearnFact { get; set; }
+
+  /// <summary>
   /// Indicates whether the dialogue ends after selecting this option.
   /// </summary>
-  [Column("EndDialogue", Order = 4)]
+  [Column("EndDialogue", Order = 5)]
   public bool EndDialogue { get; set; }
 
   /// <summary>

@@ -32,8 +32,8 @@ public class DialogueOptionSeederTests
 
     var defs = new List<DialogueOptionConditionDefinition>
     {
-      new() {Trait = "Friendly"}, // should be applied
-      new() {Trait = "Unknown"}, // should be ignored (not in map)
+      new() {ActorHasTrait = "Friendly"}, // should be applied
+      new() {ActorHasTrait = "Unknown"}, // should be ignored (not in map)
       new()
       {
         ActorRelationshipValue = new ConditionComparisonDefinition {Operator = ">=", Value = 0}
@@ -53,7 +53,7 @@ public class DialogueOptionSeederTests
     Assert.NotNull(mi);
 
     // Act
-    mi!.Invoke(null, new object[] {rb, defs, traitMap});
+    mi.Invoke(null, [rb, defs, traitMap]);
     await rb.BuildAsync();
     await context.SaveChangesAsync();
 
@@ -106,7 +106,7 @@ public class DialogueOptionSeederTests
     Assert.NotNull(mi);
 
     // Act
-    mi!.Invoke(null, new object[] {rb, defs, traitMap});
+    mi.Invoke(null, [rb, defs, traitMap]);
     await rb.BuildAsync();
     await context.SaveChangesAsync();
 

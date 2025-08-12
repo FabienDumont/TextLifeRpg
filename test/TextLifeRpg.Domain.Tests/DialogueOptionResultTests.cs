@@ -10,16 +10,18 @@ public class DialogueOptionResultTests
     // Arrange
     var dialogueOptionId = Guid.NewGuid();
     const int targetRelationshipValueChange = 5;
+    const string learnFact = "Job";
     const bool endDialogue = true;
 
     // Act
-    var result = DialogueOptionResult.Create(dialogueOptionId, targetRelationshipValueChange, endDialogue);
+    var result = DialogueOptionResult.Create(dialogueOptionId, targetRelationshipValueChange, learnFact, endDialogue);
 
     // Assert
     Assert.NotNull(result);
     Assert.NotEqual(Guid.Empty, result.Id);
     Assert.Equal(dialogueOptionId, result.DialogueOptionId);
     Assert.Equal(targetRelationshipValueChange, result.TargetRelationshipValueChange);
+    Assert.Equal(learnFact, result.ActorLearnFact);
     Assert.Equal(endDialogue, result.EndDialogue);
   }
 
@@ -30,15 +32,17 @@ public class DialogueOptionResultTests
     var id = Guid.NewGuid();
     var dialogueOptionId = Guid.NewGuid();
     const int targetRelationshipValueChange = 5;
+    const string learnFact = "Job";
     const bool endDialogue = false;
 
     // Act
-    var result = DialogueOptionResult.Load(id, dialogueOptionId, targetRelationshipValueChange, endDialogue);
+    var result = DialogueOptionResult.Load(id, dialogueOptionId, targetRelationshipValueChange, learnFact, endDialogue);
 
     // Assert
     Assert.Equal(id, result.Id);
     Assert.Equal(dialogueOptionId, result.DialogueOptionId);
     Assert.Equal(targetRelationshipValueChange, result.TargetRelationshipValueChange);
+    Assert.Equal(learnFact, result.ActorLearnFact);
     Assert.Equal(endDialogue, result.EndDialogue);
   }
 

@@ -18,7 +18,7 @@ public class ConditionEvaluatorTests
     {
       ConditionType = ConditionType.ActorHasTrait,
       OperandLeft = traitId.ToString(),
-      Operator = "=",
+      Operator = "==",
       OperandRight = "true",
       Negate = false,
       ContextType = ContextType.Greeting
@@ -49,7 +49,7 @@ public class ConditionEvaluatorTests
     {
       ConditionType = ConditionType.ActorHasTrait,
       OperandLeft = Guid.NewGuid().ToString(),
-      Operator = "=",
+      Operator = "==",
       OperandRight = "true",
       Negate = false,
       ContextType = ContextType.Greeting
@@ -79,7 +79,7 @@ public class ConditionEvaluatorTests
     {
       ConditionType = ConditionType.ActorHasTrait,
       OperandLeft = Guid.NewGuid().ToString(),
-      Operator = "=",
+      Operator = "==",
       OperandRight = "true",
       Negate = true,
       ContextType = ContextType.Greeting
@@ -101,15 +101,49 @@ public class ConditionEvaluatorTests
     Assert.True(result);
   }
 
+  [Fact]
+  public void EvaluateCondition_ActorLearnedFact_Negated_ReturnsTrueWhenFactNotLearnedNotPresent()
+  {
+    // Arrange
+    var condition = new ConditionDataModel
+    {
+      ConditionType = ConditionType.ActorLearnedFact,
+      OperandLeft = Guid.NewGuid().ToString(),
+      Operator = "==",
+      OperandRight = "true",
+      Negate = true,
+      ContextType = ContextType.DialogueOption
+    };
+
+    var character = new CharacterBuilder().Build();
+    var npc = new CharacterBuilder().Build();
+    var world = World.Create(DateTime.Now, [character, npc]);
+    var now = new DateOnly(2025, 6, 16);
+    world.Relationships.Add(Relationship.Create(character.Id, npc.Id, RelationshipType.Acquaintance, now, now, 0));
+
+    var gameContext = new GameContext
+    {
+      Actor = character,
+      World = world,
+      Target = npc
+    };
+
+    // Act
+    var result = ConditionEvaluator.EvaluateCondition(condition, gameContext);
+
+    // Assert
+    Assert.True(result);
+  }
+
   [Theory]
-  [InlineData(ConditionType.ActorEnergy, "=", 50, "50", true)]
+  [InlineData(ConditionType.ActorEnergy, "==", 50, "50", true)]
   [InlineData(ConditionType.ActorEnergy, "!=", 50, "40", true)]
   [InlineData(ConditionType.ActorEnergy, ">", 50, "40", true)]
   [InlineData(ConditionType.ActorEnergy, "<", 50, "60", true)]
   [InlineData(ConditionType.ActorEnergy, ">=", 50, "50", true)]
   [InlineData(ConditionType.ActorEnergy, "<=", 50, "50", true)]
   [InlineData(ConditionType.ActorEnergy, ">", 50, "60", false)]
-  [InlineData(ConditionType.ActorMoney, "=", 50, "50", true)]
+  [InlineData(ConditionType.ActorMoney, "==", 50, "50", true)]
   [InlineData(ConditionType.ActorMoney, "!=", 50, "40", true)]
   [InlineData(ConditionType.ActorMoney, ">", 50, "40", true)]
   [InlineData(ConditionType.ActorMoney, "<", 50, "60", true)]

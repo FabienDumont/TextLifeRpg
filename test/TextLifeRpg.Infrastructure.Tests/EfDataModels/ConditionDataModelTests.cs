@@ -14,7 +14,7 @@ public class ConditionDataModelTests
     var contextId = Guid.NewGuid();
 
     const string operandLeft = "trait-id";
-    const string @operator = "=";
+    const string @operator = "==";
     const string operandRight = "true";
     const bool negate = true;
 

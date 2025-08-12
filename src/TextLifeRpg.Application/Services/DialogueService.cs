@@ -175,10 +175,28 @@ public class DialogueService(
               r.SourceCharacterId == npc.Id && r.TargetCharacterId == player.Id
             );
 
-            if (relationship != null)
-            {
-              relationship.Value += result.TargetRelationshipValueChange.Value;
-            }
+            relationship?.AdjustValue(
+              result.TargetRelationshipValueChange.Value, DateOnly.FromDateTime(save.World.CurrentDate)
+            );
+
+            await Task.CompletedTask;
+          }
+        }
+      );
+    }
+
+    if (result.ActorLearnFact is not null)
+    {
+      steps.Add(
+        new GameFlowStep
+        {
+          ExecuteAsync = async save =>
+          {
+            var relationship = save.World.Relationships.FirstOrDefault(r =>
+              r.SourceCharacterId == player.Id && r.TargetCharacterId == npc.Id
+            );
+
+            relationship?.History.LearnFact(result.ActorLearnFact);
 
             await Task.CompletedTask;
           }
@@ -209,7 +227,11 @@ public class DialogueService(
         steps.Add(
           new GameFlowStep
           {
-            ExecuteAsync = async save => { save.PendingDialogueOptions.AddRange(followUps); await Task.CompletedTask; }
+            ExecuteAsync = async save =>
+            {
+              save.PendingDialogueOptions.AddRange(followUps);
+              await Task.CompletedTask;
+            }
           }
         );
       }

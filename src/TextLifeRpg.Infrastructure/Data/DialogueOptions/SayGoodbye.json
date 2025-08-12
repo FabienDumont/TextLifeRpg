@@ -15,7 +15,7 @@
           "Text": "Get lost.",
           "Conditions": [
             {
-              "Trait": "Blunt"
+              "ActorHasTrait": "Blunt"
             },
             {
               "ActorRelationshipValue": {
@@ -29,7 +29,7 @@
           "Text": "Fine. Go.",
           "Conditions": [
             {
-              "Trait": "Blunt"
+              "ActorHasTrait": "Blunt"
             },
             {
               "ActorRelationshipValue": {
@@ -49,7 +49,7 @@
           "Text": "Alright.",
           "Conditions": [
             {
-              "Trait": "Blunt"
+              "ActorHasTrait": "Blunt"
             },
             {
               "ActorRelationshipValue": {
@@ -69,7 +69,7 @@
           "Text": "See you around.",
           "Conditions": [
             {
-              "Trait": "Blunt"
+              "ActorHasTrait": "Blunt"
             },
             {
               "ActorRelationshipValue": {
@@ -89,7 +89,7 @@
           "Text": "See you soon.",
           "Conditions": [
             {
-              "Trait": "Blunt"
+              "ActorHasTrait": "Blunt"
             },
             {
               "ActorRelationshipValue": {
@@ -109,7 +109,7 @@
           "Text": "You need me, I’m there for you.",
           "Conditions": [
             {
-              "Trait": "Blunt"
+              "ActorHasTrait": "Blunt"
             },
             {
               "ActorRelationshipValue": {
@@ -123,7 +123,7 @@
           "Text": "Go safely.",
           "Conditions": [
             {
-              "Trait": "Kind"
+              "ActorHasTrait": "Kind"
             },
             {
               "ActorRelationshipValue": {
@@ -137,7 +137,7 @@
           "Text": "Take care.",
           "Conditions": [
             {
-              "Trait": "Kind"
+              "ActorHasTrait": "Kind"
             },
             {
               "ActorRelationshipValue": {
@@ -157,7 +157,7 @@
           "Text": "Alright. Be well.",
           "Conditions": [
             {
-              "Trait": "Kind"
+              "ActorHasTrait": "Kind"
             },
             {
               "ActorRelationshipValue": {
@@ -177,7 +177,7 @@
           "Text": "See you around. Take care.",
           "Conditions": [
             {
-              "Trait": "Kind"
+              "ActorHasTrait": "Kind"
             },
             {
               "ActorRelationshipValue": {
@@ -197,7 +197,7 @@
           "Text": "See you soon. Take care of yourself.",
           "Conditions": [
             {
-              "Trait": "Kind"
+              "ActorHasTrait": "Kind"
             },
             {
               "ActorRelationshipValue": {
@@ -217,7 +217,7 @@
           "Text": "I'm here if you need me.",
           "Conditions": [
             {
-              "Trait": "Kind"
+              "ActorHasTrait": "Kind"
             },
             {
               "ActorRelationshipValue": {
@@ -231,7 +231,7 @@
           "Text": "Find someone else to talk to.",
           "Conditions": [
             {
-              "Trait": "Outgoing"
+              "ActorHasTrait": "Outgoing"
             },
             {
               "ActorRelationshipValue": {
@@ -245,7 +245,7 @@
           "Text": "Another time, maybe.",
           "Conditions": [
             {
-              "Trait": "Outgoing"
+              "ActorHasTrait": "Outgoing"
             },
             {
               "ActorRelationshipValue": {
@@ -265,7 +265,7 @@
           "Text": "Catch you later.",
           "Conditions": [
             {
-              "Trait": "Outgoing"
+              "ActorHasTrait": "Outgoing"
             },
             {
               "ActorRelationshipValue": {
@@ -285,7 +285,7 @@
           "Text": "See you out there.",
           "Conditions": [
             {
-              "Trait": "Outgoing"
+              "ActorHasTrait": "Outgoing"
             },
             {
               "ActorRelationshipValue": {
@@ -305,7 +305,7 @@
           "Text": "Let's hang again soon.",
           "Conditions": [
             {
-              "Trait": "Outgoing"
+              "ActorHasTrait": "Outgoing"
             },
             {
               "ActorRelationshipValue": {
@@ -325,7 +325,7 @@
           "Text": "Anytime—come find me.",
           "Conditions": [
             {
-              "Trait": "Outgoing"
+              "ActorHasTrait": "Outgoing"
             },
             {
               "ActorRelationshipValue": {
@@ -339,7 +339,7 @@
           "Text": "I will not detain you.",
           "Conditions": [
             {
-              "Trait": "Polite"
+              "ActorHasTrait": "Polite"
             },
             {
               "ActorRelationshipValue": {
@@ -353,7 +353,7 @@
           "Text": "Very well.",
           "Conditions": [
             {
-              "Trait": "Polite"
+              "ActorHasTrait": "Polite"
             },
             {
               "ActorRelationshipValue": {
@@ -373,7 +373,7 @@
           "Text": "Farewell.",
           "Conditions": [
             {
-              "Trait": "Polite"
+              "ActorHasTrait": "Polite"
             },
             {
               "ActorRelationshipValue": {
@@ -393,7 +393,7 @@
           "Text": "Until next time.",
           "Conditions": [
             {
-              "Trait": "Polite"
+              "ActorHasTrait": "Polite"
             },
             {
               "ActorRelationshipValue": {
@@ -413,7 +413,7 @@
           "Text": "Do keep in touch.",
           "Conditions": [
             {
-              "Trait": "Polite"
+              "ActorHasTrait": "Polite"
             },
             {
               "ActorRelationshipValue": {
@@ -433,7 +433,7 @@
           "Text": "Let's talk again soon, whenever you wish.",
           "Conditions": [
             {
-              "Trait": "Polite"
+              "ActorHasTrait": "Polite"
             },
             {
               "ActorRelationshipValue": {
@@ -447,7 +447,7 @@
           "Text": "Fuck off.",
           "Conditions": [
             {
-              "Trait": "Rude"
+              "ActorHasTrait": "Rude"
             },
             {
               "ActorRelationshipValue": {
@@ -461,7 +461,7 @@
           "Text": "Just go.",
           "Conditions": [
             {
-              "Trait": "Rude"
+              "ActorHasTrait": "Rude"
             },
             {
               "ActorRelationshipValue": {
@@ -481,7 +481,7 @@
           "Text": "Yeah, bye.",
           "Conditions": [
             {
-              "Trait": "Rude"
+              "ActorHasTrait": "Rude"
             },
             {
               "ActorRelationshipValue": {
@@ -501,7 +501,7 @@
           "Text": "Later. Don’t dawdle.",
           "Conditions": [
             {
-              "Trait": "Rude"
+              "ActorHasTrait": "Rude"
             },
             {
               "ActorRelationshipValue": {
@@ -521,7 +521,7 @@
           "Text": "You’d better come back.",
           "Conditions": [
             {
-              "Trait": "Rude"
+              "ActorHasTrait": "Rude"
             },
             {
               "ActorRelationshipValue": {
@@ -541,7 +541,7 @@
           "Text": "Don't go dark on me.",
           "Conditions": [
             {
-              "Trait": "Rude"
+              "ActorHasTrait": "Rude"
             },
             {
               "ActorRelationshipValue": {
@@ -555,7 +555,7 @@
           "Text": "...",
           "Conditions": [
             {
-              "Trait": "Shy"
+              "ActorHasTrait": "Shy"
             },
             {
               "ActorRelationshipValue": {
@@ -569,7 +569,7 @@
           "Text": "... Right.",
           "Conditions": [
             {
-              "Trait": "Shy"
+              "ActorHasTrait": "Shy"
             },
             {
               "ActorRelationshipValue": {
@@ -589,7 +589,7 @@
           "Text": "Okay... bye.",
           "Conditions": [
             {
-              "Trait": "Shy"
+              "ActorHasTrait": "Shy"
             },
             {
               "ActorRelationshipValue": {
@@ -609,7 +609,7 @@
           "Text": "Um, see you.",
           "Conditions": [
             {
-              "Trait": "Shy"
+              "ActorHasTrait": "Shy"
             },
             {
               "ActorRelationshipValue": {
@@ -629,7 +629,7 @@
           "Text": "See you... soon.",
           "Conditions": [
             {
-              "Trait": "Shy"
+              "ActorHasTrait": "Shy"
             },
             {
               "ActorRelationshipValue": {
@@ -649,7 +649,7 @@
           "Text": "I—I’ll be happy to talk again soon.",
           "Conditions": [
             {
-              "Trait": "Shy"
+              "ActorHasTrait": "Shy"
             },
             {
               "ActorRelationshipValue": {

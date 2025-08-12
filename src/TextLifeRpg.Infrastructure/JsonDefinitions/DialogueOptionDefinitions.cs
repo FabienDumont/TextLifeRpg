@@ -6,6 +6,7 @@ public class DialogueOptionDefinition
   public required string Label { get; set; }
   public List<DialogueOptionSpokenTextDefinition> SpokenTexts { get; set; } = [];
   public List<DialogueOptionResultDefinition> Results { get; set; } = [];
+  public List<DialogueOptionConditionDefinition> Conditions { get; set; } = [];
 }
 
 public class DialogueOptionSpokenTextDefinition
@@ -17,6 +18,7 @@ public class DialogueOptionSpokenTextDefinition
 public class DialogueOptionResultDefinition
 {
   public int? TargetRelationshipValueChange { get; set; }
+  public string? ActorLearnFact { get; set; }
   public List<string>? NextDialogueOptionNames { get; set; }
   public bool EndsDialogue { get; set; }
   public List<DialogueOptionResultSpokenTextDefinition> ResultSpokenTexts { get; set; } = [];
@@ -38,7 +40,8 @@ public class DialogueOptionResultNarrationDefinition
 
 public class DialogueOptionConditionDefinition
 {
-  public string? Trait { get; set; }
+  public string? ActorHasTrait { get; set; }
+  public string? ActorHasntLearnedFact { get; set; }
   public ConditionComparisonDefinition? ActorRelationshipValue { get; set; }
 
   public ConditionComparisonDefinition? ActorEnergy { get; set; }

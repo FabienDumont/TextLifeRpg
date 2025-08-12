@@ -227,7 +227,7 @@ public class DialogueServiceTests
     save.StartDialogue(npc.Id);
 
     var dialogueOption = DialogueOption.Create("Ask something");
-    var result = DialogueOptionResult.Create(Guid.NewGuid(), 5, endDialogue: true);
+    var result = DialogueOptionResult.Create(Guid.NewGuid(), 5, "Job", endDialogue: true);
 
     const string playerSpokenText = "What happened here?";
     const string npcSpokenText = "I don't want to talk about it.";
@@ -282,6 +282,7 @@ public class DialogueServiceTests
     Assert.Null(save.NpcInteractionType);
 
     Assert.Equal(5, relationshipNpc.Value);
+    Assert.True(relationshipPlayer.History.HasLearnedFact("Job"));
   }
 
   [Fact]
@@ -295,7 +296,7 @@ public class DialogueServiceTests
     save.StartDialogue(npc.Id);
 
     var dialogueOption = DialogueOption.Create("Say goodbye");
-    var result = DialogueOptionResult.Create(Guid.NewGuid(), null, endDialogue: true);
+    var result = DialogueOptionResult.Create(Guid.NewGuid(), null, null, endDialogue: true);
 
     A.CallTo(() => _dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(
         dialogueOption.Id, A<GameContext>._, A<CancellationToken>._
@@ -344,7 +345,7 @@ public class DialogueServiceTests
     save.PendingDialogueOptions.Add(DialogueOption.Create("stale"));
 
     var dialogueOption = DialogueOption.Create("Ask something");
-    var result = DialogueOptionResult.Create(Guid.NewGuid(), null, endDialogue: false);
+    var result = DialogueOptionResult.Create(Guid.NewGuid(), null, null, endDialogue: false);
 
     // No player spoken text / npc reply / narration needed for this test
     A.CallTo(() => _dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(

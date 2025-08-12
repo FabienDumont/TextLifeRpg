@@ -6,8 +6,8 @@ public class DialogueOptionResultBuilder(ApplicationContext context, Guid option
 {
   private readonly DialogueOptionResultDataModel _result = new() {Id = Guid.NewGuid(), DialogueOptionId = optionId};
   private readonly List<TextVariantBuilder> _resultSpoken = [];
-  private readonly List<TextVariantBuilder> _resultNarr = [];
-  private readonly List<ConditionDataModel> _resultConds = [];
+  private readonly List<TextVariantBuilder> _resultNarrations = [];
+  private readonly List<ConditionDataModel> _resultConditions = [];
   private readonly List<(Guid nextId, int order)> _nexts = [];
 
   public DialogueOptionResultBuilder EndDialogue()
@@ -22,6 +22,12 @@ public class DialogueOptionResultBuilder(ApplicationContext context, Guid option
     return this;
   }
 
+  public DialogueOptionResultBuilder WithActorLearnFact(string fact)
+  {
+    _result.ActorLearnFact = fact;
+    return this;
+  }
+
   public DialogueOptionResultBuilder WithNextDialogueOptions(IEnumerable<Guid> ids)
   {
     var i = 0;
@@ -32,7 +38,7 @@ public class DialogueOptionResultBuilder(ApplicationContext context, Guid option
   // RESULT-LEVEL CONDITIONS (ContextType = DialogueOptionResult)
   public DialogueOptionResultBuilder WithActorTraitCondition(Guid traitId)
   {
-    _resultConds.Add(
+    _resultConditions.Add(
       new ConditionDataModel
       {
         Id = Guid.NewGuid(),
@@ -50,7 +56,7 @@ public class DialogueOptionResultBuilder(ApplicationContext context, Guid option
 
   public DialogueOptionResultBuilder WithActorRelationshipValueCondition(string op, string value)
   {
-    _resultConds.Add(
+    _resultConditions.Add(
       new ConditionDataModel
       {
         Id = Guid.NewGuid(),
@@ -65,7 +71,7 @@ public class DialogueOptionResultBuilder(ApplicationContext context, Guid option
 
   public DialogueOptionResultBuilder WithActorEnergyCondition(string op, string value)
   {
-    _resultConds.Add(
+    _resultConditions.Add(
       new ConditionDataModel
       {
         Id = Guid.NewGuid(),
@@ -90,7 +96,7 @@ public class DialogueOptionResultBuilder(ApplicationContext context, Guid option
   {
     var b = new TextVariantBuilder(ContextType.DialogueOptionResultNarration, _result.Id, text);
     build(b);
-    _resultNarr.Add(b);
+    _resultNarrations.Add(b);
     return this;
   }
 
@@ -109,10 +115,10 @@ public class DialogueOptionResultBuilder(ApplicationContext context, Guid option
         }
       );
 
-    if (_resultConds.Count > 0)
+    if (_resultConditions.Count > 0)
     {
-      foreach (var c in _resultConds) c.ContextId = _result.Id;
-      await context.Conditions.AddRangeAsync(_resultConds);
+      foreach (var c in _resultConditions) c.ContextId = _result.Id;
+      await context.Conditions.AddRangeAsync(_resultConditions);
     }
 
     foreach (var b in _resultSpoken)
@@ -133,7 +139,7 @@ public class DialogueOptionResultBuilder(ApplicationContext context, Guid option
       await context.Conditions.AddRangeAsync(b.Conditions);
     }
 
-    foreach (var b in _resultNarr)
+    foreach (var b in _resultNarrations)
     {
       var id = Guid.NewGuid();
       await context.DialogueOptionResultNarrations.AddAsync(

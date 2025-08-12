@@ -5,6 +5,12 @@
 /// </summary>
 public class RelationshipHistory
 {
+  #region Fields
+
+  private readonly List<string> _learnedFacts = [];
+
+  #endregion
+
   #region Properties
 
   /// <summary>
@@ -56,6 +62,28 @@ public class RelationshipHistory
   public void UpdateLastInteraction(DateOnly date)
   {
     LastInteraction = date;
+  }
+
+  /// <summary>
+  /// Checks if a specific fact identified by the given key has been learned.
+  /// </summary>
+  /// <param name="fact">The unique identifier of the fact to check.</param>
+  /// <returns>True if the fact with the specified key has been learned; otherwise, false.</returns>
+  public bool HasLearnedFact(string fact)
+  {
+    return _learnedFacts.Contains(fact);
+  }
+
+  /// <summary>
+  /// Records a fact that has been learned, stores it with the specified key and value, and updates the last interaction date.
+  /// </summary>
+  /// <param name="fact">The unique identifier for the fact being learned.</param>
+  public void LearnFact(string fact)
+  {
+    if (!HasLearnedFact(fact))
+    {
+      _learnedFacts.Add(fact);
+    }
   }
 
   #endregion

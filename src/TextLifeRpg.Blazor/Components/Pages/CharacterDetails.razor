@@ -47,7 +47,15 @@ else
       </div>
       <div class="flex">
         <span class="font-bold">Job</span>
-        <span>&nbsp;:&nbsp;@(_job?.Name ?? "Unemployed")</span>
+        <span>&nbsp;:&nbsp;</span>
+        @if (GameSaveStore.CurrentSave!.PlayerCharacterId == CharacterId || (_playerRelationship is not null && _playerRelationship.History.HasLearnedFact("Job")))
+        {
+          <span>@(_job?.Name ?? "Unemployed")</span>
+        }
+        else
+        {
+          <span>???</span>
+        }
       </div>
     </div>
 
@@ -127,6 +135,7 @@ else
 
   private List<Trait>? _traits;
   private List<RelationshipDisplay>? _relationships;
+  private Relationship? _playerRelationship;
   private Job? _job;
 
   /// <summary>
@@ -160,6 +169,8 @@ else
         return otherCharacter is null ? Enumerable.Empty<RelationshipDisplay>() : [new RelationshipDisplay(otherCharacter, GetRelationshipLabel(r.Type, true))];
       }
     ).ToList();
+
+    _playerRelationship = world.Relationships.FirstOrDefault(r => r.SourceCharacterId == GameSaveStore.CurrentSave!.PlayerCharacterId && r.TargetCharacterId == _character.Id);
 
     if (_character.JobId is not null)
     {

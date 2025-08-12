@@ -60,7 +60,7 @@ public class TextVariantBuilderTests
     Assert.Equal(ConditionType.ActorHasTrait, condition.ConditionType);
     Assert.Equal(traitId.ToString(), condition.OperandLeft);
     Assert.Equal("true", condition.OperandRight);
-    Assert.Equal("=", condition.Operator);
+    Assert.Equal("==", condition.Operator);
     Assert.False(condition.Negate);
   }
 
