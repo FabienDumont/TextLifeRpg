@@ -21,7 +21,9 @@ public class DialogueOptionSeederTests
     await using var context = new ApplicationContext(options);
 
     var optionId = Guid.NewGuid();
-    context.DialogueOptions.Add(new DialogueOptionDataModel {Id = optionId, Label = "Ask something"});
+    context.DialogueOptions.Add(
+      new DialogueOptionDataModel {Id = optionId, Label = "Ask something", NeededMinutes = 0}
+    );
     await context.SaveChangesAsync();
 
     var traitId = Guid.NewGuid();
@@ -93,7 +95,7 @@ public class DialogueOptionSeederTests
     await using var context = new ApplicationContext(options);
 
     var optionId = Guid.NewGuid();
-    context.DialogueOptions.Add(new DialogueOptionDataModel {Id = optionId, Label = "Chit chat"});
+    context.DialogueOptions.Add(new DialogueOptionDataModel {Id = optionId, Label = "Chit chat", NeededMinutes = 10});
     await context.SaveChangesAsync();
 
     var rb = new DialogueOptionResultBuilder(context, optionId);

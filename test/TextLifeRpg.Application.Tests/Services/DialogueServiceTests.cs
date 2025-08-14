@@ -150,8 +150,8 @@ public class DialogueServiceTests
 
     var expectedOptions = new[]
     {
-      DialogueOption.Create("Ask about the weather"),
-      DialogueOption.Create("Say goodbye")
+      DialogueOption.Create("Ask about the weather", 0),
+      DialogueOption.Create("Say goodbye", 0)
     };
 
     A.CallTo(() =>
@@ -195,7 +195,7 @@ public class DialogueServiceTests
     var player = new CharacterBuilder().Build();
     var world = World.Create(_date, [player]);
     var save = GameSave.Create(player, world); // InteractingNpc is null by default
-    var dialogueOption = DialogueOption.Create("Ask something");
+    var dialogueOption = DialogueOption.Create("Ask something", 0);
 
     // Act & Assert
     var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
@@ -213,7 +213,8 @@ public class DialogueServiceTests
     var npc = new CharacterBuilder().WithName("NPC").WithSex(BiologicalSex.Female).Build();
     var world = World.Create(_date, [player, npc]);
 
-    var date = DateOnly.FromDateTime(world.CurrentDate);
+    var dateTime = world.CurrentDate;
+    var date = DateOnly.FromDateTime(dateTime);
 
     var relationshipPlayer = Relationship.Create(player.Id, npc.Id, RelationshipType.Acquaintance, date, date, 0);
     var relationshipNpc = Relationship.Create(npc.Id, player.Id, RelationshipType.Acquaintance, date, date, 0);
@@ -228,10 +229,10 @@ public class DialogueServiceTests
     var save = GameSave.Create(player, world);
     save.StartDialogue(npc.Id);
 
-    var dialogueOption = DialogueOption.Create("Ask something");
+    var dialogueOption = DialogueOption.Create("Ask something", 5);
     const ActorTargetSpecialAction specialAction = ActorTargetSpecialAction.AddTargetPhoneNumber;
     const Fact learnFact = Fact.Job;
-    var result = DialogueOptionResult.Create(Guid.NewGuid(), 5, learnFact, specialAction, endDialogue: true);
+    var result = DialogueOptionResult.Create(Guid.NewGuid(), true, 5, learnFact, specialAction, endDialogue: true);
 
     const string playerSpokenText = "What happened here?";
     const string npcSpokenText = "I don't want to talk about it.";
@@ -285,6 +286,7 @@ public class DialogueServiceTests
     Assert.Null(save.InteractingNpc);
     Assert.Null(save.NpcInteractionType);
 
+    Assert.Equal(dateTime.AddMinutes(5), world.CurrentDate);
     Assert.Equal(5, relationshipNpc.Value);
     Assert.True(relationshipPlayer.History.HasLearnedFact(learnFact));
   }
@@ -300,9 +302,9 @@ public class DialogueServiceTests
     var save = GameSave.Create(player, world);
     save.StartDialogue(npc.Id);
 
-    var dialogueOption = DialogueOption.Create("Ask something");
+    var dialogueOption = DialogueOption.Create("Ask something", 0);
     var result = DialogueOptionResult.Create(
-      Guid.NewGuid(), null, null, (ActorTargetSpecialAction) 999, endDialogue: false
+      Guid.NewGuid(), false, null, null, (ActorTargetSpecialAction) 999, endDialogue: false
     );
 
     A.CallTo(() => _dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(
@@ -348,8 +350,8 @@ public class DialogueServiceTests
     var save = GameSave.Create(player, world);
     save.StartDialogue(npc.Id);
 
-    var dialogueOption = DialogueOption.Create("Say goodbye");
-    var result = DialogueOptionResult.Create(Guid.NewGuid(), null, null, null, endDialogue: true);
+    var dialogueOption = DialogueOption.Create("Say goodbye", 0);
+    var result = DialogueOptionResult.Create(Guid.NewGuid(), false, null, null, null, endDialogue: true);
 
     A.CallTo(() => _dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(
         dialogueOption.Id, A<GameContext>._, A<CancellationToken>._
@@ -395,10 +397,10 @@ public class DialogueServiceTests
     save.StartDialogue(npc.Id);
 
     // Add stale pending options to ensure the service clears them first
-    save.PendingDialogueOptions.Add(DialogueOption.Create("stale"));
+    save.PendingDialogueOptions.Add(DialogueOption.Create("stale", 0));
 
-    var dialogueOption = DialogueOption.Create("Ask something");
-    var result = DialogueOptionResult.Create(Guid.NewGuid(), null, null, null, endDialogue: false);
+    var dialogueOption = DialogueOption.Create("Ask something", 0);
+    var result = DialogueOptionResult.Create(Guid.NewGuid(), false, null, null, null, endDialogue: false);
 
     // No player spoken text / npc reply / narration needed for this test
     A.CallTo(() => _dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(
@@ -423,8 +425,8 @@ public class DialogueServiceTests
 
     var followUps = new[]
     {
-      DialogueOption.Create("Ask about job"),
-      DialogueOption.Create("Nevermind")
+      DialogueOption.Create("Ask about job", 0),
+      DialogueOption.Create("Nevermind", 0)
     };
 
     A.CallTo(() => _dialogueOptionRepository.GetPossibleFollowUpsAsync(

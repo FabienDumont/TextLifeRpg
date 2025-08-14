@@ -148,6 +148,20 @@ public class DialogueService(
       );
     }
 
+    if (result.AddMinutes)
+    {
+      steps.Add(
+        new GameFlowStep
+        {
+          ExecuteAsync = async save =>
+          {
+            save.World.AdvanceTime(dialogueOption.NeededMinutes, player.Id);
+            await Task.CompletedTask;
+          }
+        }
+      );
+    }
+
     var resultNarration =
       await dialogueOptionResultNarrationRepository.GetByDialogueOptionResultIdAsync(
         result.Id, context, cancellationToken

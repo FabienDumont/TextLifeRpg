@@ -17,6 +17,12 @@ public class DialogueOptionResultBuilder(ApplicationContext context, Guid option
     return this;
   }
 
+  public DialogueOptionResultBuilder WithAddMinutes()
+  {
+    _result.AddMinutes = true;
+    return this;
+  }
+
   public DialogueOptionResultBuilder WithTargetRelationshipValueChange(int v)
   {
     _result.TargetRelationshipValueChange = v;

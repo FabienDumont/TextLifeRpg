@@ -44,7 +44,7 @@ public class DialogueOptionSeeder : IDataSeeder
 
     foreach (var (def, optionId) in defs)
     {
-      var builder = new DialogueOptionBuilder(context, optionId, def.Label);
+      var builder = new DialogueOptionBuilder(context, optionId, def.Label, def.NeededMinutes ?? 0);
 
       foreach (var c in def.Conditions)
       {
@@ -69,6 +69,11 @@ public class DialogueOptionSeeder : IDataSeeder
       foreach (var res in def.Results)
       {
         var rb = builder.AddResult();
+
+        if (res.AddMinutes is true)
+        {
+          rb.WithAddMinutes();
+        }
 
         if (res.TargetRelationshipValueChange is not null)
         {

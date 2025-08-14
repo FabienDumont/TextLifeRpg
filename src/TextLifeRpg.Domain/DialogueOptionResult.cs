@@ -18,6 +18,11 @@ public class DialogueOptionResult
   public Guid DialogueOptionId { get; }
 
   /// <summary>
+  /// Indicates if minutes should be added as part of the dialogue option result.
+  /// </summary>
+  public bool AddMinutes { get; }
+
+  /// <summary>
   /// Indicates the target character relationship value change.
   /// </summary>
   public int? TargetRelationshipValueChange { get; }
@@ -45,12 +50,13 @@ public class DialogueOptionResult
   /// Private constructor used internally.
   /// </summary>
   private DialogueOptionResult(
-    Guid id, Guid dialogueOptionId, int? targetRelationshipValueChange, Fact? actorLearnFact,
+    Guid id, Guid dialogueOptionId, bool addMinutes, int? targetRelationshipValueChange, Fact? actorLearnFact,
     ActorTargetSpecialAction? actorTargetSpecialAction, bool endDialogue
   )
   {
     Id = id;
     DialogueOptionId = dialogueOptionId;
+    AddMinutes = addMinutes;
     TargetRelationshipValueChange = targetRelationshipValueChange;
     ActorLearnFact = actorLearnFact;
     ActorTargetSpecialAction = actorTargetSpecialAction;
@@ -65,12 +71,13 @@ public class DialogueOptionResult
   /// Factory method to create a new instance.
   /// </summary>
   public static DialogueOptionResult Create(
-    Guid dialogueOptionId, int? targetRelationshipValueChange, Fact? learnFact,
+    Guid dialogueOptionId, bool addMinutes, int? targetRelationshipValueChange, Fact? learnFact,
     ActorTargetSpecialAction? actorTargetSpecialAction, bool endDialogue
   )
   {
     return new DialogueOptionResult(
-      Guid.NewGuid(), dialogueOptionId, targetRelationshipValueChange, learnFact, actorTargetSpecialAction, endDialogue
+      Guid.NewGuid(), dialogueOptionId, addMinutes, targetRelationshipValueChange, learnFact, actorTargetSpecialAction,
+      endDialogue
     );
   }
 
@@ -78,12 +85,12 @@ public class DialogueOptionResult
   /// Factory method to load an existing instance from persistence.
   /// </summary>
   public static DialogueOptionResult Load(
-    Guid id, Guid dialogueOptionId, int? targetRelationshipValueChange, Fact? learnFact,
+    Guid id, Guid dialogueOptionId, bool addMinutes, int? targetRelationshipValueChange, Fact? learnFact,
     ActorTargetSpecialAction? actorTargetSpecialAction, bool endDialogue
   )
   {
     return new DialogueOptionResult(
-      id, dialogueOptionId, targetRelationshipValueChange, learnFact, actorTargetSpecialAction, endDialogue
+      id, dialogueOptionId, addMinutes, targetRelationshipValueChange, learnFact, actorTargetSpecialAction, endDialogue
     );
   }
 

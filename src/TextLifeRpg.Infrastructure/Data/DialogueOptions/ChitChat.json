@@ -1,8 +1,10 @@
 ﻿{
   "Name": "ChitChat",
   "Label": "Chit chat",
+  "NeededMinutes": 10,
   "Results": [
     {
+      "AddMinutes": true,
       "TargetRelationshipValueChange": 1,
       "ResultNarrations": [
         {

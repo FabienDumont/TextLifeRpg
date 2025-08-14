@@ -4,9 +4,11 @@ using TextLifeRpg.Infrastructure.Helper;
 
 namespace TextLifeRpg.Infrastructure.Seeders.Builders;
 
-public class DialogueOptionBuilder(ApplicationContext context, Guid id, string label)
+public class DialogueOptionBuilder(ApplicationContext context, Guid id, string label, int neededMinutes)
 {
-  private readonly DialogueOptionDataModel _dialogueOption = new() {Id = id, Label = label};
+  private readonly DialogueOptionDataModel _dialogueOption = new()
+    {Id = id, Label = label, NeededMinutes = neededMinutes};
+
   private readonly List<ConditionDataModel> _conditions = [];
   private readonly List<TextVariantBuilder> _spokenTextVariants = [];
   private readonly List<DialogueOptionResultBuilder> _results = [];

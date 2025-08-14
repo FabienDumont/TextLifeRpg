@@ -17,7 +17,7 @@ public static class DialogueOptionMapper
   /// </summary>
   public static DialogueOption ToDomain(this DialogueOptionDataModel dataModel)
   {
-    return dataModel.Map(i => DialogueOption.Load(i.Id, i.Label));
+    return dataModel.Map(i => DialogueOption.Load(i.Id, i.Label, i.NeededMinutes));
   }
 
   /// <summary>
@@ -36,7 +36,8 @@ public static class DialogueOptionMapper
     return domain.Map(d => new DialogueOptionDataModel
       {
         Id = d.Id,
-        Label = d.Label
+        Label = d.Label,
+        NeededMinutes = d.NeededMinutes
       }
     );
   }

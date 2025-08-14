@@ -24,9 +24,9 @@ public class DialogueOptionResultBuilderTests
     var next2 = Guid.NewGuid();
 
     context.DialogueOptions.AddRange(
-      new DialogueOptionDataModel {Id = optionId, Label = "Ask something"},
-      new DialogueOptionDataModel {Id = next1, Label = "Ask about job"},
-      new DialogueOptionDataModel {Id = next2, Label = "Nevermind"}
+      new DialogueOptionDataModel {Id = optionId, Label = "Ask something", NeededMinutes = 0},
+      new DialogueOptionDataModel {Id = next1, Label = "Ask about job", NeededMinutes = 0},
+      new DialogueOptionDataModel {Id = next2, Label = "Nevermind", NeededMinutes = 0}
     );
     await context.SaveChangesAsync();
 

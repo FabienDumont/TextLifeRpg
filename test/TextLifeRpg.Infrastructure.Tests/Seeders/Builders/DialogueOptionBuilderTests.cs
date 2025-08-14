@@ -14,7 +14,7 @@ public class DialogueOptionBuilderTests
     var options = new DbContextOptionsBuilder<ApplicationContext>()
       .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
     var context = new ApplicationContext(options);
-    var builder = new DialogueOptionBuilder(context, Guid.NewGuid(), "Say goodbye").AddSpokenText(
+    var builder = new DialogueOptionBuilder(context, Guid.NewGuid(), "Say goodbye", 0).AddSpokenText(
       "Goodbye", c => c.WithActorEnergyCondition(">", "50")
     );
 

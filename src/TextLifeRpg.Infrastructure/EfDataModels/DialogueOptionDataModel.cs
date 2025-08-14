@@ -28,5 +28,9 @@ public class DialogueOptionDataModel
   [MaxLength(500)]
   public required string Label { get; set; }
 
+  [Column("NeededMinutes", Order = 3)]
+  [Required]
+  public required int NeededMinutes { get; set; }
+
   #endregion
 }

@@ -11,7 +11,7 @@ public class DialogueOptionTests
     const string label = "Say goodbye";
 
     // Act
-    var dialogueOption = DialogueOption.Create(label);
+    var dialogueOption = DialogueOption.Create(label, 0);
 
     // Assert
     Assert.NotNull(dialogueOption);
@@ -27,7 +27,7 @@ public class DialogueOptionTests
     const string label = "Say goodbye";
 
     // Act
-    var dialogueOption = DialogueOption.Load(id, label);
+    var dialogueOption = DialogueOption.Load(id, label, 0);
 
     // Assert
     Assert.Equal(id, dialogueOption.Id);

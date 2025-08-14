@@ -58,7 +58,7 @@ public class DialogueOptionRepositoryTests
     var dialogueOption = new DialogueOptionDataModel
     {
       Id = Guid.NewGuid(),
-      Label = "Say goodbye"
+      Label = "Say goodbye", NeededMinutes = 0
     };
 
     _dialogueOptionData.Clear();
@@ -91,7 +91,7 @@ public class DialogueOptionRepositoryTests
     var dialogueOption = new DialogueOptionDataModel
     {
       Id = dialogueOptionId,
-      Label = "Say goodbye"
+      Label = "Say goodbye", NeededMinutes = 0
     };
 
     _dialogueOptionData.Clear();
@@ -140,8 +140,8 @@ public class DialogueOptionRepositoryTests
     _dialogueOptionData.Clear();
     _dialogueOptionData.AddRange(
       [
-        new DialogueOptionDataModel {Id = next1Id, Label = "Ask about job"},
-        new DialogueOptionDataModel {Id = next2Id, Label = "Nevermind"}
+        new DialogueOptionDataModel {Id = next1Id, Label = "Ask about job", NeededMinutes = 0},
+        new DialogueOptionDataModel {Id = next2Id, Label = "Nevermind", NeededMinutes = 0}
       ]
     );
 

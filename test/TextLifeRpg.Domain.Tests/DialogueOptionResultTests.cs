@@ -9,6 +9,7 @@ public class DialogueOptionResultTests
   {
     // Arrange
     var dialogueOptionId = Guid.NewGuid();
+    const bool addMinutes = false;
     const int targetRelationshipValueChange = 5;
     const Fact learnFact = Fact.Job;
     const ActorTargetSpecialAction specialAction = ActorTargetSpecialAction.AddTargetPhoneNumber;
@@ -16,13 +17,14 @@ public class DialogueOptionResultTests
 
     // Act
     var result = DialogueOptionResult.Create(
-      dialogueOptionId, targetRelationshipValueChange, learnFact, specialAction, endDialogue
+      dialogueOptionId, addMinutes, targetRelationshipValueChange, learnFact, specialAction, endDialogue
     );
 
     // Assert
     Assert.NotNull(result);
     Assert.NotEqual(Guid.Empty, result.Id);
     Assert.Equal(dialogueOptionId, result.DialogueOptionId);
+    Assert.Equal(addMinutes, result.AddMinutes);
     Assert.Equal(targetRelationshipValueChange, result.TargetRelationshipValueChange);
     Assert.Equal(learnFact, result.ActorLearnFact);
     Assert.Equal(specialAction, result.ActorTargetSpecialAction);
@@ -35,6 +37,7 @@ public class DialogueOptionResultTests
     // Arrange
     var id = Guid.NewGuid();
     var dialogueOptionId = Guid.NewGuid();
+    const bool addMinutes = false;
     const int targetRelationshipValueChange = 5;
     const Fact learnFact = Fact.Job;
     const ActorTargetSpecialAction specialAction = ActorTargetSpecialAction.AddTargetPhoneNumber;
@@ -42,12 +45,13 @@ public class DialogueOptionResultTests
 
     // Act
     var result = DialogueOptionResult.Load(
-      id, dialogueOptionId, targetRelationshipValueChange, learnFact, specialAction, endDialogue
+      id, dialogueOptionId, addMinutes, targetRelationshipValueChange, learnFact, specialAction, endDialogue
     );
 
     // Assert
     Assert.Equal(id, result.Id);
     Assert.Equal(dialogueOptionId, result.DialogueOptionId);
+    Assert.Equal(addMinutes, result.AddMinutes);
     Assert.Equal(targetRelationshipValueChange, result.TargetRelationshipValueChange);
     Assert.Equal(learnFact, result.ActorLearnFact);
     Assert.Equal(specialAction, result.ActorTargetSpecialAction);

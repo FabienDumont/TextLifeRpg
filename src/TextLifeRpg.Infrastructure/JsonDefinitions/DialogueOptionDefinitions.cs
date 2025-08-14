@@ -6,6 +6,7 @@ public class DialogueOptionDefinition
 {
   public required string Name { get; set; }
   public required string Label { get; set; }
+  public int? NeededMinutes { get; set; }
   public List<DialogueOptionSpokenTextDefinition> SpokenTexts { get; set; } = [];
   public List<DialogueOptionResultDefinition> Results { get; set; } = [];
   public List<DialogueOptionConditionDefinition> Conditions { get; set; } = [];
@@ -19,6 +20,7 @@ public class DialogueOptionSpokenTextDefinition
 
 public class DialogueOptionResultDefinition
 {
+  public bool? AddMinutes { get; set; }
   public int? TargetRelationshipValueChange { get; set; }
   public Fact? ActorLearnFact { get; set; }
   public ActorTargetSpecialAction? ActorTargetSpecialAction { get; set; }

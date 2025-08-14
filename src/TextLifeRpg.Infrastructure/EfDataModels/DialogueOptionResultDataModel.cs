@@ -28,28 +28,31 @@ public class DialogueOptionResultDataModel
   [Required]
   public required Guid DialogueOptionId { get; set; }
 
+  [Column("AddMinutes", Order = 3)]
+  public bool AddMinutes { get; set; }
+
   /// <summary>
   /// Relationship change when getting this result.
   /// </summary>
-  [Column("TargetRelationshipValueChange", Order = 3)]
+  [Column("TargetRelationshipValueChange", Order = 4)]
   public int? TargetRelationshipValueChange { get; set; }
 
   /// <summary>
   /// Represents a fact that can will be learned as a result of the dialogue option.
   /// </summary>
-  [Column("LearnFact", Order = 4)]
+  [Column("LearnFact", Order = 5)]
   public Fact? ActorLearnFact { get; set; }
 
   /// <summary>
   /// Represents a special action that can will happen as a result of the dialogue option.
   /// </summary>
-  [Column("ActorTargetSpecialAction", Order = 5)]
+  [Column("ActorTargetSpecialAction", Order = 6)]
   public ActorTargetSpecialAction? ActorTargetSpecialAction { get; set; }
 
   /// <summary>
   /// Indicates whether the dialogue ends after selecting this option.
   /// </summary>
-  [Column("EndDialogue", Order = 6)]
+  [Column("EndDialogue", Order = 7)]
   public bool EndDialogue { get; set; }
 
   /// <summary>

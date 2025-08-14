@@ -14,11 +14,13 @@ public class DialogueOptionMapperTests
     // Arrange
     var id = Guid.NewGuid();
     const string label = "Say goodbye";
+    const int neededMinutes = 0;
 
     var dataModel = new DialogueOptionDataModel
     {
       Id = id,
-      Label = label
+      Label = label,
+      NeededMinutes = neededMinutes
     };
 
     // Act
@@ -27,6 +29,7 @@ public class DialogueOptionMapperTests
     // Assert
     Assert.Equal(id, domain.Id);
     Assert.Equal(label, domain.Label);
+    Assert.Equal(neededMinutes, domain.NeededMinutes);
   }
 
   [Fact]
@@ -35,20 +38,24 @@ public class DialogueOptionMapperTests
     // Arrange
     var id1 = Guid.NewGuid();
     const string label1 = "Say goodbye";
+    const int neededMinutes1 = 0;
     var id2 = Guid.NewGuid();
     const string label2 = "Ask something";
+    const int neededMinutes2 = 0;
 
     var dataModels = new List<DialogueOptionDataModel>
     {
       new()
       {
         Id = id1,
-        Label = label1
+        Label = label1,
+        NeededMinutes = neededMinutes1
       },
       new()
       {
         Id = id2,
-        Label = label2
+        Label = label2,
+        NeededMinutes = neededMinutes2
       }
     };
 
@@ -62,6 +69,7 @@ public class DialogueOptionMapperTests
     {
       Assert.Equal(dataModels[i].Id, domainModels[i].Id);
       Assert.Equal(dataModels[i].Label, domainModels[i].Label);
+      Assert.Equal(dataModels[i].NeededMinutes, domainModels[i].NeededMinutes);
     }
   }
 
@@ -71,8 +79,9 @@ public class DialogueOptionMapperTests
     // Arrange
     var id = Guid.NewGuid();
     const string label = "Say goodbye";
+    const int neededMinutes = 0;
 
-    var domain = DialogueOption.Load(id, label);
+    var domain = DialogueOption.Load(id, label, neededMinutes);
 
     // Act
     var dataModel = domain.ToDataModel();
@@ -80,6 +89,7 @@ public class DialogueOptionMapperTests
     // Assert
     Assert.Equal(id, dataModel.Id);
     Assert.Equal(label, dataModel.Label);
+    Assert.Equal(neededMinutes, dataModel.NeededMinutes);
   }
 
   #endregion

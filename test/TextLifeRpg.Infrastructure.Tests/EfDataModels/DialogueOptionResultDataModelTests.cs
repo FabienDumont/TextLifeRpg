@@ -17,7 +17,7 @@ public class DialogueOptionResultDataModelTests
     var relatedDialogueOption = new DialogueOptionDataModel
     {
       Id = dialogueOptionId,
-      Label = "Say goodbye"
+      Label = "Say goodbye", NeededMinutes = 0
     };
 
     // Act

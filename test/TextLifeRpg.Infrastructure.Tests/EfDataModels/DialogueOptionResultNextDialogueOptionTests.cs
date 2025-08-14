@@ -13,7 +13,7 @@ public class DialogueOptionResultNextDialogueOptionTests
     var relatedDialogueOption = new DialogueOptionDataModel
     {
       Id = Guid.NewGuid(),
-      Label = "Ask something"
+      Label = "Ask something", NeededMinutes = 0
     };
 
     var relatedDialogueOptionResult = new DialogueOptionResultDataModel
@@ -27,7 +27,7 @@ public class DialogueOptionResultNextDialogueOptionTests
     var nextDialogueOption = new DialogueOptionDataModel
     {
       Id = Guid.NewGuid(),
-      Label = "Nevermind"
+      Label = "Nevermind", NeededMinutes = 0
     };
 
     var id = Guid.NewGuid();

@@ -38,13 +38,14 @@ public class DialogueOptionResultMapperTests
     // Arrange
     var id = Guid.NewGuid();
     var dialogueOptionId = Guid.NewGuid();
+    const bool addMinutes = false;
     const int targetRelationshipValueChange = 5;
     const Fact learnFact = Fact.Job;
     const ActorTargetSpecialAction specialAction = ActorTargetSpecialAction.AddTargetPhoneNumber;
     const bool endDialogue = false;
 
     var domain = DialogueOptionResult.Load(
-      id, dialogueOptionId, targetRelationshipValueChange, learnFact, specialAction, endDialogue
+      id, dialogueOptionId, addMinutes, targetRelationshipValueChange, learnFact, specialAction, endDialogue
     );
 
     // Act
