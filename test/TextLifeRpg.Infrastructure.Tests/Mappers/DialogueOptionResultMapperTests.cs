@@ -39,8 +39,8 @@ public class DialogueOptionResultMapperTests
     var id = Guid.NewGuid();
     var dialogueOptionId = Guid.NewGuid();
     const int targetRelationshipValueChange = 5;
-    const string learnFact = "Job";
-    const string specialAction = "AddTargetPhoneNumber";
+    const Fact learnFact = Fact.Job;
+    const ActorTargetSpecialAction specialAction = ActorTargetSpecialAction.AddTargetPhoneNumber;
     const bool endDialogue = false;
 
     var domain = DialogueOptionResult.Load(

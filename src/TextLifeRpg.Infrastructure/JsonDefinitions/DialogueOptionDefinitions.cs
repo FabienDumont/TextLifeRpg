@@ -1,4 +1,6 @@
-﻿namespace TextLifeRpg.Infrastructure.JsonDefinitions;
+﻿using TextLifeRpg.Domain;
+
+namespace TextLifeRpg.Infrastructure.JsonDefinitions;
 
 public class DialogueOptionDefinition
 {
@@ -18,8 +20,8 @@ public class DialogueOptionSpokenTextDefinition
 public class DialogueOptionResultDefinition
 {
   public int? TargetRelationshipValueChange { get; set; }
-  public string? ActorLearnFact { get; set; }
-  public string? ActorTargetSpecialAction { get; set; }
+  public Fact? ActorLearnFact { get; set; }
+  public ActorTargetSpecialAction? ActorTargetSpecialAction { get; set; }
   public List<string>? NextDialogueOptionNames { get; set; }
   public bool EndsDialogue { get; set; }
   public List<DialogueOptionResultSpokenTextDefinition> ResultSpokenTexts { get; set; } = [];
@@ -42,12 +44,12 @@ public class DialogueOptionResultNarrationDefinition
 public class DialogueOptionConditionDefinition
 {
   public string? ActorHasTrait { get; set; }
-  public string? ActorHasntLearnedFact { get; set; }
+  public Fact? ActorHasntLearnedFact { get; set; }
   public DialogueOptionSpecialConditionDefinition? ActorTargetSpecialCondition { get; set; }
   public ConditionComparisonDefinition? ActorRelationshipValue { get; set; }
   public ConditionComparisonDefinition? TargetRelationshipValue { get; set; }
+
   public ConditionComparisonDefinition? ActorEnergy { get; set; }
-  // Extendable with TargetTrait, TimeOfDay, etc.
 }
 
 public class DialogueOptionSpecialConditionDefinition

@@ -29,6 +29,8 @@ public class DialogueServiceTests
 
   private readonly DialogueService _dialogueService;
 
+  private readonly DateTime _date = new(2025, 1, 1);
+
   #endregion
 
   #region Ctors
@@ -52,7 +54,7 @@ public class DialogueServiceTests
     // Arrange
     var player = new CharacterBuilder().Build();
     var npc = new CharacterBuilder().Build();
-    var world = World.Create(DateTime.Now, [player, npc]);
+    var world = World.Create(_date, [player, npc]);
     var save = GameSave.Create(player, world);
     save.StartDialogue(npc.Id);
 
@@ -77,7 +79,7 @@ public class DialogueServiceTests
     // Arrange
     var player = new CharacterBuilder().Build();
     var npc = new CharacterBuilder().Build();
-    var world = World.Create(DateTime.Now, [player, npc]);
+    var world = World.Create(_date, [player, npc]);
 
     var date = DateOnly.FromDateTime(world.CurrentDate);
 
@@ -106,7 +108,7 @@ public class DialogueServiceTests
   {
     // Arrange
     var player = new CharacterBuilder().Build();
-    var world = World.Create(DateTime.Now, [player]);
+    var world = World.Create(_date, [player]);
     var save = GameSave.Create(player, world); // InteractingNpc is null by default
 
     // Act & Assert
@@ -122,7 +124,7 @@ public class DialogueServiceTests
     // Arrange
     var player = new CharacterBuilder().Build();
     var npc = new CharacterBuilder().Build();
-    var world = World.Create(DateTime.Now, [player, npc]);
+    var world = World.Create(_date, [player, npc]);
     var save = GameSave.Create(player, world);
     save.StartDialogue(npc.Id);
 
@@ -142,7 +144,7 @@ public class DialogueServiceTests
     // Arrange
     var player = new CharacterBuilder().Build();
     var npc = new CharacterBuilder().Build();
-    var world = World.Create(DateTime.Now, [player, npc]);
+    var world = World.Create(_date, [player, npc]);
     var save = GameSave.Create(player, world);
     save.StartDialogue(npc.Id);
 
@@ -176,7 +178,7 @@ public class DialogueServiceTests
   {
     // Arrange
     var player = new CharacterBuilder().Build();
-    var world = World.Create(DateTime.Now, [player]);
+    var world = World.Create(_date, [player]);
     var save = GameSave.Create(player, world); // InteractingNpc is null by default
 
     // Act & Assert
@@ -191,7 +193,7 @@ public class DialogueServiceTests
   {
     // Arrange
     var player = new CharacterBuilder().Build();
-    var world = World.Create(DateTime.Now, [player]);
+    var world = World.Create(_date, [player]);
     var save = GameSave.Create(player, world); // InteractingNpc is null by default
     var dialogueOption = DialogueOption.Create("Ask something");
 
@@ -209,7 +211,7 @@ public class DialogueServiceTests
     // Arrange
     var player = new CharacterBuilder().WithName("Player").WithSex(BiologicalSex.Male).Build();
     var npc = new CharacterBuilder().WithName("NPC").WithSex(BiologicalSex.Female).Build();
-    var world = World.Create(DateTime.Now, [player, npc]);
+    var world = World.Create(_date, [player, npc]);
 
     var date = DateOnly.FromDateTime(world.CurrentDate);
 
@@ -227,7 +229,9 @@ public class DialogueServiceTests
     save.StartDialogue(npc.Id);
 
     var dialogueOption = DialogueOption.Create("Ask something");
-    var result = DialogueOptionResult.Create(Guid.NewGuid(), 5, "Job", "AddTargetPhoneNumber", endDialogue: true);
+    const ActorTargetSpecialAction specialAction = ActorTargetSpecialAction.AddTargetPhoneNumber;
+    const Fact learnFact = Fact.Job;
+    var result = DialogueOptionResult.Create(Guid.NewGuid(), 5, learnFact, specialAction, endDialogue: true);
 
     const string playerSpokenText = "What happened here?";
     const string npcSpokenText = "I don't want to talk about it.";
@@ -282,7 +286,7 @@ public class DialogueServiceTests
     Assert.Null(save.NpcInteractionType);
 
     Assert.Equal(5, relationshipNpc.Value);
-    Assert.True(relationshipPlayer.History.HasLearnedFact("Job"));
+    Assert.True(relationshipPlayer.History.HasLearnedFact(learnFact));
   }
 
   [Fact]
@@ -291,13 +295,15 @@ public class DialogueServiceTests
     // Arrange
     var player = new CharacterBuilder().WithName("Player").Build();
     var npc = new CharacterBuilder().WithName("NPC").Build();
-    var world = World.Create(DateTime.Now, [player, npc]);
+    var world = World.Create(_date, [player, npc]);
 
     var save = GameSave.Create(player, world);
     save.StartDialogue(npc.Id);
 
     var dialogueOption = DialogueOption.Create("Ask something");
-    var result = DialogueOptionResult.Create(Guid.NewGuid(), null, null, "Invalid", endDialogue: false);
+    var result = DialogueOptionResult.Create(
+      Guid.NewGuid(), null, null, (ActorTargetSpecialAction) 999, endDialogue: false
+    );
 
     A.CallTo(() => _dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(
         dialogueOption.Id, A<GameContext>._, A<CancellationToken>._
@@ -338,7 +344,7 @@ public class DialogueServiceTests
     // Arrange
     var player = new CharacterBuilder().Build();
     var npc = new CharacterBuilder().Build();
-    var world = World.Create(DateTime.Now, [player, npc]);
+    var world = World.Create(_date, [player, npc]);
     var save = GameSave.Create(player, world);
     save.StartDialogue(npc.Id);
 
@@ -384,7 +390,7 @@ public class DialogueServiceTests
     // Arrange
     var player = new CharacterBuilder().WithName("Player").Build();
     var npc = new CharacterBuilder().WithName("NPC").Build();
-    var world = World.Create(DateTime.Now, [player, npc]);
+    var world = World.Create(_date, [player, npc]);
     var save = GameSave.Create(player, world);
     save.StartDialogue(npc.Id);
 

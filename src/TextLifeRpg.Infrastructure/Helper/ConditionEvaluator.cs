@@ -79,11 +79,16 @@ public static class ConditionEvaluator
   /// <returns>True if the actor has learned the specified fact and the condition evaluates to true; otherwise, false.</returns>
   private static bool EvaluateActorLearnedFact(ConditionDataModel condition, Relationship actorRelationship)
   {
-    var learnedFact = actorRelationship.History.HasLearnedFact(
-      condition.OperandLeft ??
-      throw new InvalidOperationException($"{nameof(condition.OperandLeft)} shouldn't be null.")
-    );
-    return learnedFact && !condition.Negate || !learnedFact && condition.Negate;
+    var raw = condition.OperandLeft ??
+              throw new InvalidOperationException($"{nameof(condition.OperandLeft)} shouldn't be null.");
+
+    if (!Enum.TryParse<Fact>(raw, ignoreCase: true, out var fact))
+    {
+      throw new ArgumentOutOfRangeException(nameof(condition), raw, "Unknown fact.");
+    }
+
+    var learned = actorRelationship.History.HasLearnedFact(fact);
+    return condition.Negate ? !learned : learned;
   }
 
   /// <summary>
@@ -98,7 +103,7 @@ public static class ConditionEvaluator
     return condition.OperandLeft switch
     {
       "HaveTargetPhoneNumber" => !condition.Negate == actor.Phone.Contacts.Any(c => c.Character.Id == target.Id),
-      _ => throw new ArgumentOutOfRangeException(nameof(condition.OperandLeft), condition.OperandLeft, null)
+      _ => throw new ArgumentOutOfRangeException(nameof(condition), condition.OperandLeft, null)
     };
   }
 

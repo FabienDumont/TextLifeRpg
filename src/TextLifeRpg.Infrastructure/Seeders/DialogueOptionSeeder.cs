@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using TextLifeRpg.Infrastructure.JsonDefinitions;
 using TextLifeRpg.Infrastructure.Seeders.Builders;
@@ -10,6 +11,19 @@ namespace TextLifeRpg.Infrastructure.Seeders;
 /// </summary>
 public class DialogueOptionSeeder : IDataSeeder
 {
+  #region Fields
+
+  private static readonly JsonSerializerOptions JsonOptions = new()
+  {
+    PropertyNameCaseInsensitive = true,
+    Converters =
+    {
+      new JsonStringEnumConverter(allowIntegerValues: false)
+    }
+  };
+
+  #endregion
+
   #region Implementation of IDataSeeder
 
   /// <inheritdoc />
@@ -23,7 +37,7 @@ public class DialogueOptionSeeder : IDataSeeder
     foreach (var file in files)
     {
       var json = await File.ReadAllTextAsync(file);
-      var def = JsonSerializer.Deserialize<DialogueOptionDefinition>(json) ??
+      var def = JsonSerializer.Deserialize<DialogueOptionDefinition>(json, JsonOptions) ??
                 throw new Exception($"Failed to parse {file}");
       defs.Add((def, Guid.NewGuid()));
     }
@@ -34,9 +48,9 @@ public class DialogueOptionSeeder : IDataSeeder
 
       foreach (var c in def.Conditions)
       {
-        if (!string.IsNullOrWhiteSpace(c.ActorHasntLearnedFact))
+        if (c.ActorHasntLearnedFact is not null)
         {
-          builder.WithActorLearnedFactCondition(c.ActorHasntLearnedFact, true);
+          builder.WithActorLearnedFactCondition(c.ActorHasntLearnedFact.Value, true);
         }
 
         if (c.ActorTargetSpecialCondition is not null)
@@ -63,12 +77,12 @@ public class DialogueOptionSeeder : IDataSeeder
 
         if (res.ActorLearnFact is not null)
         {
-          rb.WithActorLearnFact(res.ActorLearnFact);
+          rb.WithActorLearnFact(res.ActorLearnFact.Value);
         }
 
         if (res.ActorTargetSpecialAction is not null)
         {
-          rb.WithActorTargetSpecialAction(res.ActorTargetSpecialAction);
+          rb.WithActorTargetSpecialAction(res.ActorTargetSpecialAction.Value);
         }
 
         if (res.EndsDialogue)

@@ -48,7 +48,7 @@ else
       <div class="flex">
         <span class="font-bold">Job</span>
         <span>&nbsp;:&nbsp;</span>
-        @if (GameSaveStore.CurrentSave!.PlayerCharacterId == CharacterId || (_playerRelationship is not null && _playerRelationship.History.HasLearnedFact("Job")))
+        @if (GameSaveStore.CurrentSave!.PlayerCharacterId == CharacterId || (_playerRelationship is not null && _playerRelationship.History.HasLearnedFact(Fact.Job)))
         {
           <span>@(_job?.Name ?? "Unemployed")</span>
         }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TextLifeRpg.Domain;
 using TextLifeRpg.Infrastructure.EfDataModels;
 using TextLifeRpg.Infrastructure.Seeders.Builders;
 
@@ -32,7 +33,7 @@ public class DialogueOptionResultBuilderTests
     const int delta = 5;
     const string spokenYes = "Yes.";
     const string narrText = "She smiles.";
-    const string fact = "Job";
+    const Fact fact = Fact.Job;
     var traitId = Guid.NewGuid();
 
     var builder = new DialogueOptionResultBuilder(context, optionId).WithTargetRelationshipValueChange(delta)

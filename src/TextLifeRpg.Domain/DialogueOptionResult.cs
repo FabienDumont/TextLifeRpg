@@ -25,12 +25,12 @@ public class DialogueOptionResult
   /// <summary>
   /// Represents a fact that can be learned as a result of a dialogue option.
   /// </summary>
-  public string? ActorLearnFact { get; }
+  public Fact? ActorLearnFact { get; }
 
   /// <summary>
   /// Represents a special action between an acting character and a target character.
   /// </summary>
-  public string? ActorTargetSpecialAction { get; }
+  public ActorTargetSpecialAction? ActorTargetSpecialAction { get; }
 
   /// <summary>
   /// Indicates whether the dialogue ends after selecting this option.
@@ -45,8 +45,8 @@ public class DialogueOptionResult
   /// Private constructor used internally.
   /// </summary>
   private DialogueOptionResult(
-    Guid id, Guid dialogueOptionId, int? targetRelationshipValueChange, string? actorLearnFact,
-    string? actorTargetSpecialAction, bool endDialogue
+    Guid id, Guid dialogueOptionId, int? targetRelationshipValueChange, Fact? actorLearnFact,
+    ActorTargetSpecialAction? actorTargetSpecialAction, bool endDialogue
   )
   {
     Id = id;
@@ -65,8 +65,8 @@ public class DialogueOptionResult
   /// Factory method to create a new instance.
   /// </summary>
   public static DialogueOptionResult Create(
-    Guid dialogueOptionId, int? targetRelationshipValueChange, string? learnFact, string? actorTargetSpecialAction,
-    bool endDialogue
+    Guid dialogueOptionId, int? targetRelationshipValueChange, Fact? learnFact,
+    ActorTargetSpecialAction? actorTargetSpecialAction, bool endDialogue
   )
   {
     return new DialogueOptionResult(
@@ -78,8 +78,8 @@ public class DialogueOptionResult
   /// Factory method to load an existing instance from persistence.
   /// </summary>
   public static DialogueOptionResult Load(
-    Guid id, Guid dialogueOptionId, int? targetRelationshipValueChange, string? learnFact,
-    string? actorTargetSpecialAction, bool endDialogue
+    Guid id, Guid dialogueOptionId, int? targetRelationshipValueChange, Fact? learnFact,
+    ActorTargetSpecialAction? actorTargetSpecialAction, bool endDialogue
   )
   {
     return new DialogueOptionResult(
@@ -88,4 +88,9 @@ public class DialogueOptionResult
   }
 
   #endregion
+}
+
+public enum ActorTargetSpecialAction
+{
+  AddTargetPhoneNumber
 }

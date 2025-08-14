@@ -1,4 +1,5 @@
-﻿using TextLifeRpg.Infrastructure.EfDataModels;
+﻿using TextLifeRpg.Domain;
+using TextLifeRpg.Infrastructure.EfDataModels;
 
 namespace TextLifeRpg.Infrastructure.Helper;
 
@@ -89,11 +90,11 @@ public static class ConditionBuilder
   /// </summary>
   /// <param name="contextType">The type of entity (e.g., Dialogue, Action) the condition is based on.</param>
   /// <param name="contextId">The unique identifier of the context entity.</param>
-  /// <param name="factKey">The key representing the specific fact to check if the actor has learned.</param>
+  /// <param name="fact">The key representing the specific fact to check if the actor has learned.</param>
   /// <param name="negate">Determines whether to negate the condition (true if the condition should be inverted).</param>
   /// <returns>A configured <see cref="ConditionDataModel"/> checking if an actor has learned the specified fact.</returns>
   private static ConditionDataModel ActorLearnedFactCondition(
-    ContextType contextType, Guid contextId, string factKey, bool negate
+    ContextType contextType, Guid contextId, Fact fact, bool negate
   )
   {
     return new ConditionDataModel
@@ -102,7 +103,7 @@ public static class ConditionBuilder
       ContextType = contextType,
       ContextId = contextId,
       ConditionType = ConditionType.ActorLearnedFact,
-      OperandLeft = factKey,
+      OperandLeft = fact.ToString(),
       Operator = "==",
       OperandRight = "true",
       Negate = negate
@@ -184,10 +185,10 @@ public static class ConditionBuilder
   /// <param name="facts">A collection of tuples where each tuple contains the fact key to check and a boolean indicating if the condition should be negated.</param>
   /// <returns>A collection of <see cref="ConditionDataModel"/> objects, each representing a condition for the specified facts.</returns>
   public static IEnumerable<ConditionDataModel> BuildActorLearnedFactConditions(
-    ContextType contextType, Guid contextId, IEnumerable<(string factKey, bool negate)> facts
+    ContextType contextType, Guid contextId, IEnumerable<(Fact fact, bool negate)> facts
   )
   {
-    return facts.Select(f => ActorLearnedFactCondition(contextType, contextId, f.factKey, f.negate));
+    return facts.Select(f => ActorLearnedFactCondition(contextType, contextId, f.fact, f.negate));
   }
 
   public static IEnumerable<ConditionDataModel> BuildActorTargetSpecialConditions(

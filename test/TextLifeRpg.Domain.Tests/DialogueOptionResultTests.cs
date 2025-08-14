@@ -10,8 +10,8 @@ public class DialogueOptionResultTests
     // Arrange
     var dialogueOptionId = Guid.NewGuid();
     const int targetRelationshipValueChange = 5;
-    const string learnFact = "Job";
-    const string specialAction = "AddTargetPhoneNumber";
+    const Fact learnFact = Fact.Job;
+    const ActorTargetSpecialAction specialAction = ActorTargetSpecialAction.AddTargetPhoneNumber;
     const bool endDialogue = true;
 
     // Act
@@ -36,8 +36,8 @@ public class DialogueOptionResultTests
     var id = Guid.NewGuid();
     var dialogueOptionId = Guid.NewGuid();
     const int targetRelationshipValueChange = 5;
-    const string learnFact = "Job";
-    const string specialAction = "AddTargetPhoneNumber";
+    const Fact learnFact = Fact.Job;
+    const ActorTargetSpecialAction specialAction = ActorTargetSpecialAction.AddTargetPhoneNumber;
     const bool endDialogue = false;
 
     // Act

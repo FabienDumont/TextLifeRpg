@@ -7,7 +7,7 @@ public class RelationshipHistory
 {
   #region Fields
 
-  private readonly List<string> _learnedFacts = [];
+  private readonly List<Fact> _learnedFacts = [];
 
   #endregion
 
@@ -69,7 +69,7 @@ public class RelationshipHistory
   /// </summary>
   /// <param name="fact">The unique identifier of the fact to check.</param>
   /// <returns>True if the fact with the specified key has been learned; otherwise, false.</returns>
-  public bool HasLearnedFact(string fact)
+  public bool HasLearnedFact(Fact fact)
   {
     return _learnedFacts.Contains(fact);
   }
@@ -78,7 +78,7 @@ public class RelationshipHistory
   /// Records a fact that has been learned, stores it with the specified key and value, and updates the last interaction date.
   /// </summary>
   /// <param name="fact">The unique identifier for the fact being learned.</param>
-  public void LearnFact(string fact)
+  public void LearnFact(Fact fact)
   {
     if (!HasLearnedFact(fact))
     {
@@ -87,4 +87,9 @@ public class RelationshipHistory
   }
 
   #endregion
+}
+
+public enum Fact
+{
+  Job
 }

@@ -40,16 +40,20 @@ public class DialogueService(
       possibleGreetings[randomProvider.Next(0, possibleGreetings.Count)], npc, player, gameSave
     );
 
-    var hasBothRelationships =
-      gameSave.World.Relationships.Any(r => r.SourceCharacterId == player.Id && r.TargetCharacterId == npc.Id) &&
-      gameSave.World.Relationships.Any(r => r.SourceCharacterId == npc.Id && r.TargetCharacterId == player.Id);
-
-    if (!hasBothRelationships)
+    var date = DateOnly.FromDateTime(gameSave.World.CurrentDate);
+    if (!gameSave.World.Relationships.Any(r => r.SourceCharacterId == player.Id && r.TargetCharacterId == npc.Id))
     {
-      var date = DateOnly.FromDateTime(gameSave.World.CurrentDate);
       gameSave.World.AddRelationships(
         [
-          Relationship.Create(player.Id, npc.Id, RelationshipType.Acquaintance, date, date, 0),
+          Relationship.Create(player.Id, npc.Id, RelationshipType.Acquaintance, date, date, 0)
+        ]
+      );
+    }
+
+    if (!gameSave.World.Relationships.Any(r => r.SourceCharacterId == npc.Id && r.TargetCharacterId == player.Id))
+    {
+      gameSave.World.AddRelationships(
+        [
           Relationship.Create(npc.Id, player.Id, RelationshipType.Acquaintance, date, date, 0)
         ]
       );
@@ -196,7 +200,7 @@ public class DialogueService(
               r.SourceCharacterId == player.Id && r.TargetCharacterId == npc.Id
             );
 
-            relationship?.History.LearnFact(result.ActorLearnFact);
+            relationship?.History.LearnFact(result.ActorLearnFact.Value);
 
             await Task.CompletedTask;
           }
@@ -211,7 +215,7 @@ public class DialogueService(
         {
           ExecuteAsync = async _ =>
           {
-            HandleSpecialAction(result.ActorTargetSpecialAction, player, npc);
+            HandleSpecialAction(result.ActorTargetSpecialAction.Value, player, npc);
             await Task.CompletedTask;
           }
         }
@@ -254,11 +258,11 @@ public class DialogueService(
     return steps;
   }
 
-  private static void HandleSpecialAction(string specialAction, Character player, Character npc)
+  private static void HandleSpecialAction(ActorTargetSpecialAction specialAction, Character player, Character npc)
   {
     switch (specialAction)
     {
-      case "AddTargetPhoneNumber":
+      case ActorTargetSpecialAction.AddTargetPhoneNumber:
         player.Phone.AddToContacts(npc);
         break;
       default:

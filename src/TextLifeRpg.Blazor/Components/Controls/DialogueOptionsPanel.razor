@@ -9,7 +9,7 @@
   }
   else if (!_availableDialogueOptions.Any())
   {
-    <p class="italic">No exploration actions available.</p>
+    <p class="italic">No dialogue options available.</p>
   }
   else
   {
@@ -38,14 +38,7 @@
   /// </summary>
   protected override async Task OnInitializedAsync()
   {
-    GameSaveStore.OnAsyncChange += HandleGameSaveChangedAsync;
     await LoadAvailableDialogueOptionsAsync();
-  }
-
-  private async Task HandleGameSaveChangedAsync()
-  {
-    await LoadAvailableDialogueOptionsAsync();
-    StateHasChanged();
   }
 
   /// <summary>
@@ -78,9 +71,10 @@
     await OnDialogueOptionClicked.InvokeAsync(dialogueOption);
   }
 
-  public void Dispose()
+  public async Task ReloadAsync()
   {
-    GameSaveStore.OnAsyncChange -= HandleGameSaveChangedAsync;
+    await LoadAvailableDialogueOptionsAsync();
+    StateHasChanged();
   }
 
 }

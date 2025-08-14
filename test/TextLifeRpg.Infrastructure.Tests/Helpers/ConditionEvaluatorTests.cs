@@ -108,7 +108,7 @@ public class ConditionEvaluatorTests
     var condition = new ConditionDataModel
     {
       ConditionType = ConditionType.ActorLearnedFact,
-      OperandLeft = Guid.NewGuid().ToString(),
+      OperandLeft = nameof(Fact.Job),
       Operator = "==",
       OperandRight = "true",
       Negate = true,
@@ -133,6 +133,37 @@ public class ConditionEvaluatorTests
 
     // Assert
     Assert.True(result);
+  }
+
+  [Fact]
+  public void EvaluateCondition_ActorLearnedFact_UnknownFact()
+  {
+    // Arrange
+    var condition = new ConditionDataModel
+    {
+      ConditionType = ConditionType.ActorLearnedFact,
+      OperandLeft = "Unknown fact",
+      Operator = "==",
+      OperandRight = "true",
+      Negate = true,
+      ContextType = ContextType.DialogueOption
+    };
+
+    var character = new CharacterBuilder().Build();
+    var npc = new CharacterBuilder().Build();
+    var world = World.Create(DateTime.Now, [character, npc]);
+    var now = new DateOnly(2025, 6, 16);
+    world.Relationships.Add(Relationship.Create(character.Id, npc.Id, RelationshipType.Acquaintance, now, now, 0));
+
+    var gameContext = new GameContext
+    {
+      Actor = character,
+      World = world,
+      Target = npc
+    };
+
+    // Act & Assert
+    Assert.Throws<ArgumentOutOfRangeException>(() => ConditionEvaluator.EvaluateCondition(condition, gameContext));
   }
 
   [Theory]

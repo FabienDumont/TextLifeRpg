@@ -1,4 +1,5 @@
-﻿using TextLifeRpg.Infrastructure.EfDataModels;
+﻿using TextLifeRpg.Domain;
+using TextLifeRpg.Infrastructure.EfDataModels;
 
 namespace TextLifeRpg.Infrastructure.Seeders.Builders;
 
@@ -22,13 +23,13 @@ public class DialogueOptionResultBuilder(ApplicationContext context, Guid option
     return this;
   }
 
-  public DialogueOptionResultBuilder WithActorLearnFact(string fact)
+  public DialogueOptionResultBuilder WithActorLearnFact(Fact fact)
   {
     _result.ActorLearnFact = fact;
     return this;
   }
 
-  public DialogueOptionResultBuilder WithActorTargetSpecialAction(string specialAction)
+  public DialogueOptionResultBuilder WithActorTargetSpecialAction(ActorTargetSpecialAction specialAction)
   {
     _result.ActorTargetSpecialAction = specialAction;
     return this;

@@ -1,4 +1,5 @@
-﻿using TextLifeRpg.Infrastructure.EfDataModels;
+﻿using TextLifeRpg.Domain;
+using TextLifeRpg.Infrastructure.EfDataModels;
 using TextLifeRpg.Infrastructure.Helper;
 
 namespace TextLifeRpg.Infrastructure.Seeders.Builders;
@@ -10,7 +11,7 @@ public class DialogueOptionBuilder(ApplicationContext context, Guid id, string l
   private readonly List<TextVariantBuilder> _spokenTextVariants = [];
   private readonly List<DialogueOptionResultBuilder> _results = [];
 
-  public DialogueOptionBuilder WithActorLearnedFactCondition(string actorLearnedFact, bool actorLearnedFactNegate)
+  public DialogueOptionBuilder WithActorLearnedFactCondition(Fact actorLearnedFact, bool actorLearnedFactNegate)
   {
     _conditions.Add(
       ConditionBuilder.BuildActorLearnedFactConditions(

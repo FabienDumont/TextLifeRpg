@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using TextLifeRpg.Domain;
 
 namespace TextLifeRpg.Infrastructure.EfDataModels;
 
@@ -37,15 +38,13 @@ public class DialogueOptionResultDataModel
   /// Represents a fact that can will be learned as a result of the dialogue option.
   /// </summary>
   [Column("LearnFact", Order = 4)]
-  [MaxLength(100)]
-  public string? ActorLearnFact { get; set; }
+  public Fact? ActorLearnFact { get; set; }
 
   /// <summary>
   /// Represents a special action that can will happen as a result of the dialogue option.
   /// </summary>
   [Column("ActorTargetSpecialAction", Order = 5)]
-  [MaxLength(100)]
-  public string? ActorTargetSpecialAction { get; set; }
+  public ActorTargetSpecialAction? ActorTargetSpecialAction { get; set; }
 
   /// <summary>
   /// Indicates whether the dialogue ends after selecting this option.
