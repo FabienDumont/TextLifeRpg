@@ -204,6 +204,20 @@ public class DialogueService(
       );
     }
 
+    if (result.ActorTargetSpecialAction is not null)
+    {
+      steps.Add(
+        new GameFlowStep
+        {
+          ExecuteAsync = async _ =>
+          {
+            HandleSpecialAction(result.ActorTargetSpecialAction, player, npc);
+            await Task.CompletedTask;
+          }
+        }
+      );
+    }
+
     if (result.EndDialogue)
     {
       steps.Add(
@@ -238,6 +252,18 @@ public class DialogueService(
     }
 
     return steps;
+  }
+
+  private static void HandleSpecialAction(string specialAction, Character player, Character npc)
+  {
+    switch (specialAction)
+    {
+      case "AddTargetPhoneNumber":
+        player.Phone.AddToContacts(npc);
+        break;
+      default:
+        throw new ArgumentOutOfRangeException(nameof(specialAction), specialAction, null);
+    }
   }
 
   #endregion

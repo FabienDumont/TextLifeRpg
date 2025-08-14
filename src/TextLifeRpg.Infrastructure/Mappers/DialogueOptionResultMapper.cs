@@ -18,7 +18,7 @@ public static class DialogueOptionResultMapper
   public static DialogueOptionResult ToDomain(this DialogueOptionResultDataModel dataModel)
   {
     return dataModel.Map(i => DialogueOptionResult.Load(
-        i.Id, i.DialogueOptionId, i.TargetRelationshipValueChange, i.ActorLearnFact, i.EndDialogue
+        i.Id, i.DialogueOptionId, i.TargetRelationshipValueChange, i.ActorLearnFact, i.ActorTargetSpecialAction, i.EndDialogue
       )
     );
   }
@@ -44,6 +44,7 @@ public static class DialogueOptionResultMapper
         DialogueOptionId = d.DialogueOptionId,
         TargetRelationshipValueChange = d.TargetRelationshipValueChange,
         ActorLearnFact = d.ActorLearnFact,
+        ActorTargetSpecialAction = d.ActorTargetSpecialAction,
         EndDialogue = d.EndDialogue
       }
     );

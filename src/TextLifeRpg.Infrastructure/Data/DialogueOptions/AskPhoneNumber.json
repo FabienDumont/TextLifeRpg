@@ -1,14 +1,17 @@
-﻿{
-  "Name": "AskAboutJob",
-  "Label": "Ask about job",
+{
+  "Name": "AskPhoneNumber",
+  "Label": "Ask phone number",
   "Conditions": [
     {
-      "ActorHasntLearnedFact": "Job"
+      "ActorTargetSpecialCondition": {
+        "Label": "HaveTargetPhoneNumber",
+        "Negate": true
+      }
     }
   ],
   "SpokenTexts": [
     {
-      "Text": "Do you mind telling me what your job is?",
+      "Text": "Do you mind giving me your phone number?",
       "Conditions": []
     }
   ],
@@ -18,13 +21,13 @@
         {
           "TargetRelationshipValue": {
             "Operator": "<",
-            "Value": 0
+            "Value": 20
           }
         }
       ],
       "ResultSpokenTexts": [
         {
-          "Text": "It's none of your business.",
+          "Text": "No, we're not close enough.",
           "Conditions": []
         }
       ]
@@ -34,20 +37,20 @@
         {
           "TargetRelationshipValue": {
             "Operator": ">=",
-            "Value": 0
+            "Value": 20
           }
         }
       ],
-      "ActorLearnFact": "Job",
+      "ActorTargetSpecialAction": "AddTargetPhoneNumber",
       "ResultSpokenTexts": [
         {
-          "Text": "I'll tell you.",
+          "Text": "I'll give it to you.",
           "Conditions": []
         }
       ],
       "ResultNarrations": [
         {
-          "Text": "You learn about [TARGETNAME]'s employement situation.",
+          "Text": "You write [TARGETNAME]'s number in your phone.",
           "Conditions": []
         }
       ]

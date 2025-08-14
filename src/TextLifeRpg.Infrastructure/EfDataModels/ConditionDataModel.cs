@@ -63,7 +63,9 @@ public enum ConditionType
 {
   ActorHasTrait,
   ActorLearnedFact,
+  ActorTargetSpecialCondition,
   ActorEnergy,
   ActorRelationship,
-  ActorMoney
+  ActorMoney,
+  TargetRelationship
 }

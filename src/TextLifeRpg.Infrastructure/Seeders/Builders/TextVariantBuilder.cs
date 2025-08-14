@@ -68,7 +68,9 @@ public class TextVariantBuilder(ContextType contextType, Guid contextId, string 
   /// </returns>
   public TextVariantBuilder WithActorRelationshipValueCondition(string op, string value)
   {
-    _conditions.Add(ConditionBuilder.BuildRelationshipValueConditions(contextType, contextId, [(op, value)]).Single());
+    _conditions.Add(
+      ConditionBuilder.BuildActorRelationshipValueConditions(contextType, contextId, [(op, value)]).Single()
+    );
     return this;
   }
 

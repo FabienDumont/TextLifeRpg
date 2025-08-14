@@ -227,7 +227,7 @@ public class DialogueServiceTests
     save.StartDialogue(npc.Id);
 
     var dialogueOption = DialogueOption.Create("Ask something");
-    var result = DialogueOptionResult.Create(Guid.NewGuid(), 5, "Job", endDialogue: true);
+    var result = DialogueOptionResult.Create(Guid.NewGuid(), 5, "Job", "AddTargetPhoneNumber", endDialogue: true);
 
     const string playerSpokenText = "What happened here?";
     const string npcSpokenText = "I don't want to talk about it.";
@@ -286,6 +286,53 @@ public class DialogueServiceTests
   }
 
   [Fact]
+  public async Task BuildDialogueOptionStepsAsync_ShouldThrow_WhenInvalidSpecialCondition()
+  {
+    // Arrange
+    var player = new CharacterBuilder().WithName("Player").Build();
+    var npc = new CharacterBuilder().WithName("NPC").Build();
+    var world = World.Create(DateTime.Now, [player, npc]);
+
+    var save = GameSave.Create(player, world);
+    save.StartDialogue(npc.Id);
+
+    var dialogueOption = DialogueOption.Create("Ask something");
+    var result = DialogueOptionResult.Create(Guid.NewGuid(), null, null, "Invalid", endDialogue: false);
+
+    A.CallTo(() => _dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(
+        dialogueOption.Id, A<GameContext>._, A<CancellationToken>._
+      )
+    ).Returns<string?>(null);
+
+    A.CallTo(() => _dialogueOptionResultRepository.GetByDialogueOptionIdAsync(
+        dialogueOption.Id, A<GameContext>._, A<CancellationToken>._
+      )
+    ).Returns(result);
+
+    A.CallTo(() => _dialogueOptionResultSpokenTextRepository.GetByDialogueOptionResultIdAsync(
+        result.Id, A<GameContext>._, A<CancellationToken>._
+      )
+    ).Returns(new List<string>());
+
+    A.CallTo(() => _dialogueOptionResultNarrationRepository.GetByDialogueOptionResultIdAsync(
+        result.Id, A<GameContext>._, A<CancellationToken>._
+      )
+    ).Returns(null as string);
+
+    A.CallTo(() => _dialogueOptionRepository.GetPossibleFollowUpsAsync(
+        A<GameContext>._, result.Id, A<CancellationToken>._
+      )
+    ).Returns(new List<DialogueOption>());
+
+    // Act
+    var steps = await _dialogueService.BuildDialogueOptionStepsAsync(dialogueOption, save, CancellationToken.None);
+
+    // Assert
+    var specialActionStep = Assert.Single(steps);
+    await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => specialActionStep.ExecuteAsync(save));
+  }
+
+  [Fact]
   public async Task BuildDialogueOptionStepsAsync_ShouldEndInteraction_WhenResultEndsDialogue()
   {
     // Arrange
@@ -296,7 +343,7 @@ public class DialogueServiceTests
     save.StartDialogue(npc.Id);
 
     var dialogueOption = DialogueOption.Create("Say goodbye");
-    var result = DialogueOptionResult.Create(Guid.NewGuid(), null, null, endDialogue: true);
+    var result = DialogueOptionResult.Create(Guid.NewGuid(), null, null, null, endDialogue: true);
 
     A.CallTo(() => _dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(
         dialogueOption.Id, A<GameContext>._, A<CancellationToken>._
@@ -345,7 +392,7 @@ public class DialogueServiceTests
     save.PendingDialogueOptions.Add(DialogueOption.Create("stale"));
 
     var dialogueOption = DialogueOption.Create("Ask something");
-    var result = DialogueOptionResult.Create(Guid.NewGuid(), null, null, endDialogue: false);
+    var result = DialogueOptionResult.Create(Guid.NewGuid(), null, null, null, endDialogue: false);
 
     // No player spoken text / npc reply / narration needed for this test
     A.CallTo(() => _dialogueOptionSpokenTextRepository.GetByDialogueOptionIdAsync(

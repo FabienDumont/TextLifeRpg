@@ -38,6 +38,13 @@ public class DialogueOptionSeeder : IDataSeeder
         {
           builder.WithActorLearnedFactCondition(c.ActorHasntLearnedFact, true);
         }
+
+        if (c.ActorTargetSpecialCondition is not null)
+        {
+          builder.WithActorTargetSpecialCondition(
+            c.ActorTargetSpecialCondition.Label, c.ActorTargetSpecialCondition.Negate
+          );
+        }
       }
 
       foreach (var s in def.SpokenTexts)
@@ -57,6 +64,11 @@ public class DialogueOptionSeeder : IDataSeeder
         if (res.ActorLearnFact is not null)
         {
           rb.WithActorLearnFact(res.ActorLearnFact);
+        }
+
+        if (res.ActorTargetSpecialAction is not null)
+        {
+          rb.WithActorTargetSpecialAction(res.ActorTargetSpecialAction);
         }
 
         if (res.EndsDialogue)
@@ -135,6 +147,13 @@ public class DialogueOptionSeeder : IDataSeeder
       {
         rb.WithActorRelationshipValueCondition(
           c.ActorRelationshipValue.Operator, c.ActorRelationshipValue.Value.ToString()
+        );
+      }
+
+      if (c.TargetRelationshipValue is not null)
+      {
+        rb.WithTargetRelationshipValueCondition(
+          c.TargetRelationshipValue.Operator, c.TargetRelationshipValue.Value.ToString()
         );
       }
 

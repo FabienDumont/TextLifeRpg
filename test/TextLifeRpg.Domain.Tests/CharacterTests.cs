@@ -30,6 +30,7 @@ public class CharacterTests
     Assert.Equal(attributes, character.Attributes);
     Assert.Null(character.LocationId);
     Assert.Null(character.RoomId);
+    Assert.NotNull(character.Phone);
   }
 
   [Fact]
@@ -58,6 +59,7 @@ public class CharacterTests
     Assert.Equal(attributes, character.Attributes);
     Assert.Null(character.LocationId);
     Assert.Null(character.RoomId);
+    Assert.NotNull(character.Phone);
   }
 
   [Fact]

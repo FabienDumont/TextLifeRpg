@@ -41,9 +41,16 @@ public class DialogueOptionResultDataModel
   public string? ActorLearnFact { get; set; }
 
   /// <summary>
+  /// Represents a special action that can will happen as a result of the dialogue option.
+  /// </summary>
+  [Column("ActorTargetSpecialAction", Order = 5)]
+  [MaxLength(100)]
+  public string? ActorTargetSpecialAction { get; set; }
+
+  /// <summary>
   /// Indicates whether the dialogue ends after selecting this option.
   /// </summary>
-  [Column("EndDialogue", Order = 5)]
+  [Column("EndDialogue", Order = 6)]
   public bool EndDialogue { get; set; }
 
   /// <summary>

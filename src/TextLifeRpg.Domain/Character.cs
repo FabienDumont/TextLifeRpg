@@ -84,6 +84,11 @@ public class Character
   /// </summary>
   public List<InventoryEntry> InventoryEntries { get; } = [];
 
+  /// <summary>
+  /// The character's phone.
+  /// </summary>
+  public Phone Phone { get; private init; }
+
   #endregion
 
   #region Ctors
@@ -104,6 +109,7 @@ public class Character
     Weight = weight;
     MuscleMass = muscleMass;
     Attributes = attributes;
+    Phone = Phone.Create();
   }
 
   #endregion

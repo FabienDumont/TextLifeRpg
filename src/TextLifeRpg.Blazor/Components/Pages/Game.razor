@@ -51,23 +51,20 @@ else
             }
           </div>
 
-          @if (!_isUiLocked)
+          @if (GameSaveStore.CurrentSave.NpcInteractionType == NpcInteractionType.Dialogue)
           {
-            @if (GameSaveStore.CurrentSave.NpcInteractionType == NpcInteractionType.Dialogue)
-            {
-              <div class="bg-slate-100">
-                <DialogueOptionsPanel OnDialogueOptionClicked="ExecuteDialogueOption"/>
-              </div>
-            }
-            else
-            {
-              <div class="bg-slate-100">
-                <ExplorationActionsPanel/>
-              </div>
-              <div class="bg-slate-100">
-                <MovementPanel/>
-              </div>
-            }
+            <div class="bg-slate-100">
+              <DialogueOptionsPanel OnDialogueOptionClicked="ExecuteDialogueOption"/>
+            </div>
+          }
+          else
+          {
+            <div class="bg-slate-100">
+              <ExplorationActionsPanel/>
+            </div>
+            <div class="bg-slate-100">
+              <MovementPanel/>
+            </div>
           }
         </div>
 

@@ -20,6 +20,16 @@ public class DialogueOptionBuilder(ApplicationContext context, Guid id, string l
     return this;
   }
 
+  public DialogueOptionBuilder WithActorTargetSpecialCondition(string specialConditionLabel, bool negate)
+  {
+    _conditions.Add(
+      ConditionBuilder.BuildActorTargetSpecialConditions(
+        ContextType.DialogueOption, _dialogueOption.Id, [(specialConditionLabel, negate)]
+      ).Single()
+    );
+    return this;
+  }
+
   public DialogueOptionResultBuilder AddResult()
   {
     var rb = new DialogueOptionResultBuilder(context, _dialogueOption.Id);

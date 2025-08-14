@@ -28,10 +28,31 @@ public class DialogueOptionResultBuilder(ApplicationContext context, Guid option
     return this;
   }
 
+  public DialogueOptionResultBuilder WithActorTargetSpecialAction(string specialAction)
+  {
+    _result.ActorTargetSpecialAction = specialAction;
+    return this;
+  }
+
   public DialogueOptionResultBuilder WithNextDialogueOptions(IEnumerable<Guid> ids)
   {
     var i = 0;
     foreach (var id in ids) _nexts.Add((id, i++));
+    return this;
+  }
+
+  public DialogueOptionResultBuilder WithTargetRelationshipValueCondition(string op, string value)
+  {
+    _resultConditions.Add(
+      new ConditionDataModel
+      {
+        Id = Guid.NewGuid(),
+        ContextType = ContextType.DialogueOptionResult,
+        ConditionType = ConditionType.TargetRelationship,
+        Operator = op,
+        OperandRight = value
+      }
+    );
     return this;
   }
 

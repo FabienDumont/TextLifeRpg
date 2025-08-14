@@ -28,6 +28,11 @@ public class DialogueOptionResult
   public string? ActorLearnFact { get; }
 
   /// <summary>
+  /// Represents a special action between an acting character and a target character.
+  /// </summary>
+  public string? ActorTargetSpecialAction { get; }
+
+  /// <summary>
   /// Indicates whether the dialogue ends after selecting this option.
   /// </summary>
   public bool EndDialogue { get; }
@@ -40,13 +45,15 @@ public class DialogueOptionResult
   /// Private constructor used internally.
   /// </summary>
   private DialogueOptionResult(
-    Guid id, Guid dialogueOptionId, int? targetRelationshipValueChange, string? actorLearnFact, bool endDialogue
+    Guid id, Guid dialogueOptionId, int? targetRelationshipValueChange, string? actorLearnFact,
+    string? actorTargetSpecialAction, bool endDialogue
   )
   {
     Id = id;
     DialogueOptionId = dialogueOptionId;
     TargetRelationshipValueChange = targetRelationshipValueChange;
     ActorLearnFact = actorLearnFact;
+    ActorTargetSpecialAction = actorTargetSpecialAction;
     EndDialogue = endDialogue;
   }
 
@@ -58,11 +65,12 @@ public class DialogueOptionResult
   /// Factory method to create a new instance.
   /// </summary>
   public static DialogueOptionResult Create(
-    Guid dialogueOptionId, int? targetRelationshipValueChange, string? learnFact, bool endDialogue
+    Guid dialogueOptionId, int? targetRelationshipValueChange, string? learnFact, string? actorTargetSpecialAction,
+    bool endDialogue
   )
   {
     return new DialogueOptionResult(
-      Guid.NewGuid(), dialogueOptionId, targetRelationshipValueChange, learnFact, endDialogue
+      Guid.NewGuid(), dialogueOptionId, targetRelationshipValueChange, learnFact, actorTargetSpecialAction, endDialogue
     );
   }
 
@@ -70,10 +78,13 @@ public class DialogueOptionResult
   /// Factory method to load an existing instance from persistence.
   /// </summary>
   public static DialogueOptionResult Load(
-    Guid id, Guid dialogueOptionId, int? targetRelationshipValueChange, string? learnFact, bool endDialogue
+    Guid id, Guid dialogueOptionId, int? targetRelationshipValueChange, string? learnFact,
+    string? actorTargetSpecialAction, bool endDialogue
   )
   {
-    return new DialogueOptionResult(id, dialogueOptionId, targetRelationshipValueChange, learnFact, endDialogue);
+    return new DialogueOptionResult(
+      id, dialogueOptionId, targetRelationshipValueChange, learnFact, actorTargetSpecialAction, endDialogue
+    );
   }
 
   #endregion

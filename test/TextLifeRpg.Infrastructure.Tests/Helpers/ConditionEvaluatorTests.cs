@@ -197,6 +197,7 @@ public class ConditionEvaluatorTests
   [InlineData(ConditionType.ActorEnergy)]
   [InlineData(ConditionType.ActorMoney)]
   [InlineData(ConditionType.ActorRelationship)]
+  [InlineData(ConditionType.TargetRelationship)]
   public void EvaluateCondition_MissingOperandRight_ThrowsException(ConditionType type)
   {
     // Arrange
@@ -314,6 +315,108 @@ public class ConditionEvaluatorTests
 
     // Assert
     Assert.True(result);
+  }
+
+  [Fact]
+  public void EvaluateCondition_TargetRelationship_MatchesCondition_ReturnsTrue()
+  {
+    // Arrange
+    var actor = new CharacterBuilder().Build();
+    var target = new CharacterBuilder().Build();
+
+    const int relationshipValue = 75;
+
+    var condition = new ConditionDataModel
+    {
+      ConditionType = ConditionType.TargetRelationship,
+      Operator = ">",
+      OperandRight = "50",
+      ContextType = ContextType.DialogueOption
+    };
+
+    var world = World.Create(DateTime.Now, [actor, target]);
+    var now = new DateOnly(2025, 6, 16);
+    world.Relationships.Add(
+      Relationship.Create(target.Id, actor.Id, RelationshipType.Acquaintance, now, now, relationshipValue)
+    );
+
+    var gameContext = new GameContext
+    {
+      Actor = actor,
+      Target = target,
+      World = world
+    };
+
+    // Act
+    var result = ConditionEvaluator.EvaluateCondition(condition, gameContext);
+
+    // Assert
+    Assert.True(result);
+  }
+
+  [Fact]
+  public void EvaluateCondition_HaveTargetPhoneNumber_TargetInContacts_ReturnsTrue()
+  {
+    // Arrange
+    var actor = new CharacterBuilder().Build();
+    var target = new CharacterBuilder().Build();
+
+    actor.Phone.Contacts.Add(PhoneContact.Create(target));
+
+    var condition = new ConditionDataModel
+    {
+      ConditionType = ConditionType.ActorTargetSpecialCondition,
+      OperandLeft = "HaveTargetPhoneNumber",
+      Operator = "==",
+      OperandRight = "true",
+      Negate = false,
+      ContextType = ContextType.DialogueOption
+    };
+
+    var world = World.Create(DateTime.Now, [actor, target]);
+
+    var gameContext = new GameContext
+    {
+      Actor = actor,
+      Target = target,
+      World = world
+    };
+
+    // Act
+    var result = ConditionEvaluator.EvaluateCondition(condition, gameContext);
+
+    // Assert
+    Assert.True(result);
+  }
+
+  [Fact]
+  public void EvaluateCondition_InvalidOperandLeft_ThrowsException()
+  {
+    // Arrange
+    var actor = new CharacterBuilder().Build();
+    var target = new CharacterBuilder().Build();
+
+    var condition = new ConditionDataModel
+    {
+      ConditionType = ConditionType.ActorTargetSpecialCondition,
+      OperandLeft = "Invalid",
+      Operator = "==",
+      OperandRight = "true",
+      Negate = false,
+      ContextType = ContextType.DialogueOption
+    };
+
+    var world = World.Create(DateTime.Now, [actor, target]);
+
+    var gameContext = new GameContext
+    {
+      Actor = actor,
+      Target = target,
+      World = world
+    };
+
+    // Act & Assert
+    Assert.Throws<ArgumentOutOfRangeException>(() => ConditionEvaluator.EvaluateCondition(condition, gameContext));
   }
 
   #endregion

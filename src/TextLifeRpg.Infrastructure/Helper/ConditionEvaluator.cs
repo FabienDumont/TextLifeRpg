@@ -24,18 +24,21 @@ public static class ConditionEvaluator
     var actorRelationship = context.World.Relationships.FirstOrDefault(r =>
       r.SourceCharacterId == actor.Id && r.TargetCharacterId == target?.Id
     );
+    var targetRelationship = context.World.Relationships.FirstOrDefault(r =>
+      r.SourceCharacterId == target?.Id && r.TargetCharacterId == actor.Id
+    );
 
     return condition.ConditionType switch
     {
       ConditionType.ActorEnergy when operandRight is null => throw new InvalidOperationException(
-        "ActorEnergy condition requires OperandRight."
+        $"{nameof(ConditionType.ActorEnergy)} requires OperandRight."
       ),
       ConditionType.ActorEnergy => CompareInt(
         actor.Energy, condition.Operator, int.Parse(operandRight), condition.Negate
       ),
 
       ConditionType.ActorMoney when operandRight is null => throw new InvalidOperationException(
-        "ActorMoney condition requires OperandRight."
+        $"{nameof(ConditionType.ActorMoney)} requires OperandRight."
       ),
       ConditionType.ActorMoney => CompareInt(
         actor.Money, condition.Operator, int.Parse(operandRight), condition.Negate
@@ -44,24 +47,59 @@ public static class ConditionEvaluator
       ConditionType.ActorHasTrait => EvaluateHasTrait(condition, actor.TraitsId),
 
       ConditionType.ActorRelationship when operandRight is null => throw new InvalidOperationException(
-        "ActorRelationship condition requires OperandRight."
+        $"{nameof(ConditionType.ActorRelationship)} requires OperandRight."
       ),
       ConditionType.ActorRelationship => CompareInt(
         actorRelationship?.Value ?? 0, condition.Operator, int.Parse(operandRight), condition.Negate
       ),
+
       ConditionType.ActorLearnedFact => actorRelationship is null ||
-                                        EvaluateActorLearnedTrait(condition, actorRelationship),
-      _ => throw new InvalidOperationException("Invalid ConditionType.")
+                                        EvaluateActorLearnedFact(condition, actorRelationship),
+      ConditionType.ActorTargetSpecialCondition => EvaluateSpecialCondition(
+        condition, actor,
+        target ?? throw new InvalidOperationException(
+          $"{nameof(ConditionType.ActorTargetSpecialCondition)} requires target."
+        )
+      ),
+      ConditionType.TargetRelationship when operandRight is null => throw new InvalidOperationException(
+        $"{nameof(ConditionType.TargetRelationship)} requires OperandRight."
+      ),
+      ConditionType.TargetRelationship => CompareInt(
+        targetRelationship?.Value ?? 0, condition.Operator, int.Parse(operandRight), condition.Negate
+      ),
+      _ => throw new InvalidOperationException($"Invalid {nameof(ConditionType)}.")
     };
   }
 
-  private static bool EvaluateActorLearnedTrait(ConditionDataModel condition, Relationship actorRelationship)
+  /// <summary>
+  /// Evaluates whether an actor has learned a specific fact within a relationship context.
+  /// </summary>
+  /// <param name="condition">The condition to evaluate, which includes the fact identifier and evaluation logic.</param>
+  /// <param name="actorRelationship">The relationship containing the actor's history, which is used to determine if the fact is learned.</param>
+  /// <returns>True if the actor has learned the specified fact and the condition evaluates to true; otherwise, false.</returns>
+  private static bool EvaluateActorLearnedFact(ConditionDataModel condition, Relationship actorRelationship)
   {
     var learnedFact = actorRelationship.History.HasLearnedFact(
       condition.OperandLeft ??
       throw new InvalidOperationException($"{nameof(condition.OperandLeft)} shouldn't be null.")
     );
     return learnedFact && !condition.Negate || !learnedFact && condition.Negate;
+  }
+
+  /// <summary>
+  /// Evaluates a special condition based on the given condition data, actor, and target.
+  /// </summary>
+  /// <param name="condition">The condition to be evaluated.</param>
+  /// <param name="actor">The actor character in the current context.</param>
+  /// <param name="target">The target character in the current context, if any.</param>
+  /// <returns>True if the special condition is met; otherwise, false.</returns>
+  private static bool EvaluateSpecialCondition(ConditionDataModel condition, Character actor, Character target)
+  {
+    return condition.OperandLeft switch
+    {
+      "HaveTargetPhoneNumber" => !condition.Negate == actor.Phone.Contacts.Any(c => c.Character.Id == target.Id),
+      _ => throw new ArgumentOutOfRangeException(nameof(condition.OperandLeft), condition.OperandLeft, null)
+    };
   }
 
   /// <summary>

@@ -109,6 +109,23 @@ public static class ConditionBuilder
     };
   }
 
+  private static ConditionDataModel ActorTargetSpecialCondition(
+    ContextType contextType, Guid contextId, string conditionLabel, bool negate
+  )
+  {
+    return new ConditionDataModel
+    {
+      Id = Guid.NewGuid(),
+      ContextType = contextType,
+      ContextId = contextId,
+      ConditionType = ConditionType.ActorTargetSpecialCondition,
+      OperandLeft = conditionLabel,
+      Operator = "==",
+      OperandRight = "true",
+      Negate = negate
+    };
+  }
+
   /// <summary>
   /// Builds multiple energy-based conditions for a given context.
   /// </summary>
@@ -152,7 +169,7 @@ public static class ConditionBuilder
   /// <returns>
   /// An enumerable collection of <see cref="ConditionDataModel"/> representing the relationship value conditions.
   /// </returns>
-  public static IEnumerable<ConditionDataModel> BuildRelationshipValueConditions(
+  public static IEnumerable<ConditionDataModel> BuildActorRelationshipValueConditions(
     ContextType contextType, Guid contextId, (string op, string value)[] rules
   )
   {
@@ -167,9 +184,18 @@ public static class ConditionBuilder
   /// <param name="facts">A collection of tuples where each tuple contains the fact key to check and a boolean indicating if the condition should be negated.</param>
   /// <returns>A collection of <see cref="ConditionDataModel"/> objects, each representing a condition for the specified facts.</returns>
   public static IEnumerable<ConditionDataModel> BuildActorLearnedFactConditions(
-    ContextType contextType, Guid contextId, IEnumerable<(string factKey, bool negate)> facts)
+    ContextType contextType, Guid contextId, IEnumerable<(string factKey, bool negate)> facts
+  )
   {
     return facts.Select(f => ActorLearnedFactCondition(contextType, contextId, f.factKey, f.negate));
+  }
+
+  public static IEnumerable<ConditionDataModel> BuildActorTargetSpecialConditions(
+    ContextType contextType, Guid contextId, IEnumerable<(string conditionLabel, bool negate)> specialConditions
+  )
+  {
+    return specialConditions.Select(f => ActorTargetSpecialCondition(contextType, contextId, f.conditionLabel, f.negate)
+    );
   }
 
   #endregion
